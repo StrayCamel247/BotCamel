@@ -23,7 +23,7 @@ func init() {
 }
 
 var instance = &ar{}
-var logger = utils.GetModuleLogger("logiase.autoreply")
+var logger = utils.GetModuleLogger("QQBot_Handler")
 var tem map[string]string
 
 type ar struct {
@@ -31,7 +31,7 @@ type ar struct {
 
 func (a *ar) MiraiGoModule() bot.ModuleInfo {
 	return bot.ModuleInfo{
-		ID:       "logiase.autoreply",
+		ID:       "QQBot_Handler",
 		Instance: instance,
 	}
 }
@@ -54,7 +54,7 @@ func (a *ar) PostInit() {
 }
 
 func (a *ar) Serve(b *bot.Bot) {
-	b.OnGroupMessage(PriMsgHandler)
+	b.OnGroupMessage(GroMsgHandler)
 
 	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
 		out := BaseAutoreply(msg.ToString())
