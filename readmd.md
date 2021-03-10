@@ -1,5 +1,17 @@
-```
 
+## 聊天机器人-BotCamel
+> 基于go/Mirai开发，扩展使用MiraiGo框架实现
+## 项目启动
+- 配置机器人qq账号密码
+  复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
+  启动命令:`go run main.go`
+
+## REFERENCE
+- [敲代码的小小柒](https://www.bilibili.com/read/cv6926015/)
+- [MiraiGo-Template](https://github.com/Logiase/MiraiGo-Template)
+- [MiraiGo](https://github.com/Mrs4s/MiraiGo)
+- ...若有遗漏请提醒
+```
 go mod
 The commands are:
   download    download modules to local cache (下载依赖的module到本地cache))

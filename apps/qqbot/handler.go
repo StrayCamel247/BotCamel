@@ -6,9 +6,18 @@ import (
 
 	"github.com/Logiase/MiraiGo-Template/bot"
 
+	"github.com/Logiase/MiraiGo-Template/config"
 	_ "github.com/Logiase/MiraiGo-Template/modules/logging"
+	"github.com/Logiase/MiraiGo-Template/utils"
 )
 
+func init() {
+	utils.WriteLogToFS()
+	config.Init()
+	print("BotCamel inited.")
+}
+
+// QqStart : qq机器人启动器
 func QqStart() {
 	// 快速初始化
 	bot.Init()
@@ -26,9 +35,11 @@ func QqStart() {
 
 	// 刷新好友列表，群列表
 	bot.RefreshList()
-
+	// Go 中如何使用通道来处理信号https://gobyexample-cn.github.io/signals
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt, os.Kill)
+
 	<-ch
 	bot.Stop()
+	print("BotCamel shutdown...")
 }
