@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/Logiase/MiraiGo-Template/config"
-	"github.com/Logiase/MiraiGo-Template/utils"
-	"github.com/StrayCamel247/BotCamel/apps"
+    "github.com/StrayCamel247/BotCamel/apps"
+    "github.com/StrayCamel247/BotCamel/config"
+    "github.com/StrayCamel247/BotCamel/apps/utils"
 )
 
 func init() {
-	utils.WriteLogToFS()
-	config.Init()
+    utils.WriteLogToFS()
+    config.Init()
 }
 
 func main() {
-	apps.QqBotInit()
+    // tools_device.TestGenDevice()
+    apps.QqBotInit()
 }
