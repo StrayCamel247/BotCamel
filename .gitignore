@@ -13,8 +13,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-application.yaml
-*.log
-*.zip
-*.xls
-**/test.*
+**/*.log
+**/*.zip
+**/*.xls
