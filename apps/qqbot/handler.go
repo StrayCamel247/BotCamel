@@ -9,7 +9,7 @@ import (
 	_ "github.com/Logiase/MiraiGo-Template/modules/logging"
 )
 
-func qqStart() {
+func QqStart() {
 	// 快速初始化
 	bot.Init()
 

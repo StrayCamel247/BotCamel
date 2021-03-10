@@ -4,10 +4,13 @@ import (
 	"os"
 	"os/signal"
 
+	"fmt"
+
 	"github.com/Logiase/MiraiGo-Template/bot"
 	"github.com/Logiase/MiraiGo-Template/config"
 	_ "github.com/Logiase/MiraiGo-Template/modules/logging"
 	"github.com/Logiase/MiraiGo-Template/utils"
+	"github.com/StrayCamel247/BotCamel/apps"
 )
 
 func init() {
@@ -40,5 +43,6 @@ func qqStart() {
 	bot.Stop()
 }
 func main() {
-	apps.test()
+	apps.QqBotInit()
+	fmt.Print("This is main\n")
 }
