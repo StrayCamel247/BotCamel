@@ -24,8 +24,6 @@ github.com/Mrs4s/MiraiGo v0.0.0-20200929101232-fbb53eba9b5a/go.mod h1:cwYPI2uq6n
 github.com/Mrs4s/MiraiGo v0.0.0-20201002095327-2050e4566494/go.mod h1:cwYPI2uq6nxNbx0nA6YuAKF1V5szSs6FPlGVLQvRUlo=
 github.com/Mrs4s/MiraiGo v0.0.0-20210308011115-8c89d62657af h1:PPjWwM/KwbHzOyaEwKm3W5JrK6TTxpOSf+Sd4JXxF9s=
 github.com/Mrs4s/MiraiGo v0.0.0-20210308011115-8c89d62657af/go.mod h1:yhqA0NyKxUf7I/0HR/1OMchveFggX8wde04gqdGrNfU=
-github.com/Mrs4s/MiraiGo v0.0.0-20210309145658-2826f14c1d23 h1:J30IM4SAwuUghC79wd2MzHoZ3iodgJM0V1bpVja/3U8=
-github.com/Mrs4s/MiraiGo v0.0.0-20210309145658-2826f14c1d23/go.mod h1:yhqA0NyKxUf7I/0HR/1OMchveFggX8wde04gqdGrNfU=
 github.com/Mrs4s/MiraiGo v0.0.0-20210310092204-857e891976fe h1:dXgZPuoIJm3XMIHhvZov35vw3U2NRnEt39eMBaXJ0wQ=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
