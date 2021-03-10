@@ -1,5 +1,11 @@
 package qqbot
 
+/*
+   __author__ : stray_camel
+  __description__ : 消除处理基本处理逻辑
+  __REFERENCES__: https://github.com/Logiase/MiraiGo-module-autoreply
+  __date__: 2021-03-10
+*/
 import (
 	"sync"
 
@@ -48,17 +54,10 @@ func (a *ar) PostInit() {
 }
 
 func (a *ar) Serve(b *bot.Bot) {
-	b.OnGroupMessage(func(c *client.QQClient, msg *message.GroupMessage) {
-		out := autoreply(msg.ToString())
-		if out == "" {
-			return
-		}
-		m := message.NewSendingMessage().Append(message.NewText(out))
-		c.SendGroupMessage(msg.GroupCode, m)
-	})
+	b.OnGroupMessage(PriMsgHandler)
 
 	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
-		out := autoreply(msg.ToString())
+		out := BaseAutoreply(msg.ToString())
 		if out == "" {
 			return
 		}
@@ -74,7 +73,8 @@ func (a *ar) Stop(bot *bot.Bot, wg *sync.WaitGroup) {
 	defer wg.Done()
 }
 
-func autoreply(in string) string {
+// BaseAutoreply 根据配置的文本进行基础信息回复
+func BaseAutoreply(in string) string {
 	out, ok := tem[in]
 	if !ok {
 		return ""
