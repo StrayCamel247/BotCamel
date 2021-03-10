@@ -3,11 +3,11 @@
 > 基于go/Mirai开发，扩展使用MiraiGo框架实现
 ## 项目启动
 - 配置机器人qq账号密码
-  复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
-  复制`apps\base_default.yaml`文件并更名为`apps\base.yaml`，在文件中指定位置填写一一对话脚本
-  启动命令:`go run main.go`
-  就可以和配置的qq进行对话拉入群后可以判断是否是@机器人进行匹配对话
-  具体功能看代码
+- 复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
+- 复制`apps\base_default.yaml`文件并更名为`apps\base.yaml`，在文件中指定位置填写一一对话脚本
+- 启动命令:`go run main.go`
+- 就可以和配置的qq进行对话拉入群后可以判断是否是@机器人进行匹配对话
+- 具体功能看代码
 ## REFERENCE
 - [敲代码的小小柒](https://www.bilibili.com/read/cv6926015/)
 - [MiraiGo-Template](https://github.com/StrayCamel247/BotCamel/apps)
