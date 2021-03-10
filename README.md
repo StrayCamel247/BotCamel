@@ -3,11 +3,9 @@
 > 基于go/Mirai开发，扩展使用MiraiGo框架实现
 ## 项目启动
 - 配置机器人qq账号密码
-  复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写qq账号密码
+  复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
   复制`apps\base_default.yaml`文件并更名为`apps\base.yaml`，在文件中指定位置填写一一对话脚本
   启动命令:`go run main.go`
-  拉入填写的qq号进群就可以开启聊天了，qq群聊或者qq私聊都可以，具体设置看`apps\qqbot\base_handler.go`
-
 ## REFERENCE
 - [敲代码的小小柒](https://www.bilibili.com/read/cv6926015/)
 - [MiraiGo-Template](https://github.com/StrayCamel247/BotCamel/apps)
@@ -22,7 +20,6 @@
 | QQ群组 | 命运2周报查询 |  |  |  |  |
 | QQ机器人 | 黑名单功能 |  |  |  |  |
 | QQ机器人 | 命运2个人数据查询 |  |  |  |  |
-| 其他功能 | ... |  |  |  |  |
 
 
 <!-- ```
