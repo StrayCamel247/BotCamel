@@ -6,6 +6,8 @@
   复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
   复制`apps\base_default.yaml`文件并更名为`apps\base.yaml`，在文件中指定位置填写一一对话脚本
   启动命令:`go run main.go`
+  就可以和配置的qq进行对话拉入群后可以判断是否是@机器人进行匹配对话
+  具体功能看代码
 ## REFERENCE
 - [敲代码的小小柒](https://www.bilibili.com/read/cv6926015/)
 - [MiraiGo-Template](https://github.com/StrayCamel247/BotCamel/apps)
@@ -15,11 +17,12 @@
 | 模块 | 需求 | api/处理逻辑 | 需求状态 | 备注 | 开发人 |
 |:------:|:------:|:------:|:------:|:------:|:------:|
 | QQ机器人 | 按照文本一一对应回复 | 查询配置文件实现 | 完成 | 配置文件可进行扩充 | StrayCamel247 |
-| QQ群组 | 判断是否@自己 | https://github.com/mamoe/mirai/blob/dev/docs/Messages.md | 完成 | StrayCamel247 |
+| QQ群组 | 判断是否@自己 | [消息队列文档](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md) | 完成 | 文档＋看源码开发 |StrayCamel247 |
 | QQ机器人 | 天气查询 |  |  |  |  |
 | QQ群组 | 命运2周报查询 |  |  |  |  |
 | QQ机器人 | 黑名单功能 |  |  |  |  |
-| QQ机器人 | 命运2个人数据查询 |  |  |  |  |
+| QQ机器人 | 命运2-个人数据查询 |  |  |  |  |
+| 其他功能 |  |  |  |  |  |
 
 
 <!-- ```
