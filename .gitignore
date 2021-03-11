@@ -18,3 +18,11 @@
 **/*.xls
 application.yaml
 apps/base.yaml
+
+vendor/
+.idea
+config.hjson
+device.json
+codec/
+data/
+logs/
