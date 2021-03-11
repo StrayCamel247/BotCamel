@@ -1,12 +1,15 @@
 
 ## 聊天机器人-BotCamel_V1.0
 > 基于/重构[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现
+
 > [BotCamel_V0](https://github.com/StrayCamel247/BotCamel/tree/dev-mirai)版本为基于mirai实现
 ## [需求文档](./PRD.MD)
 ## 项目启动
 - 配置机器人qq账号密码
-  启动命令:`go run main.go` 若没有配置文件会生成一个配置文件
-  `config.hjson`生成或者已存在
+- 启动命令:`go run main.go` 若没有配置文件会生成一个配置文件
+- `config.hjson`生成或者已存在
+- `apps\base_default.yaml`配置对话
+- `apps\baseapis`调用的接口
 ## REFERENCE
 
 ## DEMO
