@@ -11,7 +11,9 @@ import (
 	"github.com/Mrs4s/MiraiGo/binary"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/StrayCamel247/BotCamel/apps/camel"
 	"github.com/StrayCamel247/BotCamel/global"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -93,6 +95,7 @@ func (bot *CQBot) groupMessageEvent(c *client.QQClient, m *message.GroupMessage)
 		id = bot.InsertGroupMessage(m)
 	}
 	log.Infof("收到群 %v(%v) 内 %v(%v) 的消息: %v (%v)", m.GroupName, m.GroupCode, m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
+	camel.GroMsgHandler(c, m)
 	gm := bot.formatGroupMessage(m)
 	if gm == nil {
 		return
