@@ -8,9 +8,9 @@ package qqbot
 */
 import (
 	// "fmt"
-	// "string"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"strings"
 	// "strconv"
 )
 
@@ -26,7 +26,7 @@ func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, conten
 				isAt = true
 			}
 		case *message.TextElement:
-			content = e.Content
+			content = strings.TrimSpace(e.Content)
 			logger.Info(content)
 		// case *message.ImageElement:
 		// 	_msg += "[Image:" + e.Filename + "]"
@@ -62,14 +62,20 @@ func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, conten
 
 // GroMsgHandler 群聊信息获取并返回
 func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
-	// fmt.Printf("用户信息: \n", "%+v", c)
-	// fmt.Printf("消息信息: \n", "%+v", msg, "\n")
-	// println(msg.Target)
+	var out string
 	IsAt, content := AnalysisMsg(c.Uin, msg.Elements)
-	out := BaseAutoreply(content)
-	if out == "" && IsAt {
-		out = "作甚😜"
+	if IsAt {
+		out = BaseAutoreply(content)
+		switch content {
+		default:
+			if strings.EqualFold(content, "menu") {
+				out += "\n👨‍👨‍👦‍👦 QQ群聊指令"
+			}
+			if out == "" {
+				out = "作甚😜"
+			}
+		}
+		m := message.NewSendingMessage().Append(message.NewText(out))
+		c.SendGroupMessage(msg.GroupCode, m)
 	}
-	m := message.NewSendingMessage().Append(message.NewText(out))
-	c.SendGroupMessage(msg.GroupCode, m)
 }

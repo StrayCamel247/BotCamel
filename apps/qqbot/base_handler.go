@@ -9,13 +9,13 @@ package qqbot
 import (
 	"sync"
 
+	"github.com/Logiase/MiraiGo-Template/bot"
 	"github.com/Logiase/MiraiGo-Template/config"
+	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"gopkg.in/yaml.v2"
-
-	"github.com/Logiase/MiraiGo-Template/bot"
-	"github.com/Logiase/MiraiGo-Template/utils"
+	"strings"
 )
 
 func init() {
@@ -77,6 +77,12 @@ func (a *ar) Stop(bot *bot.Bot, wg *sync.WaitGroup) {
 func BaseAutoreply(in string) string {
 	out, ok := tem[in]
 	if !ok {
+		for k, v := range tem {
+			if strings.EqualFold(out, k) {
+				return v
+			}
+
+		}
 		return ""
 	}
 	return out
