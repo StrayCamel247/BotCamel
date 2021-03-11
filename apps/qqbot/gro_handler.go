@@ -70,10 +70,10 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		switch content {
 		default:
 			if strings.EqualFold(content, "menu") {
-				out += "🤖 QQ群聊指令"
+				out += "🤖 QQ群聊指令\n功能开发中"
 			}
 			if out == "" {
-				out = "作甚😜"
+				out = "作甚😜\nMenu即可查看功能菜单👻"
 			}
 		}
 		/*
