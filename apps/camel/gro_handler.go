@@ -1,4 +1,4 @@
-package qqbot
+package camel
 
 /*
   __author__ : stray_camel
@@ -10,6 +10,7 @@ import (
 	// "fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	log "github.com/sirupsen/logrus"
 	"strings"
 	// "strconv"
 )
@@ -28,31 +29,31 @@ func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, conten
 			}
 		case *message.TextElement:
 			content = strings.TrimSpace(e.Content)
-			logger.Info(content)
+			log.Info(content)
 		// case *message.ImageElement:
 		// 	_msg += "[Image:" + e.Filename + "]"
-		// 	logger.Info(_msg)
+		// 	log.Info(_msg)
 		// 	continue
 		// case *message.FaceElement:
 		// 	_msg += "[" + e.Name + "]"
-		// 	logger.Info(_msg)
+		// 	log.Info(_msg)
 		// 	continue
 		// case *message.GroupImageElement:
 		// 	_msg += "[Image: " + e.ImageId + "]"
-		// 	logger.Info(_msg)
+		// 	log.Info(_msg)
 		// 	continue
 		// case *message.GroupFlashImgElement:
 		// 	// NOTE: ignore other components
 		// 	_msg = "[Image (flash):" + e.Filename + "]"
-		// 	logger.Info(_msg)
+		// 	log.Info(_msg)
 		// 	continue
 		// case *message.RedBagElement:
 		// 	_msg += "[RedBag:" + e.Title + "]"
-		// 	logger.Info(_msg)
+		// 	log.Info(_msg)
 		// 	continue
 		// case *message.ReplyElement:
 		// 	_msg += "[Reply:" + strconv.FormatInt(int64(e.ReplySeq), 10) + "]"
-		// 	logger.Info(_msg)
+		// 	log.Info(_msg)
 		// 	continue
 		default:
 			break
@@ -70,7 +71,7 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		switch content {
 		default:
 			if strings.EqualFold(content, "menu") {
-				out += "🤖 QQ群聊指令\n功能开发中"
+				out += "--more--\ndeving..."
 			}
 			if out == "" {
 				out = "作甚😜\nMenu即可查看功能菜单👻"
