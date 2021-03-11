@@ -11,6 +11,7 @@
 | 按照文本一一对应回复 | 查询配置文件实现 | 完成 | 配置文件可进行扩充 |[StrayCamel247](https://github.com/StrayCamel247) |
 | 彩虹屁 | asskisser | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 | 开光嘴 | motherfucker | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
+| 自动加群 |  |  |  |
 
 
 ### QQ群聊功能

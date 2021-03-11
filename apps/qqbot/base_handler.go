@@ -13,7 +13,7 @@ import (
 	"github.com/Logiase/MiraiGo-Template/config"
 	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/Mrs4s/MiraiGo/client"
-	"github.com/Mrs4s/MiraiGo/message"
+	// "github.com/Mrs4s/MiraiGo/message"
 	"github.com/StrayCamel247/BotCamel/apps/qqbot/baseapis"
 	"gopkg.in/yaml.v2"
 	"strings"
@@ -54,17 +54,49 @@ func (a *qb) Init() {
 func (a *qb) PostInit() {
 }
 
-func (a *qb) Serve(b *bot.Bot) {
-	b.OnGroupMessage(GroMsgHandler)
+/*
+func (c *QQClient) SolveGroupJoinRequest(i interface{}, accept, block bool, reason string) {
+	if accept {
+		block = false
+		reason = ""
+	}
 
-	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
-		out := BaseAutoreply(msg.ToString())
-		if out == "" {
-			return
+	switch req := i.(type) {
+	case *UserJoinGroupRequest:
+		_, pkt := c.buildSystemMsgGroupActionPacket(req.RequestId, req.RequesterUin, req.GroupCode, func() int32 {
+			if req.Suspicious {
+				return 2
+			} else {
+				return 1
+			}
+		}(), false, accept, block, reason)
+		_ = c.send(pkt)
+	case *GroupInvitedRequest:
+		_, pkt := c.buildSystemMsgGroupActionPacket(req.RequestId, req.InvitorUin, req.GroupCode, 1, true, accept, block, reason)
+		_ = c.send(pkt)
+	}
+}
+*/
+func OnGroupInvitedHandler(c *client.QQClient, r *client.GroupInvitedRequest) {
+
+}
+func (a *qb) Serve(b *bot.Bot) {
+	// 群组消息处理
+	b.OnGroupMessage(GroMsgHandler)
+	// 私人发消息处理
+	b.OnPrivateMessage(PriMsgHandler)
+	// 群组邀请加入消息处理
+	/*
+		func (c *QQClient) OnPrivateMessage(f func(*QQClient, *message.PrivateMessage)) {
+			c.eventHandlers.privateMessageHandlers = append(c.eventHandlers.privateMessageHandlers, f)
 		}
-		m := message.NewSendingMessage().Append(message.NewText(out))
-		c.SendPrivateMessage(msg.Sender.Uin, m)
-	})
+			func (c *QQClient) OnGroinviteupInvited(f func(*QQClient, *GroupInvitedRequest)) {
+				c.eventHandlers.groupInvitedHandlers = append(c.eventHandlers.groupInvitedHandlers, f)
+		}
+	*/
+	// b.OnGroupInvited(OnGroupInvitedHandler)
+	// 新成员加入
+	// b.OnGroupMemberJoined(nil)
 }
 
 func (a *qb) Start(bot *bot.Bot) {
@@ -73,6 +105,7 @@ func (a *qb) Start(bot *bot.Bot) {
 func (a *qb) Stop(bot *bot.Bot, wg *sync.WaitGroup) {
 	defer wg.Done()
 }
+
 func commandHandler(com string) string {
 	if strings.EqualFold(com, "motherfucker") {
 		_From := strings.TrimLeft(com, "Motherfucker")
