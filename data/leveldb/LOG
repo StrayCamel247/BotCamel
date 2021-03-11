@@ -1,0 +1,19 @@
+=============== Mar 11, 2021 (CST) ===============
+15:42:29.339838 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:42:29.420655 db@open opening
+15:42:29.421618 version@stat F·[] S·0B[] Sc·[]
+15:42:29.450542 db@janitor F·2 G·0
+15:42:29.450542 db@open done T·29.8872ms
+15:42:47.075395 db@close closing
+15:42:47.079384 db@close done T·3.9888ms
+=============== Mar 11, 2021 (CST) ===============
+15:45:57.444828 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:45:57.445824 version@stat F·[] S·0B[] Sc·[]
+15:45:57.445824 db@open opening
+15:45:57.445824 journal@recovery F·1
+15:45:57.447002 journal@recovery recovering @1
+15:45:57.447819 version@stat F·[] S·0B[] Sc·[]
+15:45:57.593429 db@janitor F·2 G·0
+15:45:57.593429 db@open done T·147.6048ms
+15:54:55.034614 db@close closing
+15:54:55.044632 db@close done T·10.0173ms

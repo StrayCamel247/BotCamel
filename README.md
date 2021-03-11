@@ -1,11 +1,12 @@
 
+# 此分支不再更新，无需pr，机器人V0版本，后续版本基于go-cqhttp实现
 ## 聊天机器人-BotCamel
 > 基于go/Mirai开发，扩展使用MiraiGo框架实现
 ## [需求文档](./PRD.MD)
 - **急需** 邀请入群组自动同意
 - qq群组-私聊基础功能开发
 - FEATURE 
-  - [ ] 脱离miraigo开发，基于[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)来实现
+  - [x] **已实现** 脱离miraigo开发，基于[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)来实现
 ## 项目启动
 - 配置机器人qq账号密码
   复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
