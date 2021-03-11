@@ -95,7 +95,7 @@ func PathExists(path string) bool {
 	return false
 }
 
-func D2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage) {
+func d2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage) {
 	_imgFileDate := GetD2WeekDateOfWeek()
 	out := baseapis.DataInfo(flag)
 	fileName := fmt.Sprintf("./media/%s%s.jpg", flag, _imgFileDate)
@@ -103,8 +103,14 @@ func D2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage
 		downloadImg(fileName, out)
 	}
 	if PathExists(fileName) {
-		_img, _ := c.UploadGroupImageByFile(msg.GroupCode, fileName)
+		println(fileName)
+		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
+		if err != nil {
+			panic(err)
+		}
+		println(fileName)
 		m := message.NewSendingMessage().Append(_img).Append(message.NewReply(msg))
+		println(fileName)
 		c.SendGroupMessage(msg.GroupCode, m)
 
 	} else {
@@ -141,48 +147,34 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		out = BaseAutoreply(content)
 		switch {
 		case strings.EqualFold(content, "menu"):
-			out += "--more--\ndeving..."
+			out = "作甚😜\nmenu-菜单👻"
 			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
+			c.SendGroupMessage(msg.GroupCode, m)
+			out += "\n--狗都不玩--\n1. week 周报信息查询\n2. nine 老九信息查询\n3. trial 试炼最新动态\n--more--deving..."
+			m = message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
 			c.SendGroupMessage(msg.GroupCode, m)
 
 		case strings.EqualFold(content, "week"):
-			D2uploadImgByUrl("week", c, msg)
-
-		case strings.EqualFold(content, "nine"):
-			D2uploadImgByUrl("nine", c, msg)
-
-		case strings.EqualFold(content, "trial") || strings.EqualFold(content, "train"):
-			D2uploadImgByUrl("trial", c, msg)
-		default:
-			out = "作甚😜\nMenu即可查看功能菜单👻"
+			d2uploadImgByUrl("week", c, msg)
+			out = "作甚😜\nmenu-菜单👻"
 			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
 			c.SendGroupMessage(msg.GroupCode, m)
 
+		case strings.EqualFold(content, "nine"):
+			d2uploadImgByUrl("nine", c, msg)
+
+		case strings.EqualFold(content, "trial") || strings.EqualFold(content, "train"):
+			d2uploadImgByUrl("trial", c, msg)
+
+		case out == "":
+			out = "作甚😜\nmenu-菜单👻"
+			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
+			c.SendGroupMessage(msg.GroupCode, m)
+
+		default:
+			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
+			c.SendGroupMessage(msg.GroupCode, m)
 		}
-		/*
-
-			type ReplyElement struct {
-				ReplySeq int32
-				Sender   int64
-				Time     int32
-				Elements []IMessageElement
-
-				//original []*msg.Elem
-
-				NewReply
-
-			func NewReply(m *GroupMessage) *ReplyElement {
-				return &ReplyElement{
-					ReplySeq: m.Id,
-					Sender:   m.Sender.Uin,
-					Time:     m.Time,
-					//original: m.OriginalElements,
-					Elements: m.Elements,
-				}
-			}
-			}
-		*/
-		// _AtEle = message.AtElement{Target: msg.Sender.Uin, Display: ""}
 
 	}
 }

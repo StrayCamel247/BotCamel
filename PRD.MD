@@ -20,12 +20,14 @@
 | 判断是否@自己 | [消息结构体文档](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md) | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 | 彩虹屁 | asskisser | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 | 开光嘴 | motherfucker | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
+| 周报 | week | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175327&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |[StrayCamel247](https://github.com/StrayCamel247) |
+| 试炼 | trial | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
+| 老九 | nine | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 自动加群 |  |  |  |
 | 看光尘商店卖什么 |  |  |  |
 | 查战绩 |  |  |  |
 | 查看某把枪械perk有哪些 |  |  |  |
 | 哪些perk属于PVP或者PVE |  |  |  |
-| 周报 |  | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 
 ## 沙雕APP
 
