@@ -25,7 +25,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/binary"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/Mrs4s/MiraiGo/utils"
-	"github.com/Mrs4s/go-cqhttp/global"
+	"github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 )

@@ -1,6 +1,7 @@
 
-## 聊天机器人-BotCamel
+## 聊天机器人-BotCamel_V1.0
 > 基于/重构[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现
+> [BotCamel_V0](https://github.com/StrayCamel247/BotCamel/tree/dev-mirai)版本为基于mirai实现
 ## [需求文档](./PRD.MD)
 - **急需** 邀请入群组自动同意
 - qq群组-私聊基础功能开发
