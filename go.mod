@@ -6,6 +6,7 @@ require (
 	github.com/Logiase/MiraiGo-Template v0.0.0-20210309153626-69cfb14d2cd1
 	github.com/Mrs4s/MiraiGo v0.0.0-20210311023430-50af23569ce3
 	github.com/Mrs4s/go-cqhttp v0.9.40
+	github.com/bitly/go-simplejson v0.5.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.6.3

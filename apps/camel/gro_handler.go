@@ -10,7 +10,9 @@ import (
 	// "fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"strings"
 	// "strconv"
 )
@@ -68,12 +70,28 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 	IsAt, content := AnalysisMsg(c.Uin, msg.Elements)
 	if IsAt {
 		out = BaseAutoreply(content)
-		switch content {
-		default:
-			if strings.EqualFold(content, "menu") {
+		switch  {
+			case strings.EqualFold(content, "menu") {
 				out += "--more--\ndeving..."
 			}
-			if out == "" {
+			case strings.EqualFold(content, "week") {
+				out = baseapis.DataInfo("week")
+				data, err := ioutil.ReadFile(out)
+				if err != nil {
+					fmt.Println("File reading error", err)
+					return
+				}
+				fmt.Println("Contents of file:", string(data))
+				m := message.NewSendingMessage().Append(message.NewImage(out)).Append(message.NewReply(msg))
+				c.SendGroupMessage(msg.GroupCode, m)
+			}
+			case strings.EqualFold(content, "nine") {
+				out = baseapis.DataInfo("nine")
+			}
+			case strings.EqualFold(content, "trail") || strings.EqualFold(content, "train")  {
+				out = baseapis.DataInfo("trail")
+			}
+			case out == "" {
 				out = "作甚😜\nMenu即可查看功能菜单👻"
 			}
 		}
