@@ -170,6 +170,7 @@ type JSONConfig struct {
 	Debug               bool                          `json:"debug"`
 	LogLevel            string                        `json:"log_level"`
 	WebUI               *GoCQWebUI                    `json:"web_ui"`
+	DialogueFilePath    string                        `json:"dialogue_file_path"`
 }
 
 // CQHTTPAPIConfig HTTPAPI对应的Config结构体
@@ -275,6 +276,7 @@ func DefaultConfig() *JSONConfig {
 			WebInput:  false,
 			WebUIPort: 9999,
 		},
+		DialogueFilePath: "./apps/camel/dialogue_default.yaml"
 	}
 }
 
