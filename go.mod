@@ -3,6 +3,7 @@ module github.com/StrayCamel247/BotCamel
 go 1.15
 
 require (
+	github.com/Logiase/MiraiGo-Template v0.0.0-20210309153626-69cfb14d2cd1
 	github.com/Mrs4s/MiraiGo v0.0.0-20210311023430-50af23569ce3
 	github.com/Mrs4s/go-cqhttp v0.9.40
 	github.com/dustin/go-humanize v1.0.0
@@ -23,4 +24,5 @@ require (
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
+	gopkg.in/yaml.v2 v2.4.0
 )

@@ -1,6 +1,11 @@
 package camel
 
-import "github.com/StrayCamel247/BotCamel/server"
+import (
+	"github.com/Logiase/MiraiGo-Template/utils"
+	"github.com/StrayCamel247/BotCamel/server"
+	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
+)
 
 // var logger = utils.GetModuleLogger("QQBot_Handler")
 var tem map[string]string
@@ -17,6 +22,6 @@ func init() {
 	bytes := utils.ReadFile(path)
 	err := yaml.Unmarshal(bytes, &tem)
 	if err != nil {
-		logger.WithError(err).Errorf("unable to read config file in %s", path)
+		log.WithError(err).Errorf("unable to read config file in %s", path)
 	}
 }
