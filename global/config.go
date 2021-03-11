@@ -276,7 +276,7 @@ func DefaultConfig() *JSONConfig {
 			WebInput:  false,
 			WebUIPort: 9999,
 		},
-		DialogueFilePath: "./apps/camel/dialogue_default.yaml"
+		DialogueFilePath: "./apps/camel/dialogue_default.yaml",
 	}
 }
 

@@ -25,7 +25,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Mrs4s/go-cqhttp/server"
+	"github.com/StrayCamel247/BotCamel/server"
 	"github.com/guonaihong/gout"
 	"github.com/tidwall/gjson"
 	"golang.org/x/crypto/pbkdf2"
