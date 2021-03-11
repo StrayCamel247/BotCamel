@@ -11,7 +11,6 @@
 | 按照文本一一对应回复 | 查询配置文件实现 | 完成 | 配置文件可进行扩充 |[StrayCamel247](https://github.com/StrayCamel247) |
 | 彩虹屁 | asskisser | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 | 开光嘴 | motherfucker | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
-| 自动加群 |  |  |  |
 
 
 ### QQ群聊功能
@@ -21,4 +20,15 @@
 | 判断是否@自己 | [消息结构体文档](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md) | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 | 彩虹屁 | asskisser | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 | 开光嘴 | motherfucker | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
-| 命运2周报查询 |  |  |  |
+| 自动加群 |  |  |  |
+| 看光尘商店卖什么 |  |  |  |
+| 查战绩 |  |  |  |
+| 查看某把枪械perk有哪些 |  |  |  |
+| 哪些perk属于PVP或者PVE |  |  |  |
+| 周报 |  |  |  |
+
+## 沙雕APP
+
+**api授权**
+
+![img](./media/shadiaoapp.jpg)
