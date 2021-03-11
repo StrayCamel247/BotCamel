@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/Logiase/MiraiGo-Template v0.0.0-20210309153626-69cfb14d2cd1
+	github.com/Logiase/gomirai v1.0.2
 	github.com/Mrs4s/MiraiGo v0.0.0-20210311023430-50af23569ce3
 	github.com/Mrs4s/go-cqhttp v0.9.40
 	github.com/bitly/go-simplejson v0.5.0

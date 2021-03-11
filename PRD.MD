@@ -25,7 +25,7 @@
 | 查战绩 |  |  |  |
 | 查看某把枪械perk有哪些 |  |  |  |
 | 哪些perk属于PVP或者PVE |  |  |  |
-| 周报 |  |  |  |
+| 周报 |  | 完成 |  |[StrayCamel247](https://github.com/StrayCamel247) |
 
 ## 沙雕APP
 

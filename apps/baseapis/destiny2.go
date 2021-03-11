@@ -28,7 +28,7 @@ type ReturnData struct {
 	Jsondata
 }
 
-func DataInfo(flag string) interface{} {
+func DataInfo(flag string) string {
 	var r ReturnData
 	return r.gain(flag)
 }
@@ -45,11 +45,11 @@ func (r *ReturnData) gain(flag string) string {
 		r.Code = 5001
 		r.Msg = "获取失败"
 	} else if flag == "week" {
-		return zhoubao
+		return string(zhoubao)
 	} else if flag == "nine" {
-		return laojiu
+		return string(laojiu)
 	} else if flag == "trial" {
-		return shilian
+		return string(shilian)
 	} else {
 		var imgurls = ImgUrls{Zhoubao: zhoubao, Laojiu: laojiu, Shilian: shilian}
 		// 写入变量
