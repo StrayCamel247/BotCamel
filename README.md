@@ -1,6 +1,7 @@
 
 ## 聊天机器人-BotCamel
 > 基于go/Mirai开发，扩展使用MiraiGo框架实现
+## [需求文档](./PRD.MD)
 ## 项目启动
 - 配置机器人qq账号密码
   复制`application_default_fmt.yaml`文件并更名为`application.yaml`，在文件中指定位置填写账号密码
@@ -10,14 +11,9 @@
 - [MiraiGo-Template](https://github.com/StrayCamel247/BotCamel/apps)
 - [MiraiGo](https://github.com/Mrs4s/MiraiGo)
 - ...若有遗漏请提醒
-## 需求文档
-| 模块 | 需求 | api/处理逻辑 | 需求状态 | 备注 |
-|:------:|:------:|:------:|:------:|:------:|
-| QQ机器人 | 按照文本一一对应回复 | 查询配置文件实现 | 完成 | 配置文件可进行扩充 |
-| QQ-群组 | 判断是否@自己 | https://github.com/mamoe/mirai/blob/dev/docs/Messages.md | 完成 |  |
-| QQ机器人 | 天气查询 |  |  |  |
-| QQ-群组 | 命运2周报查询 |  |  |  |
 
+## DEMO
+![qq群聊演示](./media/QQGOURPDEMO.gif)
 
 <!-- ```
 go mod

@@ -23,6 +23,7 @@ func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, conten
 		case *message.AtElement:
 			if botUin == e.Target {
 				// qq聊天机器人当at机器人时触发
+				println(e.Display)
 				isAt = true
 			}
 		case *message.TextElement:
@@ -69,13 +70,37 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		switch content {
 		default:
 			if strings.EqualFold(content, "menu") {
-				out += "\n👨‍👨‍👦‍👦 QQ群聊指令"
+				out += "🤖 QQ群聊指令"
 			}
 			if out == "" {
 				out = "作甚😜"
 			}
 		}
-		m := message.NewSendingMessage().Append(message.NewText(out))
+		/*
+
+			type ReplyElement struct {
+				ReplySeq int32
+				Sender   int64
+				Time     int32
+				Elements []IMessageElement
+
+				//original []*msg.Elem
+
+				NewReply
+
+			func NewReply(m *GroupMessage) *ReplyElement {
+				return &ReplyElement{
+					ReplySeq: m.Id,
+					Sender:   m.Sender.Uin,
+					Time:     m.Time,
+					//original: m.OriginalElements,
+					Elements: m.Elements,
+				}
+			}
+			}
+		*/
+		// _AtEle = message.AtElement{Target: msg.Sender.Uin, Display: ""}
+		m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
 		c.SendGroupMessage(msg.GroupCode, m)
 	}
 }

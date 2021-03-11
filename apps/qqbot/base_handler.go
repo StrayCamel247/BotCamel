@@ -14,6 +14,7 @@ import (
 	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/StrayCamel247/BotCamel/apps/qqbot/baseapis"
 	"gopkg.in/yaml.v2"
 	"strings"
 )
@@ -22,21 +23,21 @@ func init() {
 	bot.RegisterModule(instance)
 }
 
-var instance = &ar{}
+var instance = &qb{}
 var logger = utils.GetModuleLogger("QQBot_Handler")
 var tem map[string]string
 
-type ar struct {
+type qb struct {
 }
 
-func (a *ar) MiraiGoModule() bot.ModuleInfo {
+func (a *qb) MiraiGoModule() bot.ModuleInfo {
 	return bot.ModuleInfo{
 		ID:       "QQBot_Handler",
 		Instance: instance,
 	}
 }
 
-func (a *ar) Init() {
+func (a *qb) Init() {
 	path := config.GlobalConfig.GetString("logiase.autoreply.path")
 
 	if path == "" {
@@ -50,10 +51,10 @@ func (a *ar) Init() {
 	}
 }
 
-func (a *ar) PostInit() {
+func (a *qb) PostInit() {
 }
 
-func (a *ar) Serve(b *bot.Bot) {
+func (a *qb) Serve(b *bot.Bot) {
 	b.OnGroupMessage(GroMsgHandler)
 
 	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
@@ -66,11 +67,22 @@ func (a *ar) Serve(b *bot.Bot) {
 	})
 }
 
-func (a *ar) Start(bot *bot.Bot) {
+func (a *qb) Start(bot *bot.Bot) {
 }
 
-func (a *ar) Stop(bot *bot.Bot, wg *sync.WaitGroup) {
+func (a *qb) Stop(bot *bot.Bot, wg *sync.WaitGroup) {
 	defer wg.Done()
+}
+func commandHandler(com string) string {
+	if strings.EqualFold(com, "motherfucker") {
+		_From := strings.TrimLeft(com, "Motherfucker")
+		return baseapis.MotherFuckerHandler(_From)
+	}
+	if strings.EqualFold(com, "asskisser") {
+		_From := strings.TrimLeft(com, "Asskisser")
+		return baseapis.AssKisserHandler(_From)
+	}
+	return ""
 }
 
 // BaseAutoreply 根据配置的文本进行基础信息回复
@@ -78,12 +90,16 @@ func BaseAutoreply(in string) string {
 	out, ok := tem[in]
 	if !ok {
 		for k, v := range tem {
-			if strings.EqualFold(out, k) {
+			if strings.EqualFold(in, string(k)) {
 				return v
 			}
-
 		}
-		return ""
+		_arrayIn := strings.Split(in, " ")
+		for _, _ele := range _arrayIn {
+			return commandHandler(_ele)
+		}
+
+		out = ""
 	}
 	return out
 }
