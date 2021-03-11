@@ -3,8 +3,6 @@
 > 基于/重构[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现
 > [BotCamel_V0](https://github.com/StrayCamel247/BotCamel/tree/dev-mirai)版本为基于mirai实现
 ## [需求文档](./PRD.MD)
-- **急需** 邀请入群组自动同意
-- qq群组-私聊基础功能开发
 ## 项目启动
 - 配置机器人qq账号密码
   启动命令:`go run main.go` 若没有配置文件会生成一个配置文件
@@ -12,7 +10,10 @@
 ## REFERENCE
 
 ## DEMO
-![qq群聊演示](./media/QQGOURPDEMO.gif)
+
+- version 1.1
+
+  ![qq群聊演示V1.0](./media/motherfucker_asskisser.gif)
 
 <!-- ```
 go mod
