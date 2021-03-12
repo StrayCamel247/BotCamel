@@ -21,7 +21,13 @@
   - 若还是有问题请issue
   - 编译`go build`后点击exe文件即可后台运行
 ## REFERENCE
+> 对我有帮助和启发的项目都放在这里了
 https://github.com/azmiao/destiny2_hoshino_plugin/
+https://github.com/tianque1/Destiny2_bot
+https://www.screenshotmaster.com/docs
+
+**api授权**
+![img](./media/shadiaoapp.jpg)
 ## DEMO
 
 - version 1.1

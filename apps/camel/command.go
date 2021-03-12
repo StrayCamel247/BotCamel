@@ -14,6 +14,7 @@ type CommandsStruct struct {
 	D2xiu        CommandEleStruct
 	D2trial      CommandEleStruct
 	D2dust       CommandEleStruct
+	D2random     CommandEleStruct
 	Developers   CommandEleStruct
 }
 
@@ -28,10 +29,10 @@ func CommandFilter() CommandsStruct {
 			Keys:   []string{"menu", "菜单"},
 			Remark: "查看所有指令"},
 		Asskisser: CommandEleStruct{
-			Keys:   []string{"0x00", "asskisser"},
+			Keys:   []string{"0x00", "asskisser", "乖乖", "宝贝", "爱你"},
 			Remark: "0x00 Asskisser 夸一下"},
 		Motherfucker: CommandEleStruct{
-			Keys:   []string{"0x01", "motherfucker"},
+			Keys:   []string{"0x01", "motherfucker", "傻逼", "cnm", "草泥马", "操你妈"},
 			Remark: "0x01 Motherfucker 碧池模式"},
 		D2week: CommandEleStruct{
 			Keys:   []string{"0x02", "week", "周报"},
@@ -44,6 +45,9 @@ func CommandFilter() CommandsStruct {
 			Remark: "0x04 trial 试炼最新动态"},
 		D2dust: CommandEleStruct{
 			Keys:   []string{"0x05", "dust", "dustdetail", "光尘", "光尘商店"},
+			Remark: "0x04 trial 试炼最新动态"},
+		D2random: CommandEleStruct{
+			Keys:   []string{"0x06", "random", "random10", "骰子", "掷色子"},
 			Remark: "0x04 trial 试炼最新动态"},
 		Developers: CommandEleStruct{
 			Keys:   []string{"0xFF", "developers", "developer", "开发人员"},

@@ -30,10 +30,6 @@
 | 沙雕APP-彩虹屁 | 群主命令机器人@群员开启嘴臭模式三连彩虹屁消息 | 待认领 |  ||
 | 自动加群 |  | 待认领 |  |
 | ✨查战绩 |  | 待认领 |  |
-| ✨✨查看某把枪械perk有哪些 |  |待认领  |  |
+| ✨✨查看某把枪械perk有哪些 |  |[命运2-接口查询](https://www.bungie.net/platform/destiny2/help/)  |  |
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |
 
-## 沙雕APP
-
-**api授权**
-![img](./media/shadiaoapp.jpg)

@@ -13,6 +13,8 @@ import (
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 	"github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
+
+	con "github.com/StrayCamel247/BotCamel/apps/config"
 	"gopkg.in/yaml.v2"
 	// "reflect"
 	"strings"
@@ -25,17 +27,16 @@ var tem map[string]string
 var JSONConfig *global.JSONConfig
 var command CommandsStruct
 
-// GetConf 获取当前配置文件信息
-func GetConf() *global.JSONConfig {
-	if JSONConfig != nil {
-		return JSONConfig
-	}
-	conf := global.LoadConfig("./config.hjson")
-	return conf
-}
+// GetConfig 获取当前配置文件信息
+// func GetConfig() *global.JSONConfig {
+// 	if JSONConfig != nil {
+// 		return JSONConfig
+// 	}
+// 	conf := global.LoadConfig("./config.hjson")
+// 	return conf
+// }
 func init() {
-
-	config := GetConf()
+	config := con.GetConfig(false)
 	path := config.DialogueFilePath
 
 	if path == "" {

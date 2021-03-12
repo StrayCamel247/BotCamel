@@ -75,7 +75,7 @@ func Failed(code int, msg string) coolq.MSG {
 
 func (s *webServer) Run(addr string, cli *client.QQClient) *coolq.CQBot {
 	s.Cli = cli
-	s.Conf = GetConf()
+	s.Conf = GetConfig()
 	JSONConfig = s.Conf
 	gin.SetMode(gin.ReleaseMode)
 	s.engine = gin.New()
@@ -359,8 +359,8 @@ func (s *webServer) admin(c *gin.Context) {
 	}
 }
 
-// GetConf 获取当前配置文件信息
-func GetConf() *global.JSONConfig {
+// GetConfig 获取当前配置文件信息
+func GetConfig() *global.JSONConfig {
 	if JSONConfig != nil {
 		return JSONConfig
 	}
@@ -371,7 +371,7 @@ func GetConf() *global.JSONConfig {
 // AuthMiddleWare Admin控制器登录验证
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		conf := GetConf()
+		conf := GetConfig()
 		// 处理跨域问题
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
@@ -423,7 +423,7 @@ func AuthMiddleWare() gin.HandlerFunc {
 
 func (s *webServer) DoReLogin() { // TODO: 协议层的 ReLogin
 	JSONConfig = nil
-	conf := GetConf()
+	conf := GetConfig()
 	OldConf := s.Conf
 	cli := client.NewClient(conf.Uin, conf.Password)
 	log.Info("开始尝试登录并同步消息...")
@@ -474,7 +474,7 @@ func (s *webServer) DoReLogin() { // TODO: 协议层的 ReLogin
 }
 
 func (s *webServer) UpServer() {
-	conf := GetConf()
+	conf := GetConfig()
 	if conf.HTTPConfig != nil && conf.HTTPConfig.Enabled {
 		go cqHTTPServer.Run(fmt.Sprintf("%s:%d", conf.HTTPConfig.Host, conf.HTTPConfig.Port), conf.AccessToken, s.bot)
 		for k, v := range conf.HTTPConfig.PostUrls {
@@ -491,7 +491,7 @@ func (s *webServer) UpServer() {
 
 // 暂不支持ws服务的重启
 func (s *webServer) ReloadServer() {
-	conf := GetConf()
+	conf := GetConfig()
 	if conf.HTTPConfig != nil && conf.HTTPConfig.Enabled {
 		go cqHTTPServer.Run(fmt.Sprintf("%s:%d", conf.HTTPConfig.Host, conf.HTTPConfig.Port), conf.AccessToken, s.bot)
 		for k, v := range conf.HTTPConfig.PostUrls {
@@ -550,7 +550,7 @@ func AdminDoWebWrite(s *webServer, c *gin.Context) {
 
 // AdminDoConfigBase 普通配置修改
 func AdminDoConfigBase(s *webServer, c *gin.Context) {
-	conf := GetConf()
+	conf := GetConfig()
 	conf.Uin, _ = strconv.ParseInt(c.PostForm("uin"), 10, 64)
 	conf.Password = c.PostForm("password")
 	if c.PostForm("enable_db") == "true" {
@@ -570,7 +570,7 @@ func AdminDoConfigBase(s *webServer, c *gin.Context) {
 
 // AdminDoConfigHTTP HTTP配置修改
 func AdminDoConfigHTTP(s *webServer, c *gin.Context) {
-	conf := GetConf()
+	conf := GetConfig()
 	p, _ := strconv.ParseUint(c.PostForm("port"), 10, 16)
 	conf.HTTPConfig.Port = uint16(p)
 	conf.HTTPConfig.Host = c.PostForm("host")
@@ -595,7 +595,7 @@ func AdminDoConfigHTTP(s *webServer, c *gin.Context) {
 
 // AdminDoConfigWS ws配置修改
 func AdminDoConfigWS(s *webServer, c *gin.Context) {
-	conf := GetConf()
+	conf := GetConfig()
 	p, _ := strconv.ParseUint(c.PostForm("port"), 10, 16)
 	conf.WSConfig.Port = uint16(p)
 	conf.WSConfig.Host = c.PostForm("host")
@@ -615,7 +615,7 @@ func AdminDoConfigWS(s *webServer, c *gin.Context) {
 
 // AdminDoConfigReverseWS 反向ws配置修改
 func AdminDoConfigReverseWS(s *webServer, c *gin.Context) {
-	conf := GetConf()
+	conf := GetConfig()
 	conf.ReverseServers[0].ReverseAPIURL = c.PostForm("reverse_api_url")
 	conf.ReverseServers[0].ReverseURL = c.PostForm("reverse_url")
 	conf.ReverseServers[0].ReverseEventURL = c.PostForm("reverse_event_url")
@@ -637,7 +637,7 @@ func AdminDoConfigReverseWS(s *webServer, c *gin.Context) {
 
 // AdminDoConfigJSON config.hjson配置修改
 func AdminDoConfigJSON(s *webServer, c *gin.Context) {
-	conf := GetConf()
+	conf := GetConfig()
 	JSON := c.PostForm("json")
 	err := json.Unmarshal([]byte(JSON), &conf)
 	if err != nil {
@@ -656,7 +656,7 @@ func AdminDoConfigJSON(s *webServer, c *gin.Context) {
 
 // AdminGetConfigJSON 拉取config.hjson配置
 func AdminGetConfigJSON(s *webServer, c *gin.Context) {
-	conf := GetConf()
+	conf := GetConfig()
 	c.JSON(200, coolq.OK(coolq.MSG{"config": conf}))
 
 }

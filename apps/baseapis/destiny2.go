@@ -1,5 +1,11 @@
 package baseapis
 
+/*
+   __author__ : stray_camel
+  __description__ :
+  __REFERENCES__:
+  __date__: 2021-03-12
+*/
 import (
 	"encoding/json"
 	"fmt"
@@ -10,6 +16,8 @@ import (
 	"strconv"
 	"time"
 )
+
+var BungiePlatformRoot = "https://www.bungie.net/Platform"
 
 type ImgUrls struct {
 	Zhoubao string `json:"zb"`

@@ -18,6 +18,7 @@ import (
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 	log "github.com/sirupsen/logrus"
 	"io"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
@@ -164,6 +165,11 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 
 		case handler.EqualFolds(content, command.D2dust.Keys):
 			d2uploadImgByUrl("dust", c, msg)
+
+		case handler.EqualFolds(content, command.D2random.Keys):
+			out := string(rand.Intn(10))
+			m := message.NewSendingMessage().Append(message.NewText(out))
+			c.SendGroupMessage(msg.GroupCode, m)
 
 		case out == "":
 			out = "作甚😜\nmenu-菜单"

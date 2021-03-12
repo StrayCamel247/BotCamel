@@ -132,6 +132,10 @@ var DefaultConfigWithComments = `
         // 是否接收来自web的输入
         web_input: false
     }
+    // 对话信息基本数据存储
+    dialogue_file_path: ./apps/base_default.yaml
+	// 截屏大师token
+	screenshotmaster:[]
 }
 `
 
@@ -171,6 +175,7 @@ type JSONConfig struct {
 	LogLevel            string                        `json:"log_level"`
 	WebUI               *GoCQWebUI                    `json:"web_ui"`
 	DialogueFilePath    string                        `json:"dialogue_file_path"`
+	MasterShotTokens    []string                      `json:"screenshotmaster"`
 }
 
 // CQHTTPAPIConfig HTTPAPI对应的Config结构体
