@@ -15,6 +15,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/StrayCamel247/BotCamel/apps/baseapis"
+	"github.com/StrayCamel247/BotCamel/apps/handler"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -25,6 +26,10 @@ import (
 
 // var bot *gomirai.Bot
 
+func init() {
+	command = CommandFilter()
+}
+
 // AnalysisMsg 解析消息体的数据，对at类型、文本类型、链接、图片等不同格式的消息进行不同的处理
 func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, content string) {
 	// 解析消息体
@@ -34,7 +39,6 @@ func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, conten
 		case *message.AtElement:
 			if botUin == e.Target {
 				// qq聊天机器人当at机器人时触发
-				println(e.Display)
 				isAt = true
 			}
 		case *message.TextElement:
@@ -103,14 +107,11 @@ func d2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage
 		downloadImg(fileName, out)
 	}
 	if PathExists(fileName) {
-		println(fileName)
 		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
 		if err != nil {
 			panic(err)
 		}
-		println(fileName)
-		m := message.NewSendingMessage().Append(_img).Append(message.NewReply(msg))
-		println(fileName)
+		m := message.NewSendingMessage().Append(_img)
 		c.SendGroupMessage(msg.GroupCode, m)
 
 	} else {
@@ -146,33 +147,27 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 	if IsAt {
 		out = BaseAutoreply(content)
 		switch {
-		case strings.EqualFold(content, "menu"):
-			out = "作甚😜\nmenu-菜单👻"
-			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
-			c.SendGroupMessage(msg.GroupCode, m)
-			out += "\n--狗都不玩--\n1. week 周报信息查询\n2. nine 老九信息查询\n3. trial 试炼最新动态\n--more--\n工会：娃哈哈小卖部\ndeving..."
-			m = message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
+		case handler.EqualFolds(content, command.Menu.Keys):
+			out += "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  └─ 0x03 xiu 老九信息查询\n│  └ 0x04 trial 试炼最新动态\n└─ more-devploping"
+			m := message.NewSendingMessage().Append(message.NewText(out))
 			c.SendGroupMessage(msg.GroupCode, m)
 
-		case strings.EqualFold(content, "week"):
+		case handler.EqualFolds(content, command.D2week.Keys):
 			d2uploadImgByUrl("week", c, msg)
-			out = "作甚😜\nmenu-菜单👻"
-			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
-			c.SendGroupMessage(msg.GroupCode, m)
 
-		case strings.EqualFold(content, "nine"):
+		case handler.EqualFolds(content, command.D2xiu.Keys):
 			d2uploadImgByUrl("nine", c, msg)
 
-		case strings.EqualFold(content, "trial") || strings.EqualFold(content, "train"):
+		case handler.EqualFolds(content, command.D2trial.Keys):
 			d2uploadImgByUrl("trial", c, msg)
 
 		case out == "":
-			out = "作甚😜\nmenu-菜单👻"
-			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
+			out = "作甚😜\nmenu-菜单"
+			m := message.NewSendingMessage().Append(message.NewText(out))
 			c.SendGroupMessage(msg.GroupCode, m)
 
 		default:
-			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
+			m := message.NewSendingMessage().Append(message.NewText(out))
 			c.SendGroupMessage(msg.GroupCode, m)
 		}
 

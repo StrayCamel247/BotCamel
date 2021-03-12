@@ -33,11 +33,15 @@ test : |
 menu : |
   github.com/StrayCamel247/BotCamel
   🙈 快来领bug修修我吧~
-  ===== 指令模式 =====
-  Motherfucker - 最美丽的话送给
-  Asskisser - 最美丽的话送给
+  ===== command =====
+  ├─  base
+  │  ├─ 0x00 Asskisser 夸一下
+  │  ├─ 0x01 Motherfucker 碧池模式
 
 devploper : |
+  🙊 娃哈哈店长-StrayCamel247
+  👋 期待你的加入
+开发人员 : |
   🙊 娃哈哈店长-StrayCamel247
   👋 期待你的加入
 dev : |
