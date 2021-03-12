@@ -41,6 +41,8 @@ func (r *ReturnData) gain(flag string) string {
 	zhoubao, _, err := destinyWeekly("https://api.bilibili.com/x/article/list/web/articles?id=175327&jsonp=jsonp", 1, 0)
 	//老九 试炼
 	laojiu, shilian, err1 := destinyWeekly("https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp", 1, 3)
+	// 光尘商店
+	dustDetailUrl := "https://cdn.jsdelivr.net/gh/azmiao/picture-bed/img/buy-13.jpg"
 	if err != nil || err1 != nil {
 		r.Code = 5001
 		r.Msg = "获取失败"
@@ -50,6 +52,8 @@ func (r *ReturnData) gain(flag string) string {
 		return string(laojiu)
 	} else if flag == "trial" {
 		return string(shilian)
+	} else if flag == "dust" {
+		return string(dustDetailUrl)
 	} else {
 		var imgurls = ImgUrls{Zhoubao: zhoubao, Laojiu: laojiu, Shilian: shilian}
 		// 写入变量

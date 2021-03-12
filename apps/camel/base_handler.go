@@ -1,14 +1,20 @@
 package camel
 
+/*
+   __author__ : stray_camel
+  __description__ :基础聊天功能
+  __REFERENCES__:
+  __date__: 2021-03-12
+*/
 import (
-	"fmt"
+	// "fmt"
 	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 	"github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
-	"reflect"
+	// "reflect"
 	"strings"
 )
 

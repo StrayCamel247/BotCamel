@@ -24,8 +24,11 @@
 | 周报 | week | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175327&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 试炼 | trial | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 老九 | nine | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
-| ✨✨✨自动加群 |  | 待认领 |  |
-| ✨✨看光尘商店卖什么 |  | 待认领 |  |
+| 光尘商店 | dust | 完成 | [图片数据](https://cdn.jsdelivr.net/gh/azmiao/picture-bed/img/buy-13.jpg) |[StrayCamel247](https://github.com/StrayCamel247) |
+| 自动加群 |  | 完成 | [StrayCamel247](https://github.com/StrayCamel247)  |
+| 沙雕APP-开光嘴 | 群主命令机器人@群员开启嘴臭模式三连嘴臭消息 | 待认领 |  ||
+| 沙雕APP-彩虹屁 | 群主命令机器人@群员开启嘴臭模式三连彩虹屁消息 | 待认领 |  ||
+| 自动加群 |  | 待认领 |  |
 | ✨查战绩 |  | 待认领 |  |
 | ✨✨查看某把枪械perk有哪些 |  |待认领  |  |
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |

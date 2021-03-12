@@ -13,6 +13,7 @@ type CommandsStruct struct {
 	D2week       CommandEleStruct
 	D2xiu        CommandEleStruct
 	D2trial      CommandEleStruct
+	D2dust       CommandEleStruct
 	Developers   CommandEleStruct
 }
 
@@ -40,6 +41,9 @@ func CommandFilter() CommandsStruct {
 			Remark: "0x03 xiu 老九信息查询"},
 		D2trial: CommandEleStruct{
 			Keys:   []string{"0x04", "trail", "trial", "试炼", "train"},
+			Remark: "0x04 trial 试炼最新动态"},
+		D2dust: CommandEleStruct{
+			Keys:   []string{"0x05", "dust", "dustdetail", "光尘", "光尘商店"},
 			Remark: "0x04 trial 试炼最新动态"},
 		Developers: CommandEleStruct{
 			Keys:   []string{"0xFF", "developers", "developer", "开发人员"},

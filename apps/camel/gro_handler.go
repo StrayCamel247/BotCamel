@@ -2,7 +2,7 @@ package camel
 
 /*
   __author__ : stray_camel
-  __description__ :
+  __description__ :群聊功能
   __REFERENCES__:
   __date__: 2021-03-10
 */
@@ -11,8 +11,8 @@ import (
 	"bufio"
 	"fmt"
 	// "github.com/Logiase/gomirai"
-	// mssage2 "github.com/Logiase/gomirai/message"
 	"github.com/Mrs4s/MiraiGo/client"
+	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
@@ -25,6 +25,7 @@ import (
 )
 
 // var bot *gomirai.Bot
+var GroupMenu = "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  └─ 0x03 xiu 老九信息查询\n│  └ 0x04 trial 试炼最新动态\n└─ more-devploping"
 
 func init() {
 	command = CommandFilter()
@@ -148,7 +149,7 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		out = BaseAutoreply(content)
 		switch {
 		case handler.EqualFolds(content, command.Menu.Keys):
-			out += "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  └─ 0x03 xiu 老九信息查询\n│  └ 0x04 trial 试炼最新动态\n└─ more-devploping"
+			out += GroupMenu
 			m := message.NewSendingMessage().Append(message.NewText(out))
 			c.SendGroupMessage(msg.GroupCode, m)
 
@@ -160,6 +161,9 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 
 		case handler.EqualFolds(content, command.D2trial.Keys):
 			d2uploadImgByUrl("trial", c, msg)
+
+		case handler.EqualFolds(content, command.D2dust.Keys):
+			d2uploadImgByUrl("dust", c, msg)
 
 		case out == "":
 			out = "作甚😜\nmenu-菜单"
@@ -173,3 +177,33 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 
 	}
 }
+
+// 收到加群邀请
+func GroReciveInviteHandler(c *client.QQClient, e *client.GroupInvitedRequest) {
+	print("testtest")
+	c.SolveGroupJoinRequest(e, true, false, "")
+}
+
+// 加入群聊
+func GroJoinHandler(c *client.QQClient, group *client.GroupInfo) {
+	out := BaseAutoreply("f48dcc50457d") + "\n"
+	out += BaseAutoreply("0x00") + "\n"
+	out += BaseAutoreply("menu")
+	out += GroupMenu
+	m := message.NewSendingMessage().Append(message.NewText(out))
+	c.SendGroupMessage(group.Code, m)
+}
+
+// 离开群聊-都被t了怎么发文字，，，，开发了个寂寞
+// func GroLeaveHandler(c *client.QQClient, e *client.GroupLeaveEvent) {
+// 	if e.Operator != nil {
+// 		out := BaseAutoreply("0x01") + "\n"
+// 		println(out)
+// 		message.NewSendingMessage().Append(message.NewAt(e.Operator.Uin, e.Operator.Nickname)).Append(message.NewText(out))
+// 	} else {
+// 		out := BaseAutoreply("0x00") + "\n"
+// 		println(out)
+// 		message.NewSendingMessage().Append(message.NewText(out))
+// 		// log.Infof("Bot退出了群 %v.", formatGroupName(e.Group))
+// 	}
+// }

@@ -45,6 +45,7 @@ func (bot *CQBot) privateMessageEvent(c *client.QQClient, m *message.PrivateMess
 		id = bot.InsertPrivateMessage(m)
 	}
 	log.Infof("收到好友 %v(%v) 的消息: %v (%v)", m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
+	camel.SoloMsgHandler(c, m)
 	fm := MSG{
 		"post_type":    "message",
 		"message_type": "private",
@@ -307,10 +308,12 @@ func (bot *CQBot) offlineFileEvent(c *client.QQClient, e *client.OfflineFileEven
 
 func (bot *CQBot) joinGroupEvent(c *client.QQClient, group *client.GroupInfo) {
 	log.Infof("Bot进入了群 %v.", formatGroupName(group))
+	camel.GroJoinHandler(c, group)
 	bot.dispatchEventMessage(bot.groupIncrease(group.Code, 0, c.Uin))
 }
 
 func (bot *CQBot) leaveGroupEvent(c *client.QQClient, e *client.GroupLeaveEvent) {
+	// camel.GroLeaveHandler(c, e)
 	if e.Operator != nil {
 		log.Infof("Bot被 %v T出了群 %v.", formatMemberName(e.Operator), formatGroupName(e.Group))
 	} else {
@@ -394,6 +397,7 @@ func (bot *CQBot) friendAddedEvent(c *client.QQClient, e *client.NewFriendEvent)
 
 func (bot *CQBot) groupInvitedEvent(c *client.QQClient, e *client.GroupInvitedRequest) {
 	log.Infof("收到来自群 %v(%v) 内用户 %v(%v) 的加群邀请.", e.GroupName, e.GroupCode, e.InvitorNick, e.InvitorUin)
+	camel.GroReciveInviteHandler(c, e)
 	flag := strconv.FormatInt(e.RequestId, 10)
 	bot.dispatchEventMessage(MSG{
 		"post_type":    "request",

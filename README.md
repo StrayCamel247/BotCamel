@@ -21,7 +21,7 @@
   - 若还是有问题请issue
   - 编译`go build`后点击exe文件即可后台运行
 ## REFERENCE
-
+https://github.com/azmiao/destiny2_hoshino_plugin/
 ## DEMO
 
 - version 1.1
