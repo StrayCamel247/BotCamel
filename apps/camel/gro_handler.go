@@ -33,19 +33,27 @@ func init() {
 }
 
 // AnalysisMsg 解析消息体的数据，对at类型、文本类型、链接、图片等不同格式的消息进行不同的处理
-func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, content string) {
+func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, com, content string) {
 	// 解析消息体
 	for _, elem := range ele {
 		switch e := elem.(type) {
 
 		case *message.AtElement:
-			if botUin == e.Target {
+			if c.Uin == e.Target {
 				// qq聊天机器人当at机器人时触发
 				isAt = true
 			}
 		case *message.TextElement:
-			content = strings.TrimSpace(e.Content)
-			log.Info(content)
+			com = strings.TrimSpace(e.Content)
+			slices, _ := c.GetWordSegmentation(com)
+			if len(slices) < 1 {
+				break
+			} else if len(slices) >= 2 {
+				content = slices[1]
+
+			}
+			com = slices[0]
+			// log.Info(com)
 		// case *message.ImageElement:
 		// 	_msg += "[Image:" + e.Filename + "]"
 		// 	log.Info(_msg)
@@ -75,7 +83,7 @@ func AnalysisMsg(botUin int64, ele []message.IMessageElement) (isAt bool, conten
 			break
 		}
 	}
-	return isAt, content
+	return isAt, com, content
 }
 func GetD2WeekDateOfWeek() string {
 	now := time.Now()
@@ -100,13 +108,11 @@ func PathExists(path string) bool {
 	fmt.Println("File reading error", err)
 	return false
 }
-
-func d2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage) {
+func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.GroupMessage) {
 	_imgFileDate := GetD2WeekDateOfWeek()
-	out := baseapis.DataInfo(flag)
 	fileName := fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
-		downloadImg(fileName, out)
+		downloadImg(fileName, url)
 	}
 	if PathExists(fileName) {
 		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
@@ -119,6 +125,10 @@ func d2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage
 	} else {
 		fmt.Println("File downloading error")
 	}
+}
+func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessage) {
+	out := baseapis.DataInfo(flag)
+	d2uploadImgByUrl(flag, out, c, msg)
 }
 func downloadImg(filename, url string) {
 
@@ -141,32 +151,37 @@ func downloadImg(filename, url string) {
 	written, _ := io.Copy(writer, reader)
 	fmt.Printf("Total length: %d", written)
 }
+func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage) {
+	url := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s", content)
+	d2uploadImgByUrl(flag, url, c, msg)
+}
 
 // GroMsgHandler 群聊信息获取并返回
 func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 	var out string
-	IsAt, content := AnalysisMsg(c.Uin, msg.Elements)
+	IsAt, com, _ := AnalysisMsg(c, msg.Elements)
 	if IsAt {
-		out = BaseAutoreply(content)
+		out = BaseAutoreply(com)
 		switch {
-		case handler.EqualFolds(content, command.Menu.Keys):
-			out += GroupMenu
-			m := message.NewSendingMessage().Append(message.NewText(out))
-			c.SendGroupMessage(msg.GroupCode, m)
+		// case
+		case handler.EqualFolds(com, command.D2perk.Keys):
+			// out += GroupMenu
+			// m := message.NewSendingMessage().Append(message.NewText(out))
+			// c.SendGroupMessage(msg.GroupCode, m)
 
-		case handler.EqualFolds(content, command.D2week.Keys):
-			d2uploadImgByUrl("week", c, msg)
+		case handler.EqualFolds(com, command.D2week.Keys):
+			d2uploadImgByFlag("week", c, msg)
 
-		case handler.EqualFolds(content, command.D2xiu.Keys):
-			d2uploadImgByUrl("nine", c, msg)
+		case handler.EqualFolds(com, command.D2xiu.Keys):
+			d2uploadImgByFlag("nine", c, msg)
 
-		case handler.EqualFolds(content, command.D2trial.Keys):
-			d2uploadImgByUrl("trial", c, msg)
+		case handler.EqualFolds(com, command.D2trial.Keys):
+			d2uploadImgByFlag("trial", c, msg)
 
-		case handler.EqualFolds(content, command.D2dust.Keys):
-			d2uploadImgByUrl("dust", c, msg)
+		case handler.EqualFolds(com, command.D2dust.Keys):
+			d2uploadImgByFlag("dust", c, msg)
 
-		case handler.EqualFolds(content, command.D2random.Keys):
+		case handler.EqualFolds(com, command.D2random.Keys):
 			out := string(rand.Intn(10))
 			m := message.NewSendingMessage().Append(message.NewText(out))
 			c.SendGroupMessage(msg.GroupCode, m)

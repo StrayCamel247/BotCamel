@@ -15,6 +15,7 @@ type CommandsStruct struct {
 	D2trial      CommandEleStruct
 	D2dust       CommandEleStruct
 	D2random     CommandEleStruct
+	D2perk       CommandEleStruct
 	Developers   CommandEleStruct
 }
 
@@ -45,10 +46,13 @@ func CommandFilter() CommandsStruct {
 			Remark: "0x04 trial 试炼最新动态"},
 		D2dust: CommandEleStruct{
 			Keys:   []string{"0x05", "dust", "dustdetail", "光尘", "光尘商店"},
-			Remark: "0x04 trial 试炼最新动态"},
+			Remark: "0x05 赛季光尘商店"},
 		D2random: CommandEleStruct{
 			Keys:   []string{"0x06", "random", "random10", "骰子", "掷色子"},
-			Remark: "0x04 trial 试炼最新动态"},
+			Remark: "0x06 筛子功能"},
+		D2perk: CommandEleStruct{
+			Keys:   []string{"0x07", "perk", "词条"},
+			Remark: "0x07 perk查看"},
 		Developers: CommandEleStruct{
 			Keys:   []string{"0xFF", "developers", "developer", "开发人员"},
 			Remark: "🙊 娃哈哈店长-StrayCamel247\n👋 期待你的加入"},
