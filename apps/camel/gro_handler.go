@@ -251,6 +251,13 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		out = BaseAutoreply(com)
 		switch {
 		// case
+		case handler.EqualFolds(com, command.Menu.Keys):
+			// content := com
+			out = BaseAutoreply("menu")
+			out += GroupMenu
+			m := message.NewSendingMessage().Append(message.NewText(out))
+			c.SendGroupMessage(msg.GroupCode, m)
+		// case
 		case handler.EqualFolds(com, command.D2perk.Keys):
 			// content := com
 			perkGenerateImg(content, "perk", c, msg)
