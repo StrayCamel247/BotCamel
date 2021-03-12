@@ -98,7 +98,7 @@ func PathExists(path string) bool {
 func d2uploadImgByUrl(flag string, c *client.QQClient, msg *message.GroupMessage) {
 	_imgFileDate := GetD2WeekDateOfWeek()
 	out := baseapis.DataInfo(flag)
-	fileName := fmt.Sprintf("./media/%s%s.jpg", flag, _imgFileDate)
+	fileName := fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
 		downloadImg(fileName, out)
 	}
@@ -150,7 +150,7 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 			out = "作甚😜\nmenu-菜单👻"
 			m := message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
 			c.SendGroupMessage(msg.GroupCode, m)
-			out += "\n--狗都不玩--\n1. week 周报信息查询\n2. nine 老九信息查询\n3. trial 试炼最新动态\n--more--deving..."
+			out += "\n--狗都不玩--\n1. week 周报信息查询\n2. nine 老九信息查询\n3. trial 试炼最新动态\n--more--\n工会：娃哈哈小卖部\ndeving..."
 			m = message.NewSendingMessage().Append(message.NewText(out)).Append(message.NewReply(msg))
 			c.SendGroupMessage(msg.GroupCode, m)
 

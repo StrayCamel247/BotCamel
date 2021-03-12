@@ -26,3 +26,5 @@ device.json
 codec/
 data/
 logs/
+tmp/*
+!tmp/*.md
