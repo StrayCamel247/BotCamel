@@ -78,7 +78,6 @@ func (r *ReturnData) gain(flag string) string {
  *  哔哩哔哩 命运2周报
  */
 func destinyWeekly(goUrl string, s int, m int) (imgUrl string, imgUrl2 string, err error) {
-
 	bid := biList(goUrl)
 	url := "https://www.bilibili.com/read/cv" + strconv.Itoa(bid) + "/?from=readlist"
 	resp, err := http.Get(url)

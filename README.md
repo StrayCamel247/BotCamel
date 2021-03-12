@@ -12,9 +12,10 @@
 > 输入自己的账号密码可以构建自己的机器人哦
 - windows
   - 安装go（很简单百度就会了）
+  - [安装gcc](https://zhuanlan.zhihu.com/p/47935258),数据库需要用（若没有数据库，无法使用命运2 的中文查询词条/武器功能）
   - 配置机器人qq账号密码
   - 启动命令:`go run main.go` 若没有配置文件会生成一个配置文件
-  - `config.hjson`生成或者已存在
+  - `config.hjson`生成或者已存在-文件内填写qq账号密码；  `screenshotmaster`为[截屏大师网站](https://www.screenshotmaster.com/reg)的token 注册填入即可
   - `apps\base_default.yaml`配置对话
   - `apps\baseapis`调用的接口
   - 若启动报错，尝试删除`go.mod`, `go.sum`文件，并运行`go mod init github.com/StrayCamel247/BotCamel`，再运行`go run main.go`启动
@@ -30,7 +31,7 @@ https://www.screenshotmaster.com/docs
 ![img](./media/shadiaoapp.jpg)
 ## DEMO
 
-- version 1.1
+- version 1.2
 
   ![qq群聊演示V1.0](./media/motherfucker_asskisser.gif)
 

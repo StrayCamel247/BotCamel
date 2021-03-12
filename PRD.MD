@@ -22,14 +22,15 @@
 |:------:|:------:|:------:|:------:|:------:|
 | 判断是否@自己 | [消息结构体文档](https://github.com/mamoe/mirai/blob/dev/docs/Messages.md) | 完成 | 继承并使用QQ私聊功能 |[StrayCamel247](https://github.com/StrayCamel247) |
 | 周报 | week | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175327&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |[StrayCamel247](https://github.com/StrayCamel247) |
+| 周报 | day | 完成 | [网站快照截图]("http://download.kamuxiy.top:88/destiny2/") |[StrayCamel247](https://github.com/StrayCamel247) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 试炼 | trial | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 老九 | nine | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 光尘商店 | dust | 完成 | [图片数据](https://cdn.jsdelivr.net/gh/azmiao/picture-bed/img/buy-13.jpg) |[StrayCamel247](https://github.com/StrayCamel247) |
+| ✨✨查看某把枪械perk有哪些 |  | 开发中 | [light-gg网页快照](https://www.light.gg/) ||
 | 自动加群 |  | 完成 | [StrayCamel247](https://github.com/StrayCamel247)  |
 | 沙雕APP-开光嘴 | 群主命令机器人@群员开启嘴臭模式三连嘴臭消息 | 待认领 |  ||
 | 沙雕APP-彩虹屁 | 群主命令机器人@群员开启嘴臭模式三连彩虹屁消息 | 待认领 |  ||
 | 自动加群 |  | 待认领 |  |
 | ✨查战绩 |  | 待认领 |  |
-| ✨✨查看某把枪械perk有哪些 |  |[命运2-接口查询](https://www.bungie.net/platform/destiny2/help/)  |  |
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |
 
