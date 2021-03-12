@@ -30,7 +30,7 @@ import (
 )
 
 // var bot *gomirai.Bot
-var GroupMenu = "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  └─ 0x03 xiu 老九信息查询\n│  └ 0x04 trial 试炼最新动态\n└─ more-devploping"
+var GroupMenu = "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  ├─ 0x03 day 日报信息查询\n│  ├─ 0x04 xiu 老九\n│  ├─ 0x05 trial 试炼信息查询\n│  ├─ 0x06 dust 光尘信息查询\n│  ├─ 0x07 random 掷骰子功能\n└─ more-devploping"
 var config *global.JSONConfig
 
 // var config
