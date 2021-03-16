@@ -343,3 +343,5 @@ data/
 logs/
 tmp/*
 !tmp/*.md
+__debug_bin
+*.db

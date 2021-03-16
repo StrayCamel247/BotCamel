@@ -21,6 +21,8 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
 	"github.com/syndtr/goleveldb/leveldb"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -31,6 +33,7 @@ type CQBot struct {
 
 	events         []func(MSG)
 	db             *leveldb.DB
+	dbGorm         *gorm.DB
 	friendReqCache sync.Map
 	tempMsgCache   sync.Map
 	oneWayMsgCache sync.Map
@@ -55,6 +58,12 @@ func NewQQBot(cli *client.QQClient, conf *global.JSONConfig) *CQBot {
 		}
 		bot.db = db
 		gob.Register(message.Sender{})
+		// 启用sqlite数据库
+		dbGorm, err := gorm.Open(sqlite.Open("./data/sqlite3.db"), &gorm.Config{
+			// PrepareStmt: true,
+		})
+
+		bot.dbGorm = dbGorm
 		log.Info("信息数据库初始化完成.")
 	} else {
 		log.Warn("警告: 信息数据库已关闭，将无法使用 [回复/撤回] 等功能。")

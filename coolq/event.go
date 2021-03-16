@@ -96,7 +96,7 @@ func (bot *CQBot) groupMessageEvent(c *client.QQClient, m *message.GroupMessage)
 		id = bot.InsertGroupMessage(m)
 	}
 	log.Infof("收到群 %v(%v) 内 %v(%v) 的消息: %v (%v)", m.GroupName, m.GroupCode, m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
-	camel.GroMsgHandler(c, m)
+	camel.GroMsgHandler(bot.dbGorm, c, m)
 	gm := bot.formatGroupMessage(m)
 	if gm == nil {
 		return

@@ -165,7 +165,8 @@ func main() {
 		}
 	}
 	log.Info("go-cqhttp-用户交流群: 721829413")
-	log.Info("命运2交流群: 1027904384")
+	log.Info("命运2交流群(工会：娃哈哈小卖部): 1027904384")
+	log.Info("Destiny2Bot开发交流: 924026546")
 	if !global.PathExists("device.json") {
 		log.Warn("虚拟设备信息不存在, 将自动生成随机设备.")
 		client.GenRandomDevice()

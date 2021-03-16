@@ -12,21 +12,23 @@ import (
 	"fmt"
 	// "github.com/Logiase/gomirai"
 	"github.com/Mrs4s/MiraiGo/client"
+	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	con "github.com/StrayCamel247/BotCamel/apps/config"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 	"github.com/StrayCamel247/BotCamel/global"
-	// log "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"io"
-
 	"math/rand"
 	"net/http"
 	url2 "net/url"
 	"os"
+	"reflect"
 	"strings"
 	"time"
+	// "io/ioutil"
 )
 
 // var bot *gomirai.Bot
@@ -129,48 +131,51 @@ func PathExists(path string) bool {
 	return false
 }
 
-func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.GroupMessage) error {
+func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.GroupMessage) (m *message.GroupImageElement, err error) {
 	var _imgFileDate string
-	if handler.EqualFolds(flag, command.D2perk.Keys) {
+	if handler.EqualFolds(flag, command.D2xiu.Keys) || handler.EqualFolds(flag, command.D2day.Keys) {
 		// 日更新
 		_imgFileDate = GetD2daykDateOfdayk()
-	} else {
-		// 周更新
+	} else if handler.EqualFolds(flag, command.D2week.Keys) || handler.EqualFolds(flag, command.D2trial.Keys) || handler.EqualFolds(flag, command.D2dust.Keys) {
+		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
 	fileName := fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
 		err := downloadImg(fileName, url)
 		if err != nil {
-			return err
+			return m, nil
 		}
 	}
 	if PathExists(fileName) {
 		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
 		if err != nil {
-			return err
+			return m, nil
 		}
-		m := message.NewSendingMessage().Append(_img)
-		c.SendGroupMessage(msg.GroupCode, m)
+		// m := message.NewSendingMessage().Append(_img)
+		return _img, nil
+		// c.SendGroupMessage(msg.GroupCode, m)
 	} else {
 		fmt.Println("File downloading error")
 	}
-	return nil
+	return m, nil
 }
 
 func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessage) error {
 	out := baseapis.DataInfo(flag)
-	err := d2uploadImgByUrl(flag, out, c, msg)
+	m, err := d2uploadImgByUrl(flag, out, c, msg)
 	if err != nil {
 		return err
 	}
+	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
 	return nil
 }
 
 func downloadImg(filename, url string) error {
 	res, err := http.Get(url)
+	log.Info(fmt.Sprintf("正在下载%s", url))
 	if err != nil {
-		fmt.Println("A error occurred!")
+		fmt.Println("图片下载失败；url")
 		return err
 	}
 	defer res.Body.Close()
@@ -179,7 +184,6 @@ func downloadImg(filename, url string) error {
 
 	file, err := os.Create(filename)
 	if err != nil {
-		return err
 		panic(err)
 	}
 	// 获得文件的writer对象
@@ -189,62 +193,131 @@ func downloadImg(filename, url string) error {
 	fmt.Printf("Total length: %d", written)
 	return nil
 }
-func getItemId(content string) {
-	client := &http.Client{}
-	//生成要访问的url
-	url := "https://www.bungie.net/Platform/Destiny2/Manifest/"
-	//提交请求
-	reqest, _ := http.NewRequest("GET", url, nil)
-	//增加header选项
-	reqest.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
-	res, _ := client.Do(reqest)
-	defer res.Body.Close()
 
+func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err error) {
+	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
+	// db.Create(&models.User{Profile: profile, Name: "silence"})
+	isexisted, err := baseapis.InfoDisplayDBCheck(orm)
+	if err != nil {
+		// 数据库校验报错-直接返回
+		return itemids, des, nil
+	}
+	if !isexisted {
+		// 若数据库表不存在，并发查询数据并写入
+		file, _ := baseapis.ManifestFetchJson(content)
+
+		typ := reflect.TypeOf(file)
+		val := reflect.ValueOf(file) //获取reflect.Type类型
+
+		kd := val.Kind() //获取到a对应的类别
+		if kd != reflect.Struct {
+			fmt.Println("expect struct")
+			return
+		}
+		//获取到该结构体有几个字段
+		num := val.NumField()
+
+		//遍历结构体的所有字段
+		start := time.Now()
+		ch := make(chan bool)
+		for i := 0; i < num; i++ {
+			// goroutine的正确用法
+			// 那怎么用goroutine呢？有没有像Python多进程/线程的那种等待子进/线程执行完的join方法呢？当然是有的，可以让Go 协程之间信道（channel）进行通信：从一端发送数据，另一端接收数据，信道需要发送和接收配对，否则会被阻塞：
+			// fmt.Printf("Field %d:值=%v\n", i, val.Field(i))
+			tagVal := typ.Field(i).Tag.Get("json")
+			//如果该字段有tag标签就显示，否则就不显示
+			// if tagVal != "" {
+			// 	fmt.Printf("Field %d:tag=%v\n", i, tagVal)
+			// }
+			// 并发
+			// go baseapis.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
+			// 串行
+			print(tagVal)
+			baseapis.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
+			// if tagVal == "DestinyInventoryItemLiteDefinition" {
+			// 	baseapis.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
+			// }
+
+		}
+		elapsed := time.Since(start)
+		fmt.Printf("Took %s", elapsed)
+
+		// println(file)
+	}
+	// 获取item id
+	var results = []baseapis.ItemIdDB{}
+	_ = orm.Model(&baseapis.InfoDisplayDB{}).Find(&results, baseapis.InfoDisplayDB{Name: content})
+	for _, v := range results {
+		// 只返回固定tag的标签
+		if v.Tag == "DestinyInventoryItemLiteDefinition" {
+			itemids = append(itemids, v.ItemId)
+		}
+		if v.Description != "" {
+			des += strings.ReplaceAll(v.Description, "\n\n", "\n")
+		}
+
+		// 对item id进行判断是否可获取perk
+	}
+	return itemids, des, nil
 }
-func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage) {
-	baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s", content)
-	// 参数
-	// token := "604b1394d1a2d"
-	url := url2.QueryEscape(baseUrl)
-	width := 1280
-	height := 800
-	full_page := 1
+
+func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
+
+	itemId, des, err := getItemId(content, orm)
+	if err != nil {
+		panic(err)
+	}
+
+	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
+	rMsg := message.NewSendingMessage()
+	// c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
 	// 构造URL
 	for _, v := range config.MasterShotTokens {
-		query := "https://www.screenshotmaster.com/api/v1/screenshot"
-		query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
-			v, url, width, height, full_page)
-		err := d2uploadImgByUrl(flag+content, query, c, msg)
-		println(url, v, query)
-		if err == nil {
-			println(url)
+
+		// 上传文件是否报错
+		_errFlag := false
+		for _, _id := range itemId {
+			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s", _id)
+			url := url2.QueryEscape(baseUrl)
+			width := 1280
+			height := 800
+			full_page := 1
+			query := "https://www.screenshotmaster.com/api/v1/screenshot"
+			query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
+				v, url, width, height, full_page)
+			m, err := d2uploadImgByUrl(flag+_id, query, c, msg)
+			rMsg = rMsg.Append(m)
+			_errFlag = _errFlag || err != nil
+		}
+		if _errFlag {
+			// 图片获取失败-重新构造消息链
+			rMsg = message.NewSendingMessage()
+		} else {
+			// 图片调用成功
+			c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
 			return
 		}
 	}
-
 }
 
 func dayGenerateImg(flag string, c *client.QQClient, msg *message.GroupMessage) {
 	// 参数
-	url := url2.QueryEscape("http://download.kamuxiy.top:88/destiny2/")
-	width := 1280
-	height := 800
-	full_page := 1
+	// url := url2.QueryEscape("http://www.tianque.top/d2api/today/")
+	// width := 1280
+	// height := 800
+	// full_page := 1
 	// 构造URL
-	for _, v := range config.MasterShotTokens {
-		query := "https://www.screenshotmaster.com/api/v1/screenshot"
-		query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
-			v, url, width, height, full_page)
-		err := d2uploadImgByUrl(flag, query, c, msg)
-		if err == nil {
-			return
-		}
+	m, err := d2uploadImgByUrl(flag, "http://www.tianque.top/d2api/today/", c, msg)
+
+	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
+	if err == nil {
+		return
 	}
 }
 
 // GroMsgHandler 群聊信息获取并返回
 
-func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
+func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage) {
 	var out string
 	IsAt, com, content := AnalysisMsg(c, msg.Elements)
 	if IsAt {
@@ -260,7 +333,7 @@ func GroMsgHandler(c *client.QQClient, msg *message.GroupMessage) {
 		// case
 		case handler.EqualFolds(com, command.D2perk.Keys):
 			// content := com
-			perkGenerateImg(content, "perk", c, msg)
+			perkGenerateImg(content, "perk", c, msg, orm)
 
 		case handler.EqualFolds(com, command.D2day.Keys):
 			dayGenerateImg("day", c, msg)
