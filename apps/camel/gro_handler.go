@@ -253,7 +253,10 @@ func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err 
 			itemids = append(itemids, v.ItemId)
 		}
 		if v.Description != "" {
-			des += strings.ReplaceAll(v.Description, "\n\n", "\n")
+			_des := strings.ReplaceAll(v.Description, "\n\n", "\n")
+			if _des != des {
+				des += "\n" + _des
+			}
 		}
 
 		// 对item id进行判断是否可获取perk
