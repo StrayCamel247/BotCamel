@@ -95,16 +95,16 @@ func CommandFilter() CommandsStruct {
 			Remark: "0x10 查询npc信息"},
 
 		D2skill: Info{
-			Keys:   []string{"0x1a", "skill"},
-			Remark: "0x1a 查询技能等信息"},
+			Keys:   []string{"0x0a", "skill"},
+			Remark: "0x0a 查询技能等信息"},
 
 		D2pve: Info{
-			Keys:   []string{"0x1b", "pve"},
-			Remark: "0x1b 查询pve信息"},
+			Keys:   []string{"0x0b", "pve"},
+			Remark: "0x0b 查询pve信息"},
 
 		D2pvp: Info{
-			Keys:   []string{"0x1c", "pvp"},
-			Remark: "0x1c 查询pvp信息"},
+			Keys:   []string{"0x0c", "pvp"},
+			Remark: "0x0c 查询pvp信息"},
 
 		Developers: Info{
 			Keys:   []string{"0xFF", "developers", "developer", "开发人员"},
