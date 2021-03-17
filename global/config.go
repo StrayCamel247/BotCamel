@@ -15,7 +15,7 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 // DefaultConfigWithComments 为go-cqhttp的默认配置文件
 var DefaultConfigWithComments = `
 /*
-    go-cqhttp 默认配置文件
+    Bot-Camel 默认配置文件
 */
 
 {
@@ -136,6 +136,8 @@ var DefaultConfigWithComments = `
     dialogue_file_path: ./apps/base_default.yaml
 	// 截屏大师token
 	screenshotmaster:["604b14ca8030b"]
+	// Bungie-Api
+	x_api_key:"aff47ade61f643a19915148cfcfc6d7d"
 }
 `
 
@@ -176,6 +178,7 @@ type JSONConfig struct {
 	WebUI               *GoCQWebUI                    `json:"web_ui"`
 	DialogueFilePath    string                        `json:"dialogue_file_path"`
 	MasterShotTokens    []string                      `json:"screenshotmaster"`
+	BungieXApiKey       string                        `json:"x_api_key"`
 }
 
 // CQHTTPAPIConfig HTTPAPI对应的Config结构体

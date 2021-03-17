@@ -9,8 +9,8 @@ package baseapis
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Logiase/MiraiGo-Template/config"
-	"github.com/Logiase/MiraiGo-Template/utils"
+	con "github.com/StrayCamel247/BotCamel/apps/config"
+	"github.com/StrayCamel247/BotCamel/global"
 	"github.com/bitly/go-simplejson"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -24,18 +24,16 @@ import (
 	"time"
 )
 
-var BungiePlatformRoot = "https://www.bungie.net/Platform"
-var BungieBase = "https://www.bungie.net/"
+var config *global.JSONConfig
 
-// https://www.bungie.net/Platform/Destiny2/Manifest/ 所有点Definition对应表 zh-chs
-var BunigieManifestUrl = "https://www.bungie.net/Platform/Destiny2/Manifest/"
-var logger = utils.GetModuleLogger("NmslApi_handler")
-var nmslAPI = "https://nmsl.shadiao.app/api.php?from=%s"
-var lickAPI = "https://chp.shadiao.app/api.php?from=%s"
+func init() {
+	config = con.GetConfig(false)
+
+}
 
 // NmslErrHandler 报错处理
 func NmslErrHandler(err error) (_msg string) {
-	concat := config.GlobalConfig.GetString("MASTERCONTACT")
+	concat := "xx"
 	_msg = fmt.Sprintf("unable to fetch data from nmsl, pls concat %s", concat)
 	if concat == "" {
 		logger.WithError(err).Errorf("unable to read config file MASTERCONTACT")
@@ -88,93 +86,6 @@ func MotherFuckerHandler(from string) string {
 	return fmt.Sprintf(string(body))
 }
 
-type JsonFilePath struct {
-	DestinyEnemyRaceDefinition                      string `json:"DestinyEnemyRaceDefinition"`
-	DestinyNodeStepSummaryDefinition                string `json:"DestinyNodeStepSummaryDefinition"`
-	DestinyArtDyeChannelDefinition                  string `json:"DestinyArtDyeChannelDefinition"`
-	DestinyArtDyeReferenceDefinition                string `json:"DestinyArtDyeReferenceDefinition"`
-	DestinyPlaceDefinition                          string `json:"DestinyPlaceDefinition"`
-	DestinyActivityDefinition                       string `json:"DestinyActivityDefinition"`
-	DestinyActivityTypeDefinition                   string `json:"DestinyActivityTypeDefinition"`
-	DestinyClassDefinition                          string `json:"DestinyClassDefinition"`
-	DestinyGenderDefinition                         string `json:"DestinyGenderDefinition"`
-	DestinyInventoryBucketDefinition                string `json:"DestinyInventoryBucketDefinition"`
-	DestinyRaceDefinition                           string `json:"DestinyRaceDefinition"`
-	DestinyTalentGridDefinition                     string `json:"DestinyTalentGridDefinition"`
-	DestinyUnlockDefinition                         string `json:"DestinyUnlockDefinition"`
-	DestinyMaterialRequirementSetDefinition         string `json:"DestinyMaterialRequirementSetDefinition"`
-	DestinySandboxPerkDefinition                    string `json:"DestinySandboxPerkDefinition"`
-	DestinyStatGroupDefinition                      string `json:"DestinyStatGroupDefinition"`
-	DestinyProgressionMappingDefinition             string `json:"DestinyProgressionMappingDefinition"`
-	DestinyFactionDefinition                        string `json:"DestinyFactionDefinition"`
-	DestinyVendorGroupDefinition                    string `json:"DestinyVendorGroupDefinition"`
-	DestinyRewardSourceDefinition                   string `json:"DestinyRewardSourceDefinition"`
-	DestinyUnlockValueDefinition                    string `json:"DestinyUnlockValueDefinition"`
-	DestinyRewardMappingDefinition                  string `json:"DestinyRewardMappingDefinition"`
-	DestinyRewardSheetDefinition                    string `json:"DestinyRewardSheetDefinition"`
-	DestinyItemCategoryDefinition                   string `json:"DestinyItemCategoryDefinition"`
-	DestinyDamageTypeDefinition                     string `json:"DestinyDamageTypeDefinition"`
-	DestinyActivityModeDefinition                   string `json:"DestinyActivityModeDefinition"`
-	DestinyMedalTierDefinition                      string `json:"DestinyMedalTierDefinition"`
-	DestinyAchievementDefinition                    string `json:"DestinyAchievementDefinition"`
-	DestinyActivityGraphDefinition                  string `json:"DestinyActivityGraphDefinition"`
-	DestinyActivityInteractableDefinition           string `json:"DestinyActivityInteractableDefinition"`
-	DestinyBondDefinition                           string `json:"DestinyBondDefinition"`
-	DestinyCharacterCustomizationCategoryDefinition string `json:"DestinyCharacterCustomizationCategoryDefinition"`
-	DestinyCharacterCustomizationOptionDefinition   string `json:"DestinyCharacterCustomizationOptionDefinition"`
-	DestinyCollectibleDefinition                    string `json:"DestinyCollectibleDefinition"`
-	DestinyDestinationDefinition                    string `json:"DestinyDestinationDefinition"`
-	DestinyEntitlementOfferDefinition               string `json:"DestinyEntitlementOfferDefinition"`
-	DestinyEquipmentSlotDefinition                  string `json:"DestinyEquipmentSlotDefinition"`
-	DestinyStatDefinition                           string `json:"DestinyStatDefinition"`
-	DestinyInventoryItemDefinition                  string `json:"DestinyInventoryItemDefinition"`
-	DestinyInventoryItemLiteDefinition              string `json:"DestinyInventoryItemLiteDefinition"`
-	DestinyItemTierTypeDefinition                   string `json:"DestinyItemTierTypeDefinition"`
-	DestinyLocationDefinition                       string `json:"DestinyLocationDefinition"`
-	DestinyLoreDefinition                           string `json:"DestinyLoreDefinition"`
-	DestinyMetricDefinition                         string `json:"DestinyMetricDefinition"`
-	DestinyObjectiveDefinition                      string `json:"DestinyObjectiveDefinition"`
-	DestinyPlatformBucketMappingDefinition          string `json:"DestinyPlatformBucketMappingDefinition"`
-	DestinyPlugSetDefinition                        string `json:"DestinyPlugSetDefinition"`
-	DestinyPowerCapDefinition                       string `json:"DestinyPowerCapDefinition"`
-	DestinyPresentationNodeDefinition               string `json:"DestinyPresentationNodeDefinition"`
-	DestinyPresentationNodeBaseDefinition           string `json:"DestinyPresentationNodeBaseDefinition"`
-	DestinyProgressionDefinition                    string `json:"DestinyProgressionDefinition"`
-	DestinyProgressionLevelRequirementDefinition    string `json:"DestinyProgressionLevelRequirementDefinition"`
-	DestinyRecordDefinition                         string `json:"DestinyRecordDefinition"`
-	DestinyRewardAdjusterPointerDefinition          string `json:"DestinyRewardAdjusterPointerDefinition"`
-	DestinyRewardAdjusterProgressionMapDefinition   string `json:"DestinyRewardAdjusterProgressionMapDefinition"`
-	DestinyRewardItemListDefinition                 string `json:"DestinyRewardItemListDefinition"`
-	DestinySackRewardItemListDefinition             string `json:"DestinySackRewardItemListDefinition"`
-	DestinySandboxPatternDefinition                 string `json:"DestinySandboxPatternDefinition"`
-	DestinySeasonDefinition                         string `json:"DestinySeasonDefinition"`
-	DestinySeasonPassDefinition                     string `json:"DestinySeasonPassDefinition"`
-	DestinySocketCategoryDefinition                 string `json:"DestinySocketCategoryDefinition"`
-	DestinySocketTypeDefinition                     string `json:"DestinySocketTypeDefinition"`
-	DestinyTraitDefinition                          string `json:"DestinyTraitDefinition"`
-	DestinyTraitCategoryDefinition                  string `json:"DestinyTraitCategoryDefinition"`
-	DestinyUnlockCountMappingDefinition             string `json:"DestinyUnlockCountMappingDefinition"`
-	DestinyUnlockEventDefinition                    string `json:"DestinyUnlockEventDefinition"`
-	DestinyUnlockExpressionMappingDefinition        string `json:"DestinyUnlockExpressionMappingDefinition"`
-	DestinyVendorDefinition                         string `json:"DestinyVendorDefinition"`
-	DestinyMilestoneDefinition                      string `json:"DestinyMilestoneDefinition"`
-	DestinyActivityModifierDefinition               string `json:"DestinyActivityModifierDefinition"`
-	DestinyReportReasonCategoryDefinition           string `json:"DestinyReportReasonCategoryDefinition"`
-	DestinyArtifactDefinition                       string `json:"DestinyArtifactDefinition"`
-	DestinyBreakerTypeDefinition                    string `json:"DestinyBreakerTypeDefinition"`
-	DestinyChecklistDefinition                      string `json:"DestinyChecklistDefinition"`
-	DestinyEnergyTypeDefinition                     string `json:"DestinyEnergyTypeDefinition"`
-}
-type Languages struct {
-	ZhChs JsonFilePath `json:"zh-chs"`
-}
-type WorldComponentContent struct {
-	JsonWorldComponentContentPaths Languages `json:"jsonWorldComponentContentPaths"`
-}
-type ManifestResult struct {
-	Response WorldComponentContent `json:"Response"`
-}
-
 // ManifestFetchJson 获取menifest接口返回的json文件的路径
 func ManifestFetchJson() (jsonpath interface{}, err error) {
 	spaceClient := http.Client{
@@ -214,21 +125,13 @@ func ManifestFetchJson() (jsonpath interface{}, err error) {
 	return ResJson.Response.JsonWorldComponentContentPaths.ZhChs, nil
 }
 
-type Properties struct {
-	Description string `json:"description"`
-	Name        string `json:"name"`
-	Icon        string `json:"icon"`
-}
-type InfoDisplay struct {
-	// Properties map[string]string `json:"displayProperties"`
-	Properties Properties `json:"displayProperties"`
-}
-
 // type  struct {
 // 	info
 // }
-// var JsonRes map[string]InfoDisplay
+// func HttpRequest(method, url string) (*Request, error){
 
+// }
+// var JsonRes map[string]InfoDisplay
 // ManifestFetchInfo 查询解析url数据并写入 InfoDisplayDB 表
 func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
 	u, err := url.Parse(BungieBase)
@@ -319,6 +222,80 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
 	// return ResJson.Response.JsonWorldComponentContentPaths.ZhChs, nil
 }
 
+// PlayerBaseInfo 基础信息查询
+func PlayerBaseInfo(steamId string) BaseprofileResult {
+	// 构造url
+	userUrl := baseprofileAPI(steamId)
+	// 发送请求
+	spaceClient := http.Client{
+		Timeout: time.Second * 999, // Maximum of 10 secs
+	}
+
+	req, err := http.NewRequest(http.MethodGet, userUrl, nil)
+	if err != nil {
+		log.Warn(err)
+	}
+
+	req.Header.Add("X-API-Key", config.BungieXApiKey)
+
+	res, getErr := spaceClient.Do(req)
+	if getErr != nil {
+		log.Warn(getErr)
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		log.Warn(readErr)
+	}
+	var ResJson BaseprofileResult
+	jsonErr := json.Unmarshal(body, &ResJson)
+	if jsonErr != nil {
+		log.Warn(jsonErr)
+	}
+	return ResJson
+}
+
+// AccountStats 数据实时解析返回
+func AccountStatsFetchInfo(steamId string) AccountStatsResult {
+	// 构造url
+	userUrl := profileAPI(steamId)
+	// 发送请求
+	spaceClient := http.Client{
+		Timeout: time.Second * 999, // Maximum of 10 secs
+	}
+
+	req, err := http.NewRequest(http.MethodGet, userUrl, nil)
+	if err != nil {
+		log.Warn(err)
+	}
+
+	req.Header.Add("X-API-Key", config.BungieXApiKey)
+
+	res, getErr := spaceClient.Do(req)
+	if getErr != nil {
+		log.Warn(getErr)
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		log.Warn(readErr)
+	}
+	var ResJson AccountStatsResult
+	jsonErr := json.Unmarshal(body, &ResJson)
+	if jsonErr != nil {
+		log.Warn(jsonErr)
+	}
+	return ResJson
+}
+
 //
 type ImgUrls struct {
 	Zhoubao string `json:"zb"`
@@ -342,9 +319,6 @@ func DataInfo(flag string) string {
 	return r.gain(flag)
 }
 
-func init() {
-
-}
 func (r *ReturnData) gain(flag string) string {
 
 	//周报

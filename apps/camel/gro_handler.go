@@ -33,7 +33,7 @@ import (
 )
 
 // var bot *gomirai.Bot
-var GroupMenu = "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  ├─ 0x03 day 日报信息查询\n│  ├─ 0x04 xiu 老九\n│  ├─ 0x05 trial 试炼信息查询\n│  ├─ 0x06 dust 光尘信息查询\n│  ├─ 0x07 random 掷骰子功能\n└─ more-devploping"
+var GroupMenu = "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  ├─ 0x03 day 日报信息查询\n│  ├─ 0x04 xiu 老九\n│  ├─ 0x05 trial 试炼信息查询\n│  ├─ 0x06 dust 光尘信息查询\n│  ├─ 0x07 random 掷骰子功能\n│  ├─ 0x08 perk 物品信息查询\n└─ more-devploping"
 var config *global.JSONConfig
 
 // var config
@@ -211,20 +211,24 @@ func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err 
 			itemids = append(itemids, v.ItemId)
 		}
 		// 将标签数据进行返回
-		if v.Description != "" {
+		if !handler.EqualFolds(v.Description, command.DesChecker.Keys) {
 			_des := strings.ReplaceAll(v.Description, "\n\n", "\n")
 			if !strings.Contains(des, _des) {
-				des += "\n" + _des
+				if des != "" {
+					des += "\n" + _des
+				} else {
+					des += _des
+				}
+
 			}
 		}
 
-		// 对item id进行判断是否可获取perk
 	}
 	return itemids, des, nil
 }
 
-// perk 图片生成
-func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
+// item 图片生成
+func itemGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
 
 	itemId, des, err := getItemId(content, orm)
 	if err != nil {
@@ -268,9 +272,22 @@ func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 	}
 }
 
-type dayRes struct {
-	IMG_URL      string `json:"img_url"`
-	IMG_HASH_MD5 string `json:"img_hash_md5"`
+// 介绍生成
+func GenerateDes(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
+
+	_, des, err := getItemId(content, orm)
+	if err != nil {
+		panic(err)
+	}
+
+	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
+	rMsg := message.NewSendingMessage()
+	if des != "" {
+		c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
+	} else {
+		c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
+	}
+	return
 }
 
 func dayGenerateImg(flag string, c *client.QQClient, msg *message.GroupMessage) {
@@ -324,6 +341,51 @@ func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 	c.SendGroupMessage(msg.GroupCode, m)
 }
 
+// 玩家pvp数据信息的概览获取
+func PvPInfoHandler(content string, c *client.QQClient, msg *message.GroupMessage) {
+	res := "===== PVP =====\n"
+	// 基本信息
+	BaseInfo := baseapis.PlayerBaseInfo(content)
+	res += "Name: " + BaseInfo.Response.Profile.Data.UserInfo.DisplayName + "\n"
+	// pvp记录信息
+	AllData := baseapis.AccountStatsFetchInfo(content)
+
+	PVPData := AllData.Response.MergedAllCharacters.Results.AllPvP.AllTime
+	// ==================kda信息解析==================
+	// 总体pvp信息
+	// 解析pvp数据
+	_dataHandler := func(e baseapis.AccountStatsInfo, time bool) (val string) {
+		val += e.Basic.DisplayValue
+		if !time {
+			return val
+		}
+		return fmt.Sprintf("%.2f", e.Basic.Value/360)
+
+	}
+	res += "Total: "
+	res += fmt.Sprintf("Kda %s/%s/%s-%s Suicides:%s Hours:%s ", _dataHandler(PVPData.Kills, false), _dataHandler(PVPData.Deaths, false), _dataHandler(PVPData.Assists, false), _dataHandler(PVPData.KillsDeathsAssists, false), _dataHandler(PVPData.Suicides, false), _dataHandler(PVPData.SecondsPlayed, true))
+	// 场均pvp信息
+	// 解析pvp数据
+	_dataPagHandler := func(e baseapis.AccountStatsInfo, time bool) (val string) {
+		val += e.Pga.DisplayValue
+		if !time {
+			return val
+		}
+		return fmt.Sprintf("%.2f", e.Pga.Value/360)
+	}
+	res += "\nPer Ground: "
+	res += fmt.Sprintf("Kda %s/%s/%s-%s Suicides:%s Hours:%s ", _dataPagHandler(PVPData.Kills, false), _dataPagHandler(PVPData.Deaths, false), _dataPagHandler(PVPData.Assists, false), _dataPagHandler(PVPData.KillsDeathsAssists, false), _dataPagHandler(PVPData.Suicides, false), _dataPagHandler(PVPData.SecondsPlayed, true))
+	// 发送消息
+	m := message.NewSendingMessage().Append(message.NewText(res))
+	c.SendGroupMessage(msg.GroupCode, m)
+
+}
+
+// 玩家PvE数据信息的概览获取
+func PvEInfoHandler(content string, c *client.QQClient, msg *message.GroupMessage) {
+
+}
+
 // GroMsgHandler 群聊信息获取并返回
 
 func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, com, content string) {
@@ -335,8 +397,23 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	case handler.EqualFolds(com, command.Menu.Keys):
 		go menuHandler(c, msg)
 
+	case handler.EqualFolds(com, command.D2pvp.Keys):
+		go PvPInfoHandler(content, c, msg)
+
+	case handler.EqualFolds(com, command.D2pve.Keys):
+		go PvEInfoHandler(content, c, msg)
+
+	case handler.EqualFolds(com, command.D2skill.Keys):
+		go GenerateDes(content, "skil", c, msg, orm)
+
+	case handler.EqualFolds(com, command.D2npc.Keys):
+		go GenerateDes(content, "npc", c, msg, orm)
+
 	case handler.EqualFolds(com, command.D2perk.Keys):
-		go perkGenerateImg(content, "perk", c, msg, orm)
+		go GenerateDes(content, "perk", c, msg, orm)
+
+	case handler.EqualFolds(com, command.D2item.Keys):
+		go itemGenerateImg(content, "item", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2day.Keys):
 		dayGenerateImg("day", c, msg)
@@ -356,7 +433,7 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	case handler.EqualFolds(com, command.D2random.Keys):
 		go randomHandler(c, msg)
 	case out == "":
-		out = "作甚😜\nmenu-菜单"
+		out = BaseAutoreply("0x00")
 		m := message.NewSendingMessage().Append(message.NewText(out))
 		c.SendGroupMessage(msg.GroupCode, m)
 

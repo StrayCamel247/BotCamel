@@ -31,9 +31,13 @@
 | 老九 | nine | 完成 | [B站数据解析](https://api.bilibili.com/x/article/list/web/articles?id=175690&jsonp=jsonp) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 光尘商店 | dust | 完成 | [图片数据](https://cdn.jsdelivr.net/gh/azmiao/picture-bed/img/buy-13.jpg) |[StrayCamel247](https://github.com/StrayCamel247) |
 | 棒极中文-英文-item-id数据存表 | 数据存表`data\sqlite3.db` | 完成 | [StrayCamel247](https://github.com/StrayCamel247) |
-| ✨✨查看某把物品perk有哪些 |  | 完成 | [light-gg网页快照](https://www.light.gg/) |[StrayCamel247](https://github.com/StrayCamel247)|
+| 查看某把物品perk有哪些 |  | 完成 | [light-gg网页快照](https://www.light.gg/) |[StrayCamel247](https://github.com/StrayCamel247)|
 | 自动加群 |  | 完成 |  func-GroReciveInviteHandler|[StrayCamel247](https://github.com/StrayCamel247)|
-| ✨✨查看某把物品perk有哪些-若lig-gg查询不到此item则跳过图片生成 |  | 开发中 | [light-gg网页快照](https://www.light.gg/) |[StrayCamel247](https://github.com/StrayCamel247)|
+| item装备-武器查询 |  | 完成 | [light-gg网页快照](https://www.light.gg/) |[StrayCamel247](https://github.com/StrayCamel247)|
+| npc信息查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
+| perk信息查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
+| skill光能技能查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
+| 动态生成菜单|  |  |  ||
 | ✨查pvp战绩 |  | 待认领 |  |
 | ✨查pve战绩 |  | 待认领 |  |
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |
