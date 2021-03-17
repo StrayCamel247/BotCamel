@@ -164,7 +164,7 @@ func (s *webServer) logincore(relogin bool) {
 				text = readLine()
 			}
 			if strings.Contains(text, "1") {
-				log.Warnf("请用浏览器打开 -> %v <- 并获取Ticket.", res.VerifyUrl)
+				log.Warnf("请用浏览器打开 -> %v <- 并从接口`https://t.captcha.qq.com/cap_union_new_verify`返回数据中 获取Ticket.", res.VerifyUrl)
 				if s.Conf.WebUI != nil && s.Conf.WebUI.WebInput {
 					log.Warnf("请输入Ticket： (http://%s:%d/admin/do_web_write 输入)", s.Conf.WebUI.Host, s.Conf.WebUI.WebUIPort)
 					text = <-WebInput

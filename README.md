@@ -10,7 +10,21 @@
 ### 需求概览
 ## 项目启动
 > 输入自己的账号密码可以构建自己的机器人哦
-- windows
+
+项目首次初始化会生成命运2数据库文件
+
+首次查询perk的相关物品会比较慢，第一次查询后会缓存在本地-定时刷新功能后序会开发
+
+- exe文件启动
+  - 双击exe文件-第一次会生成一个`config.hjson`文件
+  - 修改`config.hjson`文件中的`uin` `password`为自己机器人的qq和密码
+  - 若想长期使用-需要在`screenshotmaster`这个字段下补充`token`，`token`的获取：`https://www.screenshotmaster.com/docs` 随便用邮箱注册即可
+  - 修改完文件后再次双击运行-即可运行机器人
+  - 机器人已设置自动加群
+  - `apps\base_default.yaml`配置对话
+  - 有问题请在[issue](https://github.com/StrayCamel247/BotCamel/issue)留言
+
+- go run 项目-windows
   - 安装go（很简单百度就会了）
   - [安装gcc](https://zhuanlan.zhihu.com/p/47935258),数据库需要用（若没有数据库，无法使用命运2 的中文查询词条/武器功能）
   - 配置机器人qq账号密码
@@ -24,16 +38,18 @@
 ## REFERENCE
 > 对我有帮助和启发的项目都放在这里了
 https://github.com/azmiao/destiny2_hoshino_plugin/
+
 https://github.com/tianque1/Destiny2_bot
+
 https://www.screenshotmaster.com/docs
 
 **api授权**
 ![img](./media/shadiaoapp.jpg)
 ## DEMO
 
-- version 1.2
+- version 1.3
 
-  ![qq群聊演示V1.0](./media/motherfucker_asskisser.gif)
+  ![qq群聊演示](./media/v 1.3.png)
 
 <!-- ```
 go mod

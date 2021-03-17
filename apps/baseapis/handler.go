@@ -293,7 +293,7 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
 
 	// 写入数据库
 	if len(data) > 0 {
-		// 大于800分批处理
+		// 大于 800 分批处理
 		// https://gitsea.com/2013/04/23/sqlite-too-many-sql-variables/
 		// sqlite报错:Sqlite too many SQL variables
 		_batch := len(data) / 800
@@ -313,7 +313,7 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
 		}
 
 	}
-	print(tag + " down!")
+	log.Infof(tag + " down!")
 	// jsonBytes, _ := json.Marshal(p)
 	// 写入InfoDisplayDB表
 	// return ResJson.Response.JsonWorldComponentContentPaths.ZhChs, nil

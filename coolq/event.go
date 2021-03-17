@@ -90,16 +90,6 @@ func (bot *CQBot) groupMessageEvent(c *client.QQClient, m *message.GroupMessage)
 			return
 		}
 	}
-	// 解析消息
-	IsAt, com, content := camel.AnalysisMsg(c, m.Elements)
-	if IsAt {
-		// qq聊天机器人当at机器人时触发
-		cqm := ToStringMessage(m.Elements, m.GroupCode, true)
-
-		log.Infof("收到群 %v(%v) 内 %v(%v) 的消息: %v (%v)", m.GroupName, m.GroupCode, m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
-		go camel.GroMsgHandler(bot.dbGorm, c, m, com, content)
-
-	}
 	id := m.Id
 	if bot.db != nil {
 		id = bot.InsertGroupMessage(m)
@@ -110,6 +100,18 @@ func (bot *CQBot) groupMessageEvent(c *client.QQClient, m *message.GroupMessage)
 	}
 	gm["message_id"] = id
 	bot.dispatchEventMessage(gm)
+
+	// 解析消息
+	IsAt, com, content := camel.AnalysisMsg(c, m.Elements)
+	if IsAt {
+		// qq聊天机器人当at机器人时触发
+		cqm := ToStringMessage(m.Elements, m.GroupCode, true)
+
+		log.Infof("收到群 %v(%v) 内 %v(%v) 的消息: %v (%v)", m.GroupName, m.GroupCode, m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
+		go camel.GroMsgHandler(bot.dbGorm, c, m, com, content)
+
+	}
+
 }
 
 func (bot *CQBot) tempMessageEvent(c *client.QQClient, m *message.TempMessage) {

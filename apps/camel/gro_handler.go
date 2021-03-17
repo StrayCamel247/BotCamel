@@ -11,6 +11,7 @@ import (
 	"bufio"
 	"fmt"
 	// "github.com/Logiase/gomirai"
+	"encoding/json"
 	"github.com/Mrs4s/MiraiGo/client"
 	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
@@ -21,6 +22,7 @@ import (
 	"github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 	"io"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	url2 "net/url"
@@ -28,7 +30,6 @@ import (
 	// "reflect"
 	"strings"
 	"time"
-	// "io/ioutil"
 )
 
 // var bot *gomirai.Bot
@@ -54,12 +55,7 @@ func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, 
 			}
 		case *message.TextElement:
 			com = strings.TrimSpace(e.Content)
-			// slices, _ := c.GetWordSegmentation(com)
 			slices := strings.Fields(com)
-			// print(len(slices))
-			// for _, v := range slices {
-			// 	print(v)
-			// }
 			if len(slices) < 1 {
 				break
 			} else if len(slices) >= 2 {
@@ -67,7 +63,6 @@ func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, 
 
 			}
 			com = slices[0]
-			print(com, content)
 			// log.Info(com)
 		// case *message.ImageElement:
 		// 	_msg += "[Image:" + e.Filename + "]"
@@ -143,13 +138,18 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 	if !PathExists(fileName) {
 		err := downloadImg(fileName, url)
 		if err != nil {
-			return m, nil
+			log.Println(err)
+			// panic(err)
+			return m, err
 		}
 	}
+	// 上传磁盘内指定的文件
 	if PathExists(fileName) {
 		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
 		if err != nil {
-			return m, nil
+			log.Println(err)
+			// log.Warnf(err)
+			return m, err
 		}
 		// m := message.NewSendingMessage().Append(_img)
 		return _img, nil
@@ -223,6 +223,7 @@ func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err 
 	return itemids, des, nil
 }
 
+// perk 图片生成
 func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
 
 	itemId, des, err := getItemId(content, orm)
@@ -267,14 +268,44 @@ func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 	}
 }
 
+type dayRes struct {
+	IMG_URL      string `json:"img_url"`
+	IMG_HASH_MD5 string `json:"img_hash_md5"`
+}
+
 func dayGenerateImg(flag string, c *client.QQClient, msg *message.GroupMessage) {
-	// 参数
-	// url := url2.QueryEscape("http://www.tianque.top/d2api/today/")
-	// width := 1280
-	// height := 800
-	// full_page := 1
-	// 构造URL
-	m, err := d2uploadImgByUrl(flag, "http://www.tianque.top/d2api/today/", c, msg)
+	url := "http://www.tianque.top/d2api/today/"
+	spaceClient := http.Client{
+		Timeout: time.Second * 999, // Maximum of 10 secs
+	}
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Warn(err)
+	}
+
+	req.Header.Set("User-Agent", "spacecount-tutorial")
+	// req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
+
+	res, getErr := spaceClient.Do(req)
+	if getErr != nil {
+		log.Warn(getErr)
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		log.Warn(readErr)
+	}
+	var ResJson dayRes
+	jsonErr := json.Unmarshal(body, &ResJson)
+	if jsonErr != nil {
+		log.Warn(jsonErr)
+	}
+
+	m, err := d2uploadImgByUrl(flag, ResJson.IMG_URL, c, msg)
 
 	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
 	if err == nil {
@@ -338,7 +369,6 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 // 收到加群邀请
 
 func GroReciveInviteHandler(c *client.QQClient, e *client.GroupInvitedRequest) {
-	print("testtest")
 	c.SolveGroupJoinRequest(e, true, false, "")
 }
 

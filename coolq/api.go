@@ -23,7 +23,7 @@ import (
 )
 
 // Version go-cqhttp的版本信息，在编译时使用ldflags进行覆盖
-var Version = "version 1.2"
+var Version = "version 1.3"
 
 // CQGetLoginInfo 获取登录号信息
 //

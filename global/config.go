@@ -135,7 +135,7 @@ var DefaultConfigWithComments = `
     // 对话信息基本数据存储
     dialogue_file_path: ./apps/base_default.yaml
 	// 截屏大师token
-	screenshotmaster:[]
+	screenshotmaster:["604b14ca8030b"]
 }
 `
 
