@@ -38,7 +38,7 @@
 | perk信息查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
 | skill光能技能查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
 | 动态生成菜单|  |  |  ||
-| ✨查pvp战绩 |  | 待认领 |  |
+| ✨查pvp战绩 |  | 完成 | https://www.bungie.net/Platform/Destiny2/3/Account/xxx/Stats/|[StrayCamel247](https://github.com/StrayCamel247)|
 | ✨查pve战绩 |  | 待认领 |  |
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |
 | ✨bot定时任务-每周三3.00 am触发 |  | 待认领 |  |
