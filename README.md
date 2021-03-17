@@ -49,7 +49,7 @@ https://www.screenshotmaster.com/docs
 
 - version 1.3
 
-  ![qq群聊演示](./media/v 1.3.png)
+  ![qq群聊演示](./media/v1.3.png)
 
 <!-- ```
 go mod
