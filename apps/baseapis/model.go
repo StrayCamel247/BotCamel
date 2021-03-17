@@ -2,7 +2,7 @@ package baseapis
 
 import (
 	// "encoding/json"
-	// "fmt"
+	"fmt"
 	// "github.com/bitly/go-simplejson"
 	// "github.com/Mrs4s/MiraiGo/client"
 	log "github.com/sirupsen/logrus"
@@ -11,7 +11,8 @@ import (
 	// "net/http"
 	// "regexp"
 	// "strconv"
-	// "time"
+	"reflect"
+	"time"
 )
 
 func init() {
@@ -35,16 +36,55 @@ type ItemIdDB struct {
 	Tag         string
 }
 
-func InfoDisplayDBCheck(orm *gorm.DB) (bool, error) {
+// InfoDisplayDBCheck 检查命运2 menifest表是否存在-若不存在则抽取
+func InfoDisplayDBCheck(orm *gorm.DB) error {
 	// 检查是否存在表
 	if !orm.Migrator().HasTable(&InfoDisplayDB{}) {
 		if err := orm.Migrator().CreateTable(&InfoDisplayDB{}); err != nil {
 			log.Warn(err)
 			// panic(err)
-			return false, err
+			return err
 		}
-		return false, nil
+		// 若数据库表不存在，并发查询数据并写入
+		file, _ := ManifestFetchJson()
+
+		typ := reflect.TypeOf(file)
+		val := reflect.ValueOf(file) //获取reflect.Type类型
+
+		kd := val.Kind() //获取到a对应的类别
+		if kd != reflect.Struct {
+			log.Info("expect struct")
+			return nil
+		}
+		//获取到该结构体有几个字段
+		num := val.NumField()
+
+		//遍历结构体的所有字段
+		start := time.Now()
+		ch := make(chan bool)
+		for i := 0; i < num; i++ {
+			// goroutine的正确用法
+			// 那怎么用goroutine呢？有没有像Python多进程/线程的那种等待子进/线程执行完的join方法呢？当然是有的，可以让Go 协程之间信道（channel）进行通信：从一端发送数据，另一端接收数据，信道需要发送和接收配对，否则会被阻塞：
+			// log.Info("Field %d:值=%v\n", i, val.Field(i))
+			tagVal := typ.Field(i).Tag.Get("json")
+			//如果该字段有tag标签就显示，否则就不显示
+			// if tagVal != "" {
+			// 	log.Info("Field %d:tag=%v\n", i, tagVal)
+			// }
+			// 并发
+			// go ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
+			// 串行
+			print(tagVal)
+			ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
+			// if tagVal == "DestinyInventoryItemLiteDefinition" {
+			// 	ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
+			// }
+
+		}
+		elapsed := time.Since(start)
+		log.Info(fmt.Sprintf("Took %s", elapsed))
+
 	}
 
-	return true, nil
+	return nil
 }

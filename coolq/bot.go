@@ -17,6 +17,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/Mrs4s/MiraiGo/utils"
+	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	"github.com/StrayCamel247/BotCamel/global"
 	jsoniter "github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
@@ -64,6 +65,8 @@ func NewQQBot(cli *client.QQClient, conf *global.JSONConfig) *CQBot {
 		})
 
 		bot.dbGorm = dbGorm
+		// 初始化时检查命运2数据库是否存在
+		go baseapis.InfoDisplayDBCheck(dbGorm)
 		log.Info("信息数据库初始化完成.")
 	} else {
 		log.Warn("警告: 信息数据库已关闭，将无法使用 [回复/撤回] 等功能。")
@@ -92,6 +95,11 @@ func NewQQBot(cli *client.QQClient, conf *global.JSONConfig) *CQBot {
 	bot.Client.OnUserWantJoinGroup(bot.groupJoinReqEvent)
 	bot.Client.OnOtherClientStatusChanged(bot.otherClientStatusChangedEvent)
 	bot.Client.OnGroupDigest(bot.groupEssenceMsg)
+	// bot定时任务
+	// 每周三凌晨3.00触发刷新命运2数据库-并批量处理perk-生成图片备用
+	// 每周三凌晨3.00触发周报-光尘商店 图片备用
+	// 每天3.00触发日报-试炼信息图片
+	//
 	go func() {
 		i := conf.HeartbeatInterval
 		if i < 0 {

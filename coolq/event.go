@@ -90,13 +90,20 @@ func (bot *CQBot) groupMessageEvent(c *client.QQClient, m *message.GroupMessage)
 			return
 		}
 	}
-	cqm := ToStringMessage(m.Elements, m.GroupCode, true)
+	// 解析消息
+	IsAt, com, content := camel.AnalysisMsg(c, m.Elements)
+	if IsAt {
+		// qq聊天机器人当at机器人时触发
+		cqm := ToStringMessage(m.Elements, m.GroupCode, true)
+
+		log.Infof("收到群 %v(%v) 内 %v(%v) 的消息: %v (%v)", m.GroupName, m.GroupCode, m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
+		go camel.GroMsgHandler(bot.dbGorm, c, m, com, content)
+
+	}
 	id := m.Id
 	if bot.db != nil {
 		id = bot.InsertGroupMessage(m)
 	}
-	log.Infof("收到群 %v(%v) 内 %v(%v) 的消息: %v (%v)", m.GroupName, m.GroupCode, m.Sender.DisplayName(), m.Sender.Uin, cqm, id)
-	camel.GroMsgHandler(bot.dbGorm, c, m)
 	gm := bot.formatGroupMessage(m)
 	if gm == nil {
 		return

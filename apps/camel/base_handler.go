@@ -79,7 +79,7 @@ func init() {
 // }
 
 // SendGroupMessage
-func commandHandler(com string) string {
+func shadiaoApiHandler(com string) string {
 	switch {
 	case handler.EqualFolds(com, command.Asskisser.Keys):
 		_From := strings.TrimLeft(com, "Asskisser")
@@ -96,19 +96,21 @@ func commandHandler(com string) string {
 
 // BaseAutoreply 根据配置的文本进行基础信息回复
 func BaseAutoreply(in string) string {
-	switch {
+	// switch {
 
-	}
+	// }
 	out, ok := tem[in]
 	if !ok {
+		// 查询对话配置表 apps\base_default.yaml
 		for k, v := range tem {
 			if strings.EqualFold(in, string(k)) {
 				return v
 			}
 		}
+		// 查询沙雕api
 		_arrayIn := strings.Split(in, " ")
 		for _, _ele := range _arrayIn {
-			return commandHandler(_ele)
+			return shadiaoApiHandler(_ele)
 		}
 
 		out = ""

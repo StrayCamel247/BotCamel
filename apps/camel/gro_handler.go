@@ -25,7 +25,7 @@ import (
 	"net/http"
 	url2 "net/url"
 	"os"
-	"reflect"
+	// "reflect"
 	"strings"
 	"time"
 	// "io/ioutil"
@@ -50,17 +50,16 @@ func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, 
 
 		case *message.AtElement:
 			if c.Uin == e.Target {
-				// qq聊天机器人当at机器人时触发
 				isAt = true
 			}
 		case *message.TextElement:
 			com = strings.TrimSpace(e.Content)
 			// slices, _ := c.GetWordSegmentation(com)
 			slices := strings.Fields(com)
-			print(len(slices))
-			for _, v := range slices {
-				print(v)
-			}
+			// print(len(slices))
+			// for _, v := range slices {
+			// 	print(v)
+			// }
 			if len(slices) < 1 {
 				break
 			} else if len(slices) >= 2 {
@@ -197,53 +196,12 @@ func downloadImg(filename, url string) error {
 func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err error) {
 	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
 	// db.Create(&models.User{Profile: profile, Name: "silence"})
-	isexisted, err := baseapis.InfoDisplayDBCheck(orm)
+	err = baseapis.InfoDisplayDBCheck(orm)
 	if err != nil {
 		// 数据库校验报错-直接返回
 		return itemids, des, nil
 	}
-	if !isexisted {
-		// 若数据库表不存在，并发查询数据并写入
-		file, _ := baseapis.ManifestFetchJson(content)
 
-		typ := reflect.TypeOf(file)
-		val := reflect.ValueOf(file) //获取reflect.Type类型
-
-		kd := val.Kind() //获取到a对应的类别
-		if kd != reflect.Struct {
-			fmt.Println("expect struct")
-			return
-		}
-		//获取到该结构体有几个字段
-		num := val.NumField()
-
-		//遍历结构体的所有字段
-		start := time.Now()
-		ch := make(chan bool)
-		for i := 0; i < num; i++ {
-			// goroutine的正确用法
-			// 那怎么用goroutine呢？有没有像Python多进程/线程的那种等待子进/线程执行完的join方法呢？当然是有的，可以让Go 协程之间信道（channel）进行通信：从一端发送数据，另一端接收数据，信道需要发送和接收配对，否则会被阻塞：
-			// fmt.Printf("Field %d:值=%v\n", i, val.Field(i))
-			tagVal := typ.Field(i).Tag.Get("json")
-			//如果该字段有tag标签就显示，否则就不显示
-			// if tagVal != "" {
-			// 	fmt.Printf("Field %d:tag=%v\n", i, tagVal)
-			// }
-			// 并发
-			// go baseapis.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
-			// 串行
-			print(tagVal)
-			baseapis.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
-			// if tagVal == "DestinyInventoryItemLiteDefinition" {
-			// 	baseapis.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
-			// }
-
-		}
-		elapsed := time.Since(start)
-		fmt.Printf("Took %s", elapsed)
-
-		// println(file)
-	}
 	// 获取item id
 	var results = []baseapis.ItemIdDB{}
 	_ = orm.Model(&baseapis.InfoDisplayDB{}).Find(&results, baseapis.InfoDisplayDB{Name: content})
@@ -252,9 +210,10 @@ func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err 
 		if v.Tag == "DestinyInventoryItemLiteDefinition" {
 			itemids = append(itemids, v.ItemId)
 		}
+		// 将标签数据进行返回
 		if v.Description != "" {
 			_des := strings.ReplaceAll(v.Description, "\n\n", "\n")
-			if _des != des {
+			if !strings.Contains(des, _des) {
 				des += "\n" + _des
 			}
 		}
@@ -273,8 +232,6 @@ func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 
 	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
 	rMsg := message.NewSendingMessage()
-	// c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
-	// 构造URL
 	for _, v := range config.MasterShotTokens {
 
 		// 上传文件是否报错
@@ -297,8 +254,15 @@ func perkGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 			rMsg = message.NewSendingMessage()
 		} else {
 			// 图片调用成功
-			c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
+			if len(rMsg.Elements) > 0 {
+				c.SendGroupMessage(msg.GroupCode, rMsg)
+			} else if des != "" {
+				c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
+			} else {
+				c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
+			}
 			return
+
 		}
 	}
 }
@@ -317,57 +281,57 @@ func dayGenerateImg(flag string, c *client.QQClient, msg *message.GroupMessage) 
 		return
 	}
 }
+func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
+	out := fmt.Sprintf("%d", rand.Intn(10))
+	m := message.NewSendingMessage().Append(message.NewText(out))
+	c.SendGroupMessage(msg.GroupCode, m)
+}
+func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
+	out := BaseAutoreply("menu")
+	out += GroupMenu
+	m := message.NewSendingMessage().Append(message.NewText(out))
+	c.SendGroupMessage(msg.GroupCode, m)
+}
 
 // GroMsgHandler 群聊信息获取并返回
 
-func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage) {
+func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, com, content string) {
 	var out string
-	IsAt, com, content := AnalysisMsg(c, msg.Elements)
-	if IsAt {
-		out = BaseAutoreply(com)
-		switch {
-		// case
-		case handler.EqualFolds(com, command.Menu.Keys):
-			// content := com
-			out = BaseAutoreply("menu")
-			out += GroupMenu
-			m := message.NewSendingMessage().Append(message.NewText(out))
-			c.SendGroupMessage(msg.GroupCode, m)
-		// case
-		case handler.EqualFolds(com, command.D2perk.Keys):
-			// content := com
-			perkGenerateImg(content, "perk", c, msg, orm)
+	// 若@机器人则触发
+	out = BaseAutoreply(com)
+	switch {
+	// case
+	case handler.EqualFolds(com, command.Menu.Keys):
+		go menuHandler(c, msg)
 
-		case handler.EqualFolds(com, command.D2day.Keys):
-			dayGenerateImg("day", c, msg)
+	case handler.EqualFolds(com, command.D2perk.Keys):
+		go perkGenerateImg(content, "perk", c, msg, orm)
 
-		case handler.EqualFolds(com, command.D2week.Keys):
-			_ = d2uploadImgByFlag("week", c, msg)
+	case handler.EqualFolds(com, command.D2day.Keys):
+		dayGenerateImg("day", c, msg)
 
-		case handler.EqualFolds(com, command.D2xiu.Keys):
-			_ = d2uploadImgByFlag("nine", c, msg)
+	case handler.EqualFolds(com, command.D2week.Keys):
+		go d2uploadImgByFlag("week", c, msg)
 
-		case handler.EqualFolds(com, command.D2trial.Keys):
-			_ = d2uploadImgByFlag("trial", c, msg)
+	case handler.EqualFolds(com, command.D2xiu.Keys):
+		go d2uploadImgByFlag("nine", c, msg)
 
-		case handler.EqualFolds(com, command.D2dust.Keys):
-			_ = d2uploadImgByFlag("dust", c, msg)
+	case handler.EqualFolds(com, command.D2trial.Keys):
+		go d2uploadImgByFlag("trial", c, msg)
 
-		case handler.EqualFolds(com, command.D2random.Keys):
-			out := fmt.Sprintf("%d", rand.Intn(10))
-			m := message.NewSendingMessage().Append(message.NewText(out))
-			c.SendGroupMessage(msg.GroupCode, m)
+	case handler.EqualFolds(com, command.D2dust.Keys):
+		go d2uploadImgByFlag("dust", c, msg)
 
-		case out == "":
-			out = "作甚😜\nmenu-菜单"
-			m := message.NewSendingMessage().Append(message.NewText(out))
-			c.SendGroupMessage(msg.GroupCode, m)
+	case handler.EqualFolds(com, command.D2random.Keys):
+		go randomHandler(c, msg)
+	case out == "":
+		out = "作甚😜\nmenu-菜单"
+		m := message.NewSendingMessage().Append(message.NewText(out))
+		c.SendGroupMessage(msg.GroupCode, m)
 
-		default:
-			m := message.NewSendingMessage().Append(message.NewText(out))
-			c.SendGroupMessage(msg.GroupCode, m)
-		}
-
+	default:
+		m := message.NewSendingMessage().Append(message.NewText(out))
+		c.SendGroupMessage(msg.GroupCode, m)
 	}
 }
 

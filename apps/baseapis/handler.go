@@ -176,7 +176,7 @@ type ManifestResult struct {
 }
 
 // ManifestFetchJson 获取menifest接口返回的json文件的路径
-func ManifestFetchJson(content string) (jsonpath interface{}, err error) {
+func ManifestFetchJson() (jsonpath interface{}, err error) {
 	spaceClient := http.Client{
 		Timeout: time.Second * 10, // Maximum of 10 secs
 	}
