@@ -39,24 +39,12 @@ func init() {
 		"name" text,  -- 中文名称
 		"icon" text,  -- destiny2官方图标
 		"tag" text,   -- tag标签
-		"seasonid" text,  -- 赛季itemid
-		PRIMARY KEY ( "itemid"),
-		CONSTRAINT "destiny2_menifest_base_uni" UNIQUE ("itemid")
+		"seasonid" text  -- 赛季itemid
 		);
 
 		-- ----------------------------
 		-- Indexes structure for table destiny2_menifest_base
 		-- ----------------------------
-		DROP INDEX IF EXISTS "destiny2_menifest_itemid_index";
-		CREATE INDEX "destiny2_menifest_itemid_index"
-		ON "destiny2_menifest_base" (
-		"itemid" ASC
-		);
-		DROP INDEX IF EXISTS "destiny2_menifest_name_index";
-		CREATE INDEX "destiny2_menifest_name_index"
-		ON "destiny2_menifest_base" (
-		"name" DESC
-		);
 	`
 	// item perk 关系表
 	D2Table["destiny2_item_perk"] = `

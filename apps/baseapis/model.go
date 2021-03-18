@@ -69,7 +69,7 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	if _batch >= 1 {
 		for i := 0; i < _batch; i++ {
 			// 异步
-			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
+			go utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
 	} else {
 		// 异步

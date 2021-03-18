@@ -196,7 +196,7 @@ func downloadImg(filename, url string) error {
 func getItemId(content string, orm *gorm.DB) (itemids []string) {
 	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
 	// db.Create(&models.User{Profile: profile, Name: "silence"})
-	baseapis.InfoMenifestBaseDBCheck(orm)
+	// baseapis.InfoMenifestBaseDBCheck(orm)
 
 	// 获取item id
 	// var results = []baseapis.ItemIdDB{}
