@@ -65,8 +65,8 @@ func NewQQBot(cli *client.QQClient, conf *global.JSONConfig) *CQBot {
 		})
 
 		bot.dbGorm = dbGorm
-		// 初始化时检查命运2数据库是否存在
-		go baseapis.InfoDisplayDBCheck(dbGorm)
+		// 异步 初始化时检查命运2数据库是否存在
+		go baseapis.InfoMenifestBaseDBCheck(dbGorm)
 		log.Info("信息数据库初始化完成.")
 	} else {
 		log.Warn("警告: 信息数据库已关闭，将无法使用 [回复/撤回] 等功能。")

@@ -1,33 +1,24 @@
 package baseapis
 
 import (
-	"fmt"
-	"github.com/Logiase/MiraiGo-Template/utils"
+// "fmt"
 )
 
-var logger = utils.GetModuleLogger("NmslApi_handler")
-
-// Bungie-api
-var BungiePlatformRoot = "https://www.bungie.net/Platform"
-var BungieBase = "https://www.bungie.net/"
-
-// https://www.bungie.net/Platform/Destiny2/Manifest/ 所有点Definition对应表 zh-chs
-var BunigieManifestUrl = "https://www.bungie.net/Platform/Destiny2/Manifest/"
-
-// 沙雕app-骂人
-var nmslAPI = "https://nmsl.shadiao.app/api.php?from=%s"
-
-// 沙雕app-夸人
-var lickAPI = "https://chp.shadiao.app/api.php?from=%s"
-
-// 玩家pvp-pve生涯记录数据查询-接口
-var profileAPI = func(fireId string) string {
-	return fmt.Sprintf("https://www.bungie.net/Platform/Destiny2/3/Account/%s/Stats/", fireId)
+//	InfoMenifestBaseDB
+type InfoMenifestBaseDB struct {
+	ItemId      string `json:"itemid"`
+	Description string `json:"description"`
+	// Name        string `gorm:"SIZE:0;Name:name;index:,sort:desc,collate:utf8,type:btree"`
+	Name     string `json:"name"`
+	Icon     string `json:"icon"`
+	Tag      string `json:"tag"`
+	SeasonId string `json:"seasonid"`
 }
-
-//
-var baseprofileAPI = func(fireId string) string {
-	return fmt.Sprintf("https://www.bungie.net/Platform/Destiny2/3/Profile/%s/?components=100", fireId)
+type ItemIdDB struct {
+	ItemId      string
+	Description string
+	Name        string
+	Tag         string
 }
 
 // Manifest 返回数据结构体
@@ -113,6 +104,7 @@ type ManifestLanguages struct {
 }
 type ManifestWorldComponentContent struct {
 	JsonWorldComponentContentPaths ManifestLanguages `json:"jsonWorldComponentContentPaths"`
+	NewVersion                     string            `json:"version"`
 }
 type ManifestResult struct {
 	Response ManifestWorldComponentContent `json:"Response"`
@@ -126,6 +118,7 @@ type Properties struct {
 type InfoDisplay struct {
 	// Properties map[string]string `json:"displayProperties"`
 	Properties Properties `json:"displayProperties"`
+	SeasonHash int64      `json:"seasonHash"`
 }
 
 // AccountStats 用户生涯记录查询数据结构体

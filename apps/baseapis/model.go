@@ -1,90 +1,107 @@
 package baseapis
 
+/*
+   __AUTHOR__ : stray_camel
+  __DESCRIPTION__ : 接口存表-改变表结构或者新增表结构需要增加配置
+  __REFERENCES__:
+  __DATE__: 2021-03-18
+*/
 import (
 	// "encoding/json"
 	"fmt"
-	// "github.com/bitly/go-simplejson"
-	// "github.com/Mrs4s/MiraiGo/client"
+	"github.com/StrayCamel247/BotCamel/apps/utils"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	// "io/ioutil"
 	// "net/http"
 	// "regexp"
 	// "strconv"
-	"reflect"
-	"time"
+	"sync"
+	// "reflect"
+	// "time"
 )
 
-func init() {
-
+// D2VersionHandler 返回true需要更新数据-false则不需要更新
+func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
+	type versionRestruct struct {
+		Version string `json:"count"`
+	}
+	var resStruct versionRestruct
+	_sql := `
+		select 
+		version
+		from destiny2_version
+		where version = @version
+	`
+	utils.Fetch_data_sql(orm, _sql, &resStruct, params)
+	if resStruct.Version == "" {
+		log.Errorf(fmt.Sprintf("Destiny2 数据不是最新-等待更新ing"))
+		_insertBase := `
+		INSERT INTO destiny2_version ("version") 
+		VALUES
+		(@version)
+		`
+		utils.Execute(orm, _insertBase, params)
+		return true
+	}
+	log.Infof(fmt.Sprintf("Destiny2 数据已是最新 version: %s", resStruct.Version))
+	return false
 }
 
-//
-type InfoDisplayDB struct {
-	gorm.Model
-	ItemId      string `gorm:"primaryKey;SIZE:0;Name:item_id"`
-	Description string `gorm:"SIZE:0;Name:des"`
-	// Name        string `gorm:"SIZE:0;Name:name;index:,sort:desc,collate:utf8,type:btree"`
-	Name string `gorm:"SIZE:0;Name:name;index:,sort:desc"`
-	Icon string `gorm:"SIZE:0;Name:des"`
-	Tag  string `gorm:"SIZE:0;Name:tag"`
-}
-type ItemIdDB struct {
-	ItemId      string
-	Description string
-	Name        string
-	Tag         string
-}
-
-// InfoDisplayDBCheck 检查命运2 menifest表是否存在-若不存在则抽取
-func InfoDisplayDBCheck(orm *gorm.DB) error {
-	// 检查是否存在表
-	if !orm.Migrator().HasTable(&InfoDisplayDB{}) {
-		if err := orm.Migrator().CreateTable(&InfoDisplayDB{}); err != nil {
-			log.Warn(err)
-			// panic(err)
-			return err
+// InsertMenifestHandler 清空表后更新
+func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
+	if len(dataArray) == 0 {
+		return
+	}
+	_truncateDB := D2Table["destiny2_menifest_base"]
+	_insertBase := `
+		INSERT INTO destiny2_menifest_base 
+		("created_at", "updated_at", "deleted_at", 
+		"itemid", "description", "name", "icon", "tag", "seasonid") 
+		VALUES
+		(CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, 
+			'%s', '%s', '%s', '%s', '%s', '%s')
+	`
+	utils.Execute(orm, _truncateDB, nil)
+	_batch := len(dataArray) / 800
+	if _batch >= 1 {
+		for i := 0; i < _batch; i++ {
+			// 异步
+			utils.Execute_batch(orm, _insertBase, dataArray[i*800:(i+1)*800])
 		}
-		// 若数据库表不存在，并发查询数据并写入
-		file, _ := ManifestFetchJson()
-
-		typ := reflect.TypeOf(file)
-		val := reflect.ValueOf(file) //获取reflect.Type类型
-
-		kd := val.Kind() //获取到a对应的类别
-		if kd != reflect.Struct {
-			log.Info("expect struct")
-			return nil
-		}
-		//获取到该结构体有几个字段
-		num := val.NumField()
-
-		//遍历结构体的所有字段
-		start := time.Now()
-		ch := make(chan bool)
-		for i := 0; i < num; i++ {
-			// goroutine的正确用法
-			// 那怎么用goroutine呢？有没有像Python多进程/线程的那种等待子进/线程执行完的join方法呢？当然是有的，可以让Go 协程之间信道（channel）进行通信：从一端发送数据，另一端接收数据，信道需要发送和接收配对，否则会被阻塞：
-			// log.Info("Field %d:值=%v\n", i, val.Field(i))
-			tagVal := typ.Field(i).Tag.Get("json")
-			//如果该字段有tag标签就显示，否则就不显示
-			// if tagVal != "" {
-			// 	log.Info("Field %d:tag=%v\n", i, tagVal)
-			// }
-			// 并发
-			// go ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
-			// 串行
-			print(tagVal)
-			ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
-			// if tagVal == "DestinyInventoryItemLiteDefinition" {
-			// 	ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, ch)
-			// }
-
-		}
-		elapsed := time.Since(start)
-		log.Info(fmt.Sprintf("Took %s", elapsed))
-
+	} else {
+		// 异步
+		utils.Execute_batch(orm, _insertBase, dataArray)
 	}
 
-	return nil
+	log.Infof(fmt.Sprintf("Destiny2 数据正在更新 Table: %s", "destiny2_menifest_base"))
+}
+
+// DBCheckHandler-检查表是否存在-若不存在-组装待初始化的sql
+func DBCheckHandler(orm *gorm.DB, tableName, tableSql string, Sqls *[]string, wg *sync.WaitGroup) {
+	// 定义查询传参和返回结果对象
+
+	type countResult struct {
+		Count int64 `json:"count"`
+	}
+	defer wg.Done()
+	_sql := `
+			SELECT 
+				count(1) count
+			FROM sqlite_master 
+			WHERE 
+				type ='table' 
+				and name =@table_name
+			ORDER BY name
+		`
+	var resStruct countResult
+	params := map[string]interface{}{"table_name": tableName}
+	utils.Fetch_data_sql(orm, _sql, &resStruct, params)
+
+	if resStruct.Count == 0 {
+		*Sqls = append(*Sqls, tableSql)
+		_msg := fmt.Sprintf("NO DB Named: %s", tableName)
+		log.Errorf(_msg)
+	}
+	log.Infof(fmt.Sprintf("DB existed: %s", tableName))
 }

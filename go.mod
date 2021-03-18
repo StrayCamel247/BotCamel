@@ -10,6 +10,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.6.3
+	github.com/go-xorm/xorm v0.7.9
 	github.com/gorilla/websocket v1.4.2
 	github.com/guonaihong/gout v0.1.5
 	github.com/hjson/hjson-go v3.1.0+incompatible

@@ -3,11 +3,31 @@
 > 基于/重构[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现-觉得有意思的话就star一下吧~
 
 > [BotCamel_V0](https://github.com/StrayCamel247/BotCamel/tree/dev-mirai)版本为基于mirai实现
+使用技术
+### [go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)
+https://github.com/Mrs4s/go-cqhttp/
+
+### 数据库
+> redis mysql等其他数据库需要额外启动，小项目，不需要
+- leveldb
+  - 存储聊天记录
+- sqlite3-后序只使用sqlite3-不使用其他-支持数据导出
+  - 代码里的所有sql语句是按照sqlite3来编写的-谨慎切换数据库
+  - 存储诸如命运2数据等数据
+  - 使用gorm进行链接-orm model管理数据库一点都不好用，淦！sql文件全放在`apps\sqls`
+  - 原生sql进行curd，没使用模型
+  - 使用leveldb作sqlite3的数据缓存
+  - `apps\utils\handler.go`自定义数据库得操作-加日志打印
+
+**待开发**：图片缓存？-现阶段存储在tmp文件夹下磁盘io读取
+
+
 ## [需求文档](./PRD.MD)
 > 欢迎任何人-领任务-fork-提pr请求
 
 任务领取可发送到aboyinsky@ouotlook.com邮箱
 ### 需求概览
+-
 ## 项目启动
 > 输入自己的账号密码可以构建自己的机器人哦
 

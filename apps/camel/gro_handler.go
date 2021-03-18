@@ -196,15 +196,11 @@ func downloadImg(filename, url string) error {
 func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err error) {
 	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
 	// db.Create(&models.User{Profile: profile, Name: "silence"})
-	err = baseapis.InfoDisplayDBCheck(orm)
-	if err != nil {
-		// 数据库校验报错-直接返回
-		return itemids, des, nil
-	}
+	baseapis.InfoMenifestBaseDBCheck(orm)
 
 	// 获取item id
 	var results = []baseapis.ItemIdDB{}
-	_ = orm.Model(&baseapis.InfoDisplayDB{}).Find(&results, baseapis.InfoDisplayDB{Name: content})
+	_ = orm.Model(&baseapis.InfoMenifestBaseDB{}).Find(&results, baseapis.InfoMenifestBaseDB{Name: content})
 	for _, v := range results {
 		// 只返回固定tag的标签
 		if v.Tag == "DestinyInventoryItemLiteDefinition" {

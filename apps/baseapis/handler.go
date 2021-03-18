@@ -6,11 +6,16 @@ package baseapis
   __REFERENCES__:
   __date__: 2021-03-12
 */
+/*
+	sync.WaitGroup
+	WaitGroup 用于等待一组 goroutine 结束,主 goroutine 调用 Add() 设置要等待的 goroutine 的数目。 每个 goroutine 结束时调用 Done()。同时主 goroutine 调用 Wait() ，阻塞主 goroutine 知道 所有的 goroutine 结束。 第一次使用 WatiGroup 实例后, 该 WaitGroup 一定不能被拷贝。更多的信息可以从不能被拷贝的结构 中获得。
+
+	WaitGroup 是结构体，不是引用类型，所以传递给 goroutine 时不能直接传值，而要传递 WaitGroup 实例的指针.
+*/
 import (
 	"encoding/json"
 	"fmt"
 	con "github.com/StrayCamel247/BotCamel/apps/config"
-	"github.com/StrayCamel247/BotCamel/global"
 	"github.com/bitly/go-simplejson"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -20,11 +25,14 @@ import (
 	"path"
 	"regexp"
 	"strconv"
+	"sync"
+
+	"github.com/StrayCamel247/BotCamel/apps/utils"
+	"reflect"
+	"strings"
 	// "strings"
 	"time"
 )
-
-var config *global.JSONConfig
 
 func init() {
 	config = con.GetConfig(false)
@@ -86,25 +94,24 @@ func MotherFuckerHandler(from string) string {
 	return fmt.Sprintf(string(body))
 }
 
-// ManifestFetchJson 获取menifest接口返回的json文件的路径
-func ManifestFetchJson() (jsonpath interface{}, err error) {
+// ManifestFetchResponse 获取menifest接口返回
+func ManifestFetchResponse() (Response ManifestWorldComponentContent, err error) {
 	spaceClient := http.Client{
-		Timeout: time.Second * 10, // Maximum of 10 secs
+		Timeout: time.Second * 100, // Maximum of 100 secs
 	}
 
 	req, err := http.NewRequest(http.MethodGet, BunigieManifestUrl, nil)
 	if err != nil {
-		log.Warn(err)
-		return nil, err
+		panic(err)
+
 	}
 
-	req.Header.Set("User-Agent", "spacecount-tutorial")
-	// req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
+	req.Header.Add("X-API-Key", config.BungieXApiKey)
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
-		log.Warn(getErr)
-		return nil, getErr
+		panic(getErr)
+
 	}
 
 	if res.Body != nil {
@@ -113,41 +120,77 @@ func ManifestFetchJson() (jsonpath interface{}, err error) {
 
 	body, readErr := ioutil.ReadAll(res.Body)
 	if readErr != nil {
-		log.Warn(readErr)
-		return nil, readErr
+		panic(readErr)
+
 	}
 	ResJson := ManifestResult{}
 	jsonErr := json.Unmarshal(body, &ResJson)
 	if jsonErr != nil {
-		log.Warn(jsonErr)
-		return nil, jsonErr
+		panic(jsonErr)
+
 	}
-	return ResJson.Response.JsonWorldComponentContentPaths.ZhChs, nil
+	return ResJson.Response, nil
 }
 
-// type  struct {
-// 	info
-// }
-// func HttpRequest(method, url string) (*Request, error){
+// InfoMenifestBaseDBCheck 检查命运2 menifest表是否存在-若不存在则抽取
+func InfoMenifestBaseDBCheck(orm *gorm.DB) {
+	// 检查是否存在表
+	var wg sync.WaitGroup
+	_Num := len(D2Table)
+	log.Infof(fmt.Sprintf("正在检查%d张表...", _Num))
+	wg.Add(_Num)
+	// fmt.Printf("%v", wg)
+	var _InItSqls []string
+	for tableName, tableSql := range D2Table {
+		go DBCheckHandler(orm, tableName, tableSql, &_InItSqls, &wg)
+	}
+	wg.Wait()
+	if len(_InItSqls) > 0 {
+		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
+		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
+	}
+	// 检查表里数据是否是最新-若不是或者数据为空-则重新抽数到数据库
+	manifestRes, _ := ManifestFetchResponse()
+	params := map[string]interface{}{"version": manifestRes.NewVersion}
+	needUpdate := D2VersionHandler(orm, params)
+	if needUpdate || true {
+		// 强制更新数据-先清空后插入(以放原始数据被更改过)
+		// 分批次写入-无需锁表
+		// 写入中文数据
+		ZhData := manifestRes.JsonWorldComponentContentPaths.ZhChs
+		typ := reflect.TypeOf(ZhData)
+		val := reflect.ValueOf(ZhData) //获取reflect.Type类型
 
-// }
-// var JsonRes map[string]InfoDisplay
-// ManifestFetchInfo 查询解析url数据并写入 InfoDisplayDB 表
-func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
+		kd := val.Kind() //获取到a对应的类别
+		if kd != reflect.Struct {
+			log.Info("expect struct")
+		}
+		//获取到该结构体有几个字段
+		num := val.NumField()
+
+		//遍历结构体的所有字段
+		for i := 0; i < num; i++ {
+			tagVal := typ.Field(i).Tag.Get("json")
+			ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm)
+
+		}
+	}
+}
+
+// ManifestFetchInfo 查询解析url数据并写入 InfoMenifestBaseDB 表
+func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB) {
 	u, err := url.Parse(BungieBase)
 	u.Path = path.Join(u.Path, josnFile)
 	url := u.String()
 	spaceClient := http.Client{
 		Timeout: time.Second * 999, // Maximum of 10 secs
 	}
-
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.Warn(err)
 	}
 
-	req.Header.Set("User-Agent", "spacecount-tutorial")
-	// req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
+	req.Header.Add("X-API-Key", config.BungieXApiKey)
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
@@ -167,8 +210,7 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
 	if jsonErr != nil {
 		log.Warn(jsonErr)
 	}
-	// 二维数组存在插入数据库的数据，没
-	data := make([]InfoDisplayDB, 0)
+	var paramList [][]interface{}
 	// 对名字进行去重
 	_nameTmp := make([]string, 0)
 	_handler := func(name string) bool {
@@ -181,45 +223,26 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, ch chan bool) {
 		return true
 	}
 	for itemid := range ResJson {
-		// 只记录有Description或者存在icon的数据
-		// strings.Replace(ResJson[itemid].Properties.Description, "<", "",-1)
-		// pat := "[0-9]+.[0-9]+"
+
+		// 格式化数据-为字符串
+		// "itemid", "description", "name", "icon", "tag", "seasonid" 遵循默认排序
+		var _SeasonId string
 		_Description := ResJson[itemid].Properties.Description
 		_Icon := ResJson[itemid].Properties.Icon
 		_Name := ResJson[itemid].Properties.Name
+		if ResJson[itemid].SeasonHash > 0 {
+			_SeasonId = fmt.Sprintf("%d", ResJson[itemid].SeasonHash)
+		}
+
 		if (_Description != "" || _Icon != "") && _handler(_Name) {
-			// u.Path = path.Join(u.Path, _Icon)
-			// iconurl := u.String()
-			data = append(data, InfoDisplayDB{ItemId: itemid, Tag: tag, Icon: _Icon, Description: _Description, Name: _Name})
+			_params := []interface{}{itemid, _Description, _Name, _Icon, tag, _SeasonId}
+			paramList = append(paramList, _params)
 		}
 	}
 
 	// 写入数据库
-	if len(data) > 0 {
-		// 大于 800 分批处理
-		// https://gitsea.com/2013/04/23/sqlite-too-many-sql-variables/
-		// sqlite报错:Sqlite too many SQL variables
-		_batch := len(data) / 800
-		if _batch >= 1 {
-			for i := 0; i < _batch; i++ {
-				_data := data[i*800 : (i+1)*800]
-				r := orm.Create(&_data)
-				if r.Error != nil {
-					log.Info(r.Error)
-				}
-			}
-		} else {
-			r := orm.Create(&data)
-			if r.Error != nil {
-				log.Info(r.Error)
-			}
-		}
-
-	}
+	InsertMenifestHandler(orm, paramList)
 	log.Infof(tag + " down!")
-	// jsonBytes, _ := json.Marshal(p)
-	// 写入InfoDisplayDB表
-	// return ResJson.Response.JsonWorldComponentContentPaths.ZhChs, nil
 }
 
 // PlayerBaseInfo 基础信息查询

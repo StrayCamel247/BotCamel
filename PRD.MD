@@ -3,10 +3,6 @@
 
 > 星级表示优先度-越多约优先-最多五颗星
 ## QQ机器人
-### 基础功能
-| 需求 | api/处理逻辑 | 需求状态 | 备注 |开发人 |
-|:------:|:------:|:------:|:------:|:------:|
-| 并发处理的实现 |  |  |  | |
 
 ### 指令表
 ### QQ私聊功能
@@ -38,8 +34,9 @@
 | perk信息查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
 | skill光能技能查询|  | 完成 | 返回对信息的介绍 |[StrayCamel247](https://github.com/StrayCamel247)|
 | 动态生成菜单|  |  |  ||
-| ✨查pvp战绩 |  | 完成 | https://www.bungie.net/Platform/Destiny2/3/Account/xxx/Stats/|[StrayCamel247](https://github.com/StrayCamel247)|
+| 查pvp战绩 |  | 完成 | https://www.bungie.net/Platform/Destiny2/3/Account/xxx/Stats/|[StrayCamel247](https://github.com/StrayCamel247)|
 | ✨查pve战绩 |  | 待认领 |  |
+| ✨✨查战绩 | 战绩查询支持steamid destiny2 id；支持输入指定平台-支持若只输入id-输出多个平台的数据 | 待认领 |  ||
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |
 | ✨bot定时任务-每周三3.00 am触发 |  | 待认领 |  |
 | ✨bot定时任务-每天3.00 am触发 |  | 待认领 |  |
