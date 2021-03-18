@@ -54,7 +54,6 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	if len(dataArray) == 0 {
 		return
 	}
-	_truncateDB := D2Table["destiny2_menifest_base"]
 	_insertBase := `
 	
 	INSERT INTO destiny2_menifest_base 
@@ -66,7 +65,6 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 		(CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, 
 			'%s', '%s', '%s', '%s', '%s', '%s')
 	`
-	utils.Execute(orm, _truncateDB, nil)
 	_batch := len(dataArray) / 800
 	if _batch >= 1 {
 		for i := 0; i < _batch; i++ {

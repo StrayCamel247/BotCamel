@@ -41,7 +41,7 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 		go itemGenerateImg(content, "item", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2day.Keys):
-		dayGenerateImg("day", c, msg)
+		go dayGenerateImg("day", c, msg)
 
 	case handler.EqualFolds(com, command.D2week.Keys):
 		go d2uploadImgByFlag("week", c, msg)

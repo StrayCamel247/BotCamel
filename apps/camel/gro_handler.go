@@ -193,43 +193,44 @@ func downloadImg(filename, url string) error {
 	return nil
 }
 
-func getItemId(content string, orm *gorm.DB) (itemids []string, des string, err error) {
+func getItemId(content string, orm *gorm.DB) (itemids []string) {
 	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
 	// db.Create(&models.User{Profile: profile, Name: "silence"})
 	baseapis.InfoMenifestBaseDBCheck(orm)
 
 	// 获取item id
-	var results = []baseapis.ItemIdDB{}
-	_ = orm.Model(&baseapis.InfoMenifestBaseDB{}).Find(&results, baseapis.InfoMenifestBaseDB{Name: content})
-	for _, v := range results {
-		// 只返回固定tag的标签
-		if v.Tag == "DestinyInventoryItemLiteDefinition" {
-			itemids = append(itemids, v.ItemId)
-		}
-		// 将标签数据进行返回
-		if !handler.EqualFolds(v.Description, command.DesChecker.Keys) {
-			_des := strings.ReplaceAll(v.Description, "\n\n", "\n")
-			if !strings.Contains(des, _des) {
-				if des != "" {
-					des += "\n" + _des
-				} else {
-					des += _des
-				}
+	// var results = []baseapis.ItemIdDB{}
+	// _ = orm.Model(&baseapis.InfoMenifestBaseDB{}).Find(&results, baseapis.InfoMenifestBaseDB{Name: content})
+	// for _, v := range results {
+	// 	// 只返回固定tag的标签
+	// 	if v.Tag == "DestinyInventoryItemLiteDefinition" {
+	// 		itemids = append(itemids, v.ItemId)
+	// 	}
+	// 	// 将标签数据进行返回
+	// 	if !handler.EqualFolds(v.Description, command.DesChecker.Keys) {
+	// 		_des := strings.ReplaceAll(v.Description, "\n\n", "\n")
+	// 		if !strings.Contains(des, _des) {
+	// 			if des != "" {
+	// 				des += "\n" + _des
+	// 			} else {
+	// 				des += _des
+	// 			}
 
-			}
-		}
+	// 		}
+	// 	}
 
-	}
-	return itemids, des, nil
+	// }
+	itemids = IdQuery(orm, map[string]interface{}{"name": content})
+	return itemids
 }
 
 // item 图片生成
 func itemGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
 
-	itemId, des, err := getItemId(content, orm)
-	if err != nil {
-		panic(err)
-	}
+	itemId := getItemId(content, orm)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
 	rMsg := message.NewSendingMessage()
@@ -257,8 +258,8 @@ func itemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 			// 图片调用成功
 			if len(rMsg.Elements) > 0 {
 				c.SendGroupMessage(msg.GroupCode, rMsg)
-			} else if des != "" {
-				c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
+				// } else if des != "" {
+				// 	c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
 			} else {
 				c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
 			}
@@ -271,10 +272,7 @@ func itemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 // 介绍生成
 func GenerateDes(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
 
-	_, des, err := getItemId(content, orm)
-	if err != nil {
-		panic(err)
-	}
+	des := DesQuery(orm, map[string]interface{}{"name": content})
 
 	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
 	rMsg := message.NewSendingMessage()

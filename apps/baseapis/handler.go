@@ -27,10 +27,10 @@ import (
 	"strconv"
 	"sync"
 
+	"bytes"
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
-	// "strings"
 	"time"
 )
 
@@ -143,17 +143,22 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	for tableName, tableSql := range D2Table {
 		go DBCheckHandler(orm, tableName, tableSql, &_InItSqls, &wg)
 	}
-	wg.Wait()
-	if len(_InItSqls) > 0 {
-		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
-		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
-	}
+
 	// 检查表里数据是否是最新-若不是或者数据为空-则重新抽数到数据库
 	manifestRes, _ := ManifestFetchResponse()
 	params := map[string]interface{}{"version": manifestRes.NewVersion}
 	needUpdate := D2VersionHandler(orm, params)
 	if needUpdate {
 		// 强制更新数据-先清空后插入(以放原始数据被更改过)
+		var buffer bytes.Buffer
+		// for i := 0; i < _Num; i++ {
+		// 	_InItSqls[k] = v
+
+		// }
+		for _, v := range D2Table {
+			buffer.WriteString(v + ";")
+		}
+		utils.Execute(orm, buffer.String(), nil)
 		// 分批次写入-无需锁表
 		// 写入中文数据
 		ZhData := manifestRes.JsonWorldComponentContentPaths.ZhChs
@@ -172,6 +177,12 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 			tagVal := typ.Field(i).Tag.Get("json")
 			ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm)
 
+		}
+	} else {
+		wg.Wait()
+		if len(_InItSqls) > 0 {
+			// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
+			utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
 		}
 	}
 }
