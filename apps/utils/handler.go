@@ -20,7 +20,7 @@ func init() {
 }
 
 // Execute_batch 批量处理数据
-func Execute_batch(orm *gorm.DB, sql string, orderParamsList [][]interface{}) (lines int) {
+func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interface{}) (lines int) {
 	_paramsLen := len(orderParamsList)
 	if _paramsLen == 0 {
 		return _paramsLen
@@ -30,20 +30,29 @@ func Execute_batch(orm *gorm.DB, sql string, orderParamsList [][]interface{}) (l
 	for i := 0; i < _paramsLen; i++ {
 		_sqlArrys[i] += fmt.Sprintf(string(sql), orderParamsList[i]...)
 	}
-
-	res := orm.Debug().Exec(strings.Join(_sqlArrys, ";"))
-	if res.Error != nil {
-		panic(res.Error)
+	if baseSql == "" {
+		res := orm.Debug().Exec(strings.Join(_sqlArrys, ";"))
+		if res.Error != nil {
+			log.WithError(res.Error)
+		}
+		log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
+		return int(res.RowsAffected)
+	} else {
+		res := orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))
+		if res.Error != nil {
+			log.WithError(res.Error)
+		}
+		log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
+		return int(res.RowsAffected)
 	}
-	log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
-	return int(res.RowsAffected)
+
 }
 
 // Execute 处理数据
 func Execute(orm *gorm.DB, sql string, params interface{}) int64 {
 	res := orm.Debug().Exec(string(sql), params)
 	if res.Error != nil {
-		panic(res.Error)
+		log.WithError(res.Error)
 	}
 
 	log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
@@ -52,7 +61,7 @@ func Execute(orm *gorm.DB, sql string, params interface{}) int64 {
 func Fetch_data_sql(orm *gorm.DB, sql string, resStruct interface{}, params interface{}) (res *gorm.DB) {
 	res = orm.Debug().Raw(string(sql), params).Scan(resStruct)
 	if res.Error != nil {
-		panic(res.Error)
+		log.WithError(res.Error)
 	}
 	log.Infof(fmt.Sprintf("fetch successed lines: %d", res.RowsAffected))
 	return res

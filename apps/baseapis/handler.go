@@ -139,7 +139,6 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	_Num := len(D2Table)
 	log.Infof(fmt.Sprintf("正在检查%d张表...", _Num))
 	wg.Add(_Num)
-	// fmt.Printf("%v", wg)
 	var _InItSqls []string
 	for tableName, tableSql := range D2Table {
 		go DBCheckHandler(orm, tableName, tableSql, &_InItSqls, &wg)
@@ -153,7 +152,7 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	manifestRes, _ := ManifestFetchResponse()
 	params := map[string]interface{}{"version": manifestRes.NewVersion}
 	needUpdate := D2VersionHandler(orm, params)
-	if needUpdate || true {
+	if needUpdate {
 		// 强制更新数据-先清空后插入(以放原始数据被更改过)
 		// 分批次写入-无需锁表
 		// 写入中文数据
@@ -235,6 +234,17 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB) {
 		}
 
 		if (_Description != "" || _Icon != "") && _handler(_Name) {
+			// 单一字符串进行替换
+			// var comDict map[string]string
+			comDict := map[string]string{"'": "\"", "-": "="}
+			for k, v := range comDict {
+				itemid = strings.ReplaceAll(itemid, k, v)
+				_Description = strings.ReplaceAll(_Description, k, v)
+				_Name = strings.ReplaceAll(_Name, k, v)
+				_Icon = strings.ReplaceAll(_Icon, k, v)
+				tag = strings.ReplaceAll(tag, k, v)
+				_SeasonId = strings.ReplaceAll(_SeasonId, k, v)
+			}
 			_params := []interface{}{itemid, _Description, _Name, _Icon, tag, _SeasonId}
 			paramList = append(paramList, _params)
 		}

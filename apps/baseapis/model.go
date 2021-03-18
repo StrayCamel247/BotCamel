@@ -41,6 +41,7 @@ func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 		VALUES
 		(@version)
 		`
+
 		utils.Execute(orm, _insertBase, params)
 		return true
 	}
@@ -55,10 +56,13 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	}
 	_truncateDB := D2Table["destiny2_menifest_base"]
 	_insertBase := `
-		INSERT INTO destiny2_menifest_base 
-		("created_at", "updated_at", "deleted_at", 
-		"itemid", "description", "name", "icon", "tag", "seasonid") 
-		VALUES
+	
+	INSERT INTO destiny2_menifest_base 
+	("created_at", "updated_at", "deleted_at", 
+	"itemid", "description", "name", "icon", "tag", "seasonid") 
+	VALUES
+	`
+	_insertSub := `
 		(CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, 
 			'%s', '%s', '%s', '%s', '%s', '%s')
 	`
@@ -67,11 +71,11 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	if _batch >= 1 {
 		for i := 0; i < _batch; i++ {
 			// 异步
-			utils.Execute_batch(orm, _insertBase, dataArray[i*800:(i+1)*800])
+			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
 	} else {
 		// 异步
-		utils.Execute_batch(orm, _insertBase, dataArray)
+		utils.Execute_batch(orm, _insertBase, _insertSub, dataArray)
 	}
 
 	log.Infof(fmt.Sprintf("Destiny2 数据正在更新 Table: %s", "destiny2_menifest_base"))
