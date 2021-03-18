@@ -27,7 +27,7 @@ import (
 	"strconv"
 	"sync"
 
-	"bytes"
+	// "bytes"
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
@@ -150,15 +150,19 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	needUpdate := D2VersionHandler(orm, params)
 	if needUpdate {
 		// 强制更新数据-先清空后插入(以放原始数据被更改过)
-		var buffer bytes.Buffer
-		// for i := 0; i < _Num; i++ {
-		// 	_InItSqls[k] = v
-
+		// var buffer bytes.Buffer
+		// for _, v := range D2Table {
+		// 	buffer.WriteString(fmt.Sprintf("%s;", v))
 		// }
+		// utils.Execute(orm, buffer.String(), nil)
+
+		// var buffer string
 		for _, v := range D2Table {
-			buffer.WriteString(v + ";")
+			orm.Debug().Exec(v)
+			// buffer += fmt.Sprintf("%s;", v)
 		}
-		utils.Execute(orm, buffer.String(), nil)
+		// print(buffer)
+		// utils.Execute(orm, buffer, nil)
 		// 分批次写入-无需锁表
 		// 写入中文数据
 		ZhData := manifestRes.JsonWorldComponentContentPaths.ZhChs

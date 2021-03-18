@@ -50,7 +50,13 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 
 // Execute 处理数据
 func Execute(orm *gorm.DB, sql string, params interface{}) int64 {
-	res := orm.Debug().Exec(string(sql), params)
+	var res *gorm.DB
+	if params == nil {
+		res = orm.Debug().Exec(string(sql))
+	} else {
+		res = orm.Debug().Exec(string(sql), params)
+	}
+
 	if res.Error != nil {
 		log.WithError(res.Error)
 	}
