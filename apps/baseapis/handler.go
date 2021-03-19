@@ -153,7 +153,7 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
 		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
 	}
-	if needUpdate || true {
+	if needUpdate {
 		// 强制更新数据-先清空后插入(以放原始数据被更改过)
 		// var buffer bytes.Buffer
 		// for _, v := range D2Table {
