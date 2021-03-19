@@ -27,7 +27,7 @@ import (
 	"strconv"
 	"sync"
 
-	// "bytes"
+	"bytes"
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
@@ -153,22 +153,34 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
 		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
 	}
-	if needUpdate {
-		// 强制更新数据-先清空后插入(以放原始数据被更改过)
-		// var buffer bytes.Buffer
-		// for _, v := range D2Table {
-		// 	buffer.WriteString(fmt.Sprintf("%s;", v))
-		// }
-		// print(buffer.String())
-		// utils.Execute(orm, buffer.String(), nil)
+	// 待开发
+	if needUpdate || len(_InItSqls) == _Num {
+		_handler := func(_Data interface{}, LangType string) {
+			typ := reflect.TypeOf(_Data)
+			val := reflect.ValueOf(_Data) //获取reflect.Type类型
 
+			kd := val.Kind() //获取到a对应的类别
+			if kd != reflect.Struct {
+				log.Info("expect struct")
+			}
+			//获取到该结构体有几个字段
+			num := val.NumField()
+
+			//遍历结构体的所有字段
+			for i := 0; i < num; i++ {
+				tagVal := typ.Field(i).Tag.Get("json")
+				// fmt.Printf(fmt.Sprintf("%v", val.Field(i)))
+				go ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, LangType)
+
+			}
+
+		}
 		// 分批次写入-无需锁表
 		// 写入中文数据
-		ZhData := manifestRes.JsonWorldComponentContentPaths.ZhChs
-		typ := reflect.TypeOf(ZhData)
-		val := reflect.ValueOf(ZhData) //获取reflect.Type类型
-
-		kd := val.Kind() //获取到a对应的类别
+		AllData := manifestRes.JsonWorldComponentContentPaths
+		typ := reflect.TypeOf(AllData)
+		val := reflect.ValueOf(AllData) //获取reflect.Type类型
+		kd := val.Kind()                //获取到a对应的类别
 		if kd != reflect.Struct {
 			log.Info("expect struct")
 		}
@@ -177,16 +189,18 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 
 		//遍历结构体的所有字段
 		for i := 0; i < num; i++ {
-			tagVal := typ.Field(i).Tag.Get("json")
-			go ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm)
+			LangType := typ.Field(i).Tag.Get("json")
+			// fmt.Printf("%+v", val.Field(i))
+			go _handler(val.Field(i).Interface(), LangType)
 
 		}
+
 	}
 
 }
 
 // ManifestFetchInfo 查询解析url数据并写入 InfoMenifestBaseDB 表
-func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB) {
+func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 	u, err := url.Parse(BungieBase)
 	u.Path = path.Join(u.Path, josnFile)
 	url := u.String()
@@ -214,6 +228,8 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB) {
 		log.Warn(readErr)
 	}
 	var ResJson map[string]InfoDisplay
+	// error "invalid character 'ï' looking for beginning of value” from json.Unmarsh https://blog.csdn.net/qq_30505673/article/details/97646315
+	body = bytes.TrimPrefix(body, []byte("\xef\xbb\xbf"))
 	jsonErr := json.Unmarshal(body, &ResJson)
 	if jsonErr != nil {
 		log.Warn(jsonErr)
@@ -254,7 +270,7 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB) {
 				tag = strings.ReplaceAll(tag, k, v)
 				_SeasonId = strings.ReplaceAll(_SeasonId, k, v)
 			}
-			_params := []interface{}{itemid, _Description, _Name, _Icon, tag, _SeasonId}
+			_params := []interface{}{itemid, _Description, _Name, _Icon, tag, _SeasonId, LangType}
 			paramList = append(paramList, _params)
 
 		}

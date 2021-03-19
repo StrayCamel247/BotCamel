@@ -138,8 +138,7 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 	if !PathExists(fileName) {
 		err := downloadImg(fileName, url)
 		if err != nil {
-			log.Println(err)
-			// panic(err)
+			log.WithError(err)
 			return m, err
 		}
 	}
@@ -147,8 +146,7 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 	if PathExists(fileName) {
 		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
 		if err != nil {
-			log.Println(err)
-			// log.Warnf(err)
+			log.WithError(err)
 			return m, err
 		}
 		// m := message.NewSendingMessage().Append(_img)
@@ -164,6 +162,7 @@ func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessag
 	out := baseapis.DataInfo(flag)
 	m, err := d2uploadImgByUrl(flag, out, c, msg)
 	if err != nil {
+		log.WithError(err)
 		return err
 	}
 	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
@@ -171,10 +170,27 @@ func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessag
 }
 
 func downloadImg(filename, url string) error {
-	res, err := http.Get(url)
+	spaceClient := http.Client{
+		Timeout: time.Second * 999, // Maximum of 10 secs
+	}
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Warn(err)
+	}
+
+	res, getErr := spaceClient.Do(req)
+	if getErr != nil {
+		log.Warn(getErr)
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+	// res, err := http.Get(url)
 	log.Info(fmt.Sprintf("正在下载%s", url))
 	if err != nil {
 		fmt.Println("图片下载失败；url")
+		log.WithError(err)
 		return err
 	}
 	defer res.Body.Close()
@@ -183,7 +199,7 @@ func downloadImg(filename, url string) error {
 
 	file, err := os.Create(filename)
 	if err != nil {
-		panic(err)
+		log.WithError(err)
 	}
 	// 获得文件的writer对象
 	writer := bufio.NewWriter(file)
@@ -193,7 +209,7 @@ func downloadImg(filename, url string) error {
 	return nil
 }
 
-func getItemId(content string, orm *gorm.DB) (itemids []string) {
+func getItemId(content string, orm *gorm.DB) (itemids [][2]string) {
 	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
 	// db.Create(&models.User{Profile: profile, Name: "silence"})
 	// baseapis.InfoMenifestBaseDBCheck(orm)
@@ -238,16 +254,20 @@ func itemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 
 		// 上传文件是否报错
 		_errFlag := false
-		for _, _id := range itemId {
-			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s", _id)
+		for _, info := range itemId {
+			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
 			url := url2.QueryEscape(baseUrl)
+			url = baseUrl
 			width := 1280
 			height := 800
 			full_page := 1
 			query := "https://www.screenshotmaster.com/api/v1/screenshot"
 			query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
 				v, url, width, height, full_page)
-			m, err := d2uploadImgByUrl(flag+_id, query, c, msg)
+			m, err := d2uploadImgByUrl(flag+info[0], query, c, msg)
+			if err != nil {
+				log.WithError(err)
+			}
 			rMsg = rMsg.Append(m)
 			_errFlag = _errFlag || err != nil
 		}

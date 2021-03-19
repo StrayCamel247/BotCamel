@@ -28,7 +28,7 @@ func init() {
 // des 介绍信息查询
 func DesQuery(orm *gorm.DB, params interface{}) string {
 	type ReStruct struct {
-		Des string `json:"description"`
+		Des string `gorm:"column:description"`
 	}
 	var resStruct ReStruct
 	_sql := `
@@ -51,24 +51,44 @@ func DesQuery(orm *gorm.DB, params interface{}) string {
 }
 
 // id itemid查询
-func IdQuery(orm *gorm.DB, params interface{}) []string {
+func IdQuery(orm *gorm.DB, params interface{}) (res [][2]string) {
 	type ReStruct struct {
-		ItemId []string `json:"itemid"`
+		ItemId  string `gorm:"column:itemid"`
+		ChtName string `gorm:"column:name"`
 	}
-	var resStruct ReStruct
+	var resStruct []ReStruct
 	_sql := `
-		select
-			itemid
-		from
-			destiny2_menifest_base
-		where
-			name = @name
-			and itemid is not null
-			and itemid != ' '
-			and itemid != ''
-			and tag = 'DestinyInventoryItemLiteDefinition'
-		group by itemid
+		with zhChtData as (
+			select itemid, name
+			from
+				destiny2_menifest_base
+			where
+				language = 'zh-cht'
+		)
+		, base as (
+			select
+				itemid
+			from
+				destiny2_menifest_base
+			where
+				name = @name
+				and itemid is not null
+				and itemid != ' '
+				and itemid != ''
+				and tag = 'DestinyInventoryItemLiteDefinition'
+			group by itemid
+		)
+		select 
+			base.itemid
+			,t.name
+		from base
+		left join zhChtData t
+			on base.itemid = t.itemid
+		
 	`
 	utils.Fetch_data_sql(orm, _sql, &resStruct, params)
-	return resStruct.ItemId
+	for _, v := range resStruct {
+		res = append(res, [2]string{v.ItemId, v.ChtName})
+	}
+	return res
 }

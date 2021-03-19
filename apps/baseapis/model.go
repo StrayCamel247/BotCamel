@@ -24,12 +24,12 @@ import (
 // D2VersionHandler 返回true需要更新数据-false则不需要更新
 func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 	type versionRestruct struct {
-		Version string `json:"count"`
+		Version string `json:"version"`
 	}
 	var resStruct versionRestruct
 	_sql := `
 		select 
-		version
+			version
 		from destiny2_version
 		where version = @version
 	`
@@ -58,12 +58,12 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	
 	INSERT INTO destiny2_menifest_base 
 	("created_at", "updated_at", "deleted_at", 
-	"itemid", "description", "name", "icon", "tag", "seasonid") 
+	"itemid", "description", "name", "icon", "tag", "seasonid", "language") 
 	VALUES
 	`
 	_insertSub := `
 		(CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL, 
-			'%s', '%s', '%s', '%s', '%s', '%s')
+			'%s', '%s', '%s', '%s', '%s', '%s', '%s')
 	`
 	_batch := len(dataArray) / 800
 	if _batch >= 1 {

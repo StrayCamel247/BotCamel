@@ -64,6 +64,9 @@ func Execute(orm *gorm.DB, sql string, params interface{}) int64 {
 	log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
 	return res.RowsAffected
 }
+
+// 获取数据
+
 func Fetch_data_sql(orm *gorm.DB, sql string, resStruct interface{}, params interface{}) (res *gorm.DB) {
 	res = orm.Debug().Raw(string(sql), params).Scan(resStruct)
 	if res.Error != nil {

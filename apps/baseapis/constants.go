@@ -37,6 +37,7 @@ func init() {
 		"itemid" text,    -- 主键itemid
 		"description" text,   -- 描述
 		"name" text,  -- 中文名称
+		"language" text,  -- 语言类型
 		"icon" text,  -- destiny2官方图标
 		"tag" text,   -- tag标签
 		"seasonid" text  -- 赛季itemid
@@ -45,6 +46,11 @@ func init() {
 		-- ----------------------------
 		-- Indexes structure for table destiny2_menifest_base
 		-- ----------------------------
+		DROP INDEX IF EXISTS "destiny2_menifest_base_name";
+		CREATE INDEX "destiny2_menifest_base"
+		ON "destiny2_menifest_base_name" (
+		"name" DESC
+		);
 	`
 	// item perk 关系表
 	D2Table["destiny2_item_perk"] = `
