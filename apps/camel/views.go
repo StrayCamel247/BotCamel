@@ -1,15 +1,41 @@
 package camel
 
 import (
-
-	// "fmt"
+	"time"
 	// "github.com/Logiase/gomirai"
 	"github.com/Mrs4s/MiraiGo/client"
 	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 )
+
+func BaseRefreshHandler() {
+	for {
+		// 每分钟触发一次
+		time.Sleep(time.Minute * 1)
+		t := time.Now()
+		_weekNum := int(t.Weekday())
+		switch {
+		case _weekNum == 3:
+			// 周三触发
+			if t.Hour() == 1 {
+				go RefreshDayHandler("0x02", baseapis.DataInfo("0x02"))
+			}
+		// 每天触发
+		default:
+			// 更新日报信息-每天一点开始轮询更新
+			if t.Hour() == 1 {
+				go RefreshDayHandler("0x03", DayGenUrl)
+				go RefreshDayHandler("0x04", baseapis.DataInfo("0x04"))
+				go RefreshDayHandler("0x05", baseapis.DataInfo("0x05"))
+				go RefreshDayHandler("0x06", baseapis.DataInfo("0x06"))
+			}
+
+		}
+	}
+}
 
 // GroMsgHandler 群聊信息获取并返回
 
@@ -41,19 +67,19 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 		go itemGenerateImg(content, "item", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2day.Keys):
-		go dayGenerateImg("day", c, msg)
+		go dayGenerateImg("0x03", c, msg)
 
 	case handler.EqualFolds(com, command.D2week.Keys):
-		go d2uploadImgByFlag("week", c, msg)
+		go d2uploadImgByFlag("0x02", c, msg)
 
 	case handler.EqualFolds(com, command.D2xiu.Keys):
-		go d2uploadImgByFlag("nine", c, msg)
+		go d2uploadImgByFlag("0x04", c, msg)
 
 	case handler.EqualFolds(com, command.D2trial.Keys):
-		go d2uploadImgByFlag("trial", c, msg)
+		go d2uploadImgByFlag("0x05", c, msg)
 
 	case handler.EqualFolds(com, command.D2dust.Keys):
-		go d2uploadImgByFlag("dust", c, msg)
+		go d2uploadImgByFlag("0x06", c, msg)
 
 	case handler.EqualFolds(com, command.D2random.Keys):
 		go randomHandler(c, msg)

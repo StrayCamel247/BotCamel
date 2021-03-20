@@ -42,6 +42,9 @@ func init() {
 	config = con.GetConfig(false)
 }
 
+// 常量声明
+const DayGenUrl string = "http://www.tianque.top/d2api/today/"
+
 // AnalysisMsg 解析消息体的数据，对at类型、文本类型、链接、图片等不同格式的消息进行不同的处理
 
 func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, com, content string) {
@@ -124,8 +127,7 @@ func PathExists(path string) bool {
 	fmt.Println("File reading error", err)
 	return false
 }
-
-func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.GroupMessage) (m *message.GroupImageElement, err error) {
+func D2DownloadHandler(flag string, url string) (fileName string, updated bool) {
 	var _imgFileDate string
 	if handler.EqualFolds(flag, command.D2xiu.Keys) || handler.EqualFolds(flag, command.D2day.Keys) {
 		// 日更新
@@ -134,14 +136,22 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
-	fileName := fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
+	fileName = fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
+		// 文件不存在-下载文件
+		log.Info(fmt.Sprintf("正在下载文件 url: %s", url))
 		err := downloadImg(fileName, url)
 		if err != nil {
 			log.WithError(err)
-			return m, err
 		}
+		log.Info(fmt.Sprintf("文件下载完成 url: %s", url))
+		updated = true
 	}
+	return fileName, updated
+}
+
+func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.GroupMessage) (m *message.GroupImageElement, err error) {
+	fileName, _ := D2DownloadHandler(flag, url)
 	// 上传磁盘内指定的文件
 	if PathExists(fileName) {
 		_img, err := c.UploadGroupImageByFile(msg.GroupCode, fileName)
@@ -153,11 +163,12 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 		return _img, nil
 		// c.SendGroupMessage(msg.GroupCode, m)
 	} else {
-		fmt.Println("File downloading error")
+		fmt.Println("图片获取失败")
 	}
 	return m, nil
 }
 
+// 根据-老九-试炼-光尘-等关键词获取并上传最新数据
 func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessage) error {
 	out := baseapis.DataInfo(flag)
 	m, err := d2uploadImgByUrl(flag, out, c, msg)
@@ -169,7 +180,16 @@ func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessag
 	return nil
 }
 
+// 文件下载
 func downloadImg(filename, url string) error {
+	// 记录时间
+	_nowTime := time.Now()
+	_timeCostLogger := func(start time.Time) {
+		tc := time.Since(start)
+		log.Info(fmt.Sprintf("time cost = %v\n", tc))
+	}
+	defer _timeCostLogger(_nowTime)
+	// 构造请求头
 	spaceClient := http.Client{
 		Timeout: time.Second * 999, // Maximum of 10 secs
 	}
@@ -186,8 +206,6 @@ func downloadImg(filename, url string) error {
 	if res.Body != nil {
 		defer res.Body.Close()
 	}
-	// res, err := http.Get(url)
-	log.Info(fmt.Sprintf("正在下载%s", url))
 	if err != nil {
 		fmt.Println("图片下载失败；url")
 		log.WithError(err)
@@ -236,6 +254,7 @@ func getItemId(content string, orm *gorm.DB) (itemids [][2]string) {
 	// 	}
 
 	// }
+	// 获取itmid
 	itemids = IdQuery(orm, map[string]interface{}{"name": content})
 	return itemids
 }
@@ -305,7 +324,7 @@ func GenerateDes(content, flag string, c *client.QQClient, msg *message.GroupMes
 }
 
 func dayGenerateImg(flag string, c *client.QQClient, msg *message.GroupMessage) {
-	url := "http://www.tianque.top/d2api/today/"
+	url := DayGenUrl
 	spaceClient := http.Client{
 		Timeout: time.Second * 999, // Maximum of 10 secs
 	}
@@ -315,7 +334,6 @@ func dayGenerateImg(flag string, c *client.QQClient, msg *message.GroupMessage) 
 	}
 
 	req.Header.Set("User-Agent", "spacecount-tutorial")
-	// req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {

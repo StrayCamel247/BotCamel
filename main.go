@@ -11,6 +11,8 @@ import (
 	"github.com/StrayCamel247/BotCamel/global/terminal"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	easy "github.com/t-tomalak/logrus-easy-formatter"
+	// 使用hook的方式让Logrus拥有输出日志时输出源代码所在文件和行号功能
+	// caller "github.com/xdxiaodong/logrus-hook-caller"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -60,13 +62,19 @@ func init() {
 		os.Exit(1)
 	}
 
-	// 在debug模式下,将在标准输出中打印当前执行行数
-	if conf.Debug {
-		log.SetReportCaller(true)
-	}
-
+	// 将在标准输出中打印当前执行行数
+	// if conf.Debug {
+	// 	log.SetReportCaller(true)
+	// }
+	// hook_caller := caller.NewHook(&caller.CallerHookOptions{
+	// 	// DisabledField: true,
+	// 	// EnableFile:    true,
+	// 	// EnableLine:    true,
+	// 	Flags: caller.Llongfile,
+	// })
+	// log.AddHook(hook_caller)
 	log.AddHook(global.NewLocalHook(w, logFormatter, global.GetLogLevel(conf.LogLevel)...))
-
+	log.Info("日志记录启动成功...")
 	if global.PathExists("cqhttp.json") {
 		log.Info("发现 cqhttp.json 将在五秒后尝试导入配置，按 Ctrl+C 取消.")
 		log.Warn("警告: 该操作会删除 cqhttp.json 并覆盖 config.hjson 文件.")

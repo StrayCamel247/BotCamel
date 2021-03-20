@@ -38,7 +38,13 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 		log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
 		return int(res.RowsAffected)
 	} else {
-		res := orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))
+		// 如果数据量大于20 不打印日志
+		var res *gorm.DB
+		if len(_sqlArrys) > 20 {
+			res = orm.Exec(baseSql + strings.Join(_sqlArrys, ","))
+		} else {
+			res = orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))
+		}
 		if res.Error != nil {
 			log.WithError(res.Error)
 		}

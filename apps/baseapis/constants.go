@@ -2,7 +2,7 @@ package baseapis
 
 import (
 	"fmt"
-	"github.com/Logiase/MiraiGo-Template/utils"
+	// "github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/StrayCamel247/BotCamel/global"
 )
 
@@ -76,7 +76,7 @@ func init() {
 	`
 }
 
-var logger = utils.GetModuleLogger("NmslApi_handler")
+// var logger = utils.GetModuleLogger("NmslApi_handler")
 
 // Bungie-api
 var BungiePlatformRoot = "https://www.bungie.net/Platform"

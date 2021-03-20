@@ -18,6 +18,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/Mrs4s/MiraiGo/utils"
 	"github.com/StrayCamel247/BotCamel/apps/baseapis"
+	"github.com/StrayCamel247/BotCamel/apps/camel"
 	"github.com/StrayCamel247/BotCamel/global"
 	jsoniter "github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
@@ -95,11 +96,8 @@ func NewQQBot(cli *client.QQClient, conf *global.JSONConfig) *CQBot {
 	bot.Client.OnUserWantJoinGroup(bot.groupJoinReqEvent)
 	bot.Client.OnOtherClientStatusChanged(bot.otherClientStatusChangedEvent)
 	bot.Client.OnGroupDigest(bot.groupEssenceMsg)
-	// bot定时任务
-	// 每周三凌晨3.00触发刷新命运2数据库-并批量处理perk-生成图片备用
-	// 每周三凌晨3.00触发周报-光尘商店 图片备用
-	// 每天3.00触发日报-试炼信息图片
-	//
+	// 触发定时器轮询功能
+	go camel.BaseRefreshHandler()
 	go func() {
 		i := conf.HeartbeatInterval
 		if i < 0 {

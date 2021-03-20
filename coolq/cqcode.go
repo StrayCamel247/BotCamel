@@ -97,7 +97,7 @@ type LocalVideoElement struct {
 
 // Type 获取元素类型ID
 func (e *GiftElement) Type() message.ElementType {
-	// Make message.IMessageElement Happy
+	// Make message.IMessageElement Happye
 	return message.At
 }
 

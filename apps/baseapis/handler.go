@@ -39,17 +39,6 @@ func init() {
 
 }
 
-// NmslErrHandler 报错处理
-func NmslErrHandler(err error) (_msg string) {
-	concat := "xx"
-	_msg = fmt.Sprintf("unable to fetch data from nmsl, pls concat %s", concat)
-	if concat == "" {
-		logger.WithError(err).Errorf("unable to read config file MASTERCONTACT")
-	}
-	return _msg
-
-}
-
 // AssKisserHandler 彩虹屁生成
 func AssKisserHandler(from string) string {
 	if from == "" {
@@ -389,13 +378,13 @@ func (r *ReturnData) gain(flag string) string {
 	if err != nil || err1 != nil {
 		r.Code = 5001
 		r.Msg = "获取失败"
-	} else if flag == "week" {
+	} else if flag == "0x02" {
 		return string(zhoubao)
-	} else if flag == "nine" {
+	} else if flag == "0x04" {
 		return string(laojiu)
-	} else if flag == "trial" {
+	} else if flag == "0x05" {
 		return string(shilian)
-	} else if flag == "dust" {
+	} else if flag == "0x06" {
 		return string(dustDetailUrl)
 	} else {
 		var imgurls = ImgUrls{Zhoubao: zhoubao, Laojiu: laojiu, Shilian: shilian}
