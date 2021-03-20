@@ -41,7 +41,7 @@
 | ✨查pve战绩 |  | 待认领 |  |
 | ✨✨查战绩 | 战绩查询支持steamid destiny2 id；支持输入指定平台-支持若只输入id-输出多个平台的数据 | 待认领 |  ||
 | ✨哪些perk属i于PVP或者PVE |  | 待认领 |  |
-| ✨bot定时任务-每周三3.00 am触发 |  | 待认领 |  |
-| ✨bot定时任务-每天3.00 am触发 |  | 待认领 |  |
+| ✨bot定时任务-每周三3.00 am触发 |  | 完成 |  [StrayCamel247](https://github.com/StrayCamel247)|
+| ✨bot定时任务-每天3.00 am触发 |  | 完成 |  [StrayCamel247](https://github.com/StrayCamel247)|
 | ✨可查询群文件-通过文件名来发送文件 | 触发-文件名-事件-发送文件 | 待认领 |  |
 
