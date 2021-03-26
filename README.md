@@ -47,7 +47,7 @@ https://github.com/Mrs4s/go-cqhttp/
   - 安装go（很简单百度就会了）
   - [安装gcc](https://zhuanlan.zhihu.com/p/47935258),数据库需要用（若没有数据库，无法使用命运2 的中文查询词条/武器功能）
   - 配置机器人qq账号密码
-  - 安装谷歌浏览器
+  - [安装谷歌浏览器](https://wangxin1248.github.io/linux/2018/09/ubuntu18.04-install-chrome-headless.html)；`sudo apt-get install ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy`中文乱码问题-下载字体  
   - 启动命令:`go run main.go` 若没有配置文件会生成一个配置文件
   - `config.hjson`生成或者已存在-文件内填写qq账号密码；  
   - `apps\base_default.yaml`配置对话

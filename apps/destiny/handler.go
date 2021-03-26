@@ -86,15 +86,14 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	for tableName, tableSql := range D2Table {
 		DBCheckHandler(orm, tableName, tableSql, &_InItSqls)
 	}
-
-	// 检查表里数据是否是最新-若不是或者数据为空-则重新抽数到数据库
-	manifestRes, _ := ManifestFetchResponse()
-	params := map[string]interface{}{"version": manifestRes.NewVersion}
-	needUpdate := D2VersionHandler(orm, params)
 	if len(_InItSqls) > 0 {
 		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
 		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
 	}
+	// 检查表里数据是否是最新-若不是或者数据为空-则重新抽数到数据库
+	manifestRes, _ := ManifestFetchResponse()
+	params := map[string]interface{}{"version": manifestRes.NewVersion}
+	needUpdate := D2VersionHandler(orm, params)
 	// 待开发
 	if needUpdate || len(_InItSqls) == _Num {
 		_handler := func(_Data interface{}, LangType string) {

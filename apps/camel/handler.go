@@ -139,7 +139,7 @@ func FileNameGenerator(flag string) string {
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
-	return fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
+	return fmt.Sprintf("./tmp/%s/%s.jpg", flag, _imgFileDate)
 }
 func D2DownloadHandler(flag string, url string) (fileName string, updated bool) {
 	var _imgFileDate string
@@ -150,7 +150,7 @@ func D2DownloadHandler(flag string, url string) (fileName string, updated bool) 
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
-	fileName = fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
+	fileName = fmt.Sprintf("./tmp/%s/%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
 		// 文件不存在-下载文件
 		log.Info(fmt.Sprintf("正在下载文件 url: %s", url))
@@ -259,25 +259,21 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 	if !handler.PathExists(_fileName) {
 		// 检查item-id是否为正确的item
 		log.Infof("item检查网页...")
-		ch := make(chan string)
-		_chechHandler := func(url string) {
-			if lightGG.LightGGChecker(url) {
-				ch <- url
-			}
-		}
+		var checkedUrl string
 		for _, info := range itemId {
 			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
 			// url := url2.QueryEscape(baseUrl)
 			// url = baseUrl
-			go _chechHandler(baseUrl)
+			if lightGG.LightGGChecker(url) {
+				checkedUrl = url
+			}
 
 		}
-		url := <-ch
 		log.Infof("item网页检查完毕...")
-		if url != "" {
-			log.Infof(fmt.Sprintf("%s网页截图ing", url))
-			lightGG.UrlShotCutHandler(url, _fileName)
-			log.Infof(fmt.Sprintf("%s网页截图完毕", url))
+		if checkedUrl != "" {
+			log.Infof(fmt.Sprintf("%s网页截图ing", checkedUrl))
+			lightGG.UrlShotCutHandler(checkedUrl, _fileName)
+			log.Infof(fmt.Sprintf("%s网页截图完毕", checkedUrl))
 		} else {
 			log.Warnf(fmt.Sprintf("light 查无网页 %s", content+flag))
 
