@@ -107,16 +107,3 @@ func GroJoinHandler(c *client.QQClient, group *client.GroupInfo) {
 	m := message.NewSendingMessage().Append(message.NewText(out))
 	c.SendGroupMessage(group.Code, m)
 }
-
-// 离开群聊-都被t了怎么发文字，，，，开发了个寂寞
-
-// func GroLeaveHandler(c *client.QQClient, e *client.GroupLeaveEvent) {
-// 	if e.Operator != nil {
-// 		out := BaseAutoreply("0x01") + "\n"
-// 		message.NewSendingMessage().Append(message.NewAt(e.Operator.Uin, e.Operator.Nickname)).Append(message.NewText(out))
-// 	} else {
-// 		out := BaseAutoreply("0x00") + "\n"
-// 		message.NewSendingMessage().Append(message.NewText(out))
-// 		// log.Infof("Bot退出了群 %v.", formatGroupName(e.Group))
-// 	}
-// }

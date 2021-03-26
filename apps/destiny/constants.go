@@ -85,12 +85,6 @@ var BungieBase = "https://www.bungie.net/"
 // https://www.bungie.net/Platform/Destiny2/Manifest/ 所有点Definition对应表 zh-chs
 var BunigieManifestUrl = "https://www.bungie.net/Platform/Destiny2/Manifest/"
 
-// 沙雕app-骂人
-var nmslAPI = "https://nmsl.shadiao.app/api.php?from=%s"
-
-// 沙雕app-夸人
-var lickAPI = "https://chp.shadiao.app/api.php?from=%s"
-
 // 玩家pvp-pve生涯记录数据查询-接口
 var profileAPI = func(fireId string) string {
 	return fmt.Sprintf("https://www.bungie.net/Platform/Destiny2/3/Account/%s/Stats/", fireId)
