@@ -6,6 +6,7 @@ require (
 	github.com/Logiase/MiraiGo-Template v0.0.0-20210309153626-69cfb14d2cd1
 	github.com/Mrs4s/MiraiGo v0.0.0-20210316010642-701321c7139c
 	github.com/Mrs4s/go-cqhttp v0.9.40
+	github.com/benbjohnson/phantomjs v0.0.0-20181211182228-6499a20f5cd6
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/chromedp/cdproto v0.0.0-20210323015217-0942afbea50e
 	github.com/chromedp/chromedp v0.6.10

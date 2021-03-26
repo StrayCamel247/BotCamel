@@ -8,8 +8,8 @@ coffee : |
   │ 拿铁  ├╯
   │ ██  │
   ╰───╯
-menu : |
-  github.com/StrayCamel247/BotCamel
+menu : `
+github.com/StrayCamel247/BotCamel
   快来领bug修修我吧~
   ===== command =====
   =  base
@@ -28,6 +28,9 @@ menu : |
   ++ 0x0a skill 查询技能等信息
   ++ 0x0c pvp 查询pvp信息
   = more-devploping
+`
+
+  
 test : |
   一个测试工程师走进一家酒吧，要了一杯啤酒
   一个测试工程师走进一家酒吧，要了一杯咖啡
