@@ -25,7 +25,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	url2 "net/url"
+	// url2 "net/url"
 	"os"
 	// "reflect"
 	// "regexp"
@@ -272,33 +272,41 @@ func getItemId(content string, orm *gorm.DB) (itemids [][2]string) {
 	item 物品查询并上传
 */
 func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
-
 	itemId := getItemId(content, orm)
-
-	// 检查item-id是否为正确的item
-	ch := make(chan string)
-	_chechHandler := func(url string) {
-		if LightGGChecker(url) {
-			ch <- url
-		}
-	}
-	for _, info := range itemId {
-		baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
-		url := url2.QueryEscape(baseUrl)
-		url = baseUrl
-		go _chechHandler(url)
-
-	}
-	url := <-ch
 	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
 	rMsg := message.NewSendingMessage()
 	// 生成文件名
 	_fileName := FileNameGenerator(flag + content)
 	// 文件不存在则生成-若存在则直接上传
 	if !handler.PathExists(_fileName) {
-		UrlShotCutHandler(url, _fileName)
-	}
+		// 检查item-id是否为正确的item
+		log.Infof("item检查网页...")
+		ch := make(chan string)
+		_chechHandler := func(url string) {
+			if LightGGChecker(url) {
+				ch <- url
+			}
+		}
+		for _, info := range itemId {
+			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
+			// url := url2.QueryEscape(baseUrl)
+			// url = baseUrl
+			go _chechHandler(baseUrl)
 
+		}
+		url := <-ch
+		log.Infof("item网页检查完毕...")
+		if url != "" {
+			log.Infof(fmt.Sprintf("%s网页截图ing", url))
+			UrlShotCutHandler(url, _fileName)
+			log.Infof(fmt.Sprintf("%s网页截图完毕", url))
+		} else {
+			log.Warnf(fmt.Sprintf("light 查无网页 %s", content+flag))
+
+		}
+
+	}
+	// 文件存在则上传
 	if PathExists(_fileName) {
 		_ImgMsg, err := c.UploadGroupImageByFile(msg.GroupCode, _fileName)
 		if err != nil {
@@ -306,42 +314,10 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		}
 		c.SendGroupMessage(msg.GroupCode, rMsg.Append(_ImgMsg))
 	} else {
-		log.Warn(fmt.Sprintf("%s图片获取失败", url))
+		log.Warn(fmt.Sprintf("%s图片获取失败", _fileName))
 		c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
 	}
-	// for _, v := range config.MasterShotTokens {
-	// 	// 检查上传文件是否报错-对light.gg网页进行分析-如果为404则跳过此url
-	// 	_errFlag := false
-	// 	for _, info := range itemId {
-	// 		baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
-	// 		url := url2.QueryEscape(baseUrl)
-	// 		url = baseUrl
-	// 		width := 1280
-	// 		height := 800
-	// 		full_page := 1
-	// 		query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
-	// 			v, url, width, height, full_page)
-	// 		aaa := LightGGChecker(baseUrl)
-	// 		print(aaa)
-	// 		if aaa {
 
-	// 			break
-	// 		}
-	// 	}
-	// 	if _errFlag {
-	// 		// 图片获取失败-重新构造消息链
-	// 		rMsg = message.NewSendingMessage()
-	// 	} else {
-	// 		// 图片调用成功
-	// 		if len(rMsg.Elements) > 0 {
-	// 			c.SendGroupMessage(msg.GroupCode, rMsg)
-	// 		} else {
-	// 			c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
-	// 		}
-	// 		return
-
-	// 	}
-	// }
 }
 
 // 介绍生成

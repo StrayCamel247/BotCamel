@@ -43,10 +43,11 @@ https://github.com/Mrs4s/go-cqhttp/
   - `apps\base_default.yaml`配置对话
   - 有问题请在[issue](https://github.com/StrayCamel247/BotCamel/issue)留言
 
-- go run 项目-windows
+- go run 项目
   - 安装go（很简单百度就会了）
   - [安装gcc](https://zhuanlan.zhihu.com/p/47935258),数据库需要用（若没有数据库，无法使用命运2 的中文查询词条/武器功能）
   - 配置机器人qq账号密码
+  - 安装谷歌浏览器
   - 启动命令:`go run main.go` 若没有配置文件会生成一个配置文件
   - `config.hjson`生成或者已存在-文件内填写qq账号密码；  
   - `apps\base_default.yaml`配置对话
@@ -54,6 +55,7 @@ https://github.com/Mrs4s/go-cqhttp/
   - 若启动报错，尝试删除`go.mod`, `go.sum`文件，并运行`go mod init github.com/StrayCamel247/BotCamel`，再运行`go run main.go`启动
   - 若还是有问题请issue
   - 编译`go build`后点击exe文件即可后台运行
+  
 ## REFERENCE
 > 对我有帮助和启发的项目都放在这里了
 https://github.com/azmiao/destiny2_hoshino_plugin/

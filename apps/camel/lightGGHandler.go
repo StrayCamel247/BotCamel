@@ -29,7 +29,6 @@ func LightGGChecker(url string) bool {
 	spider := &Spider{url, header}
 	html := spider.get_html_header()
 	// 404标题
-	//评价人数
 	pattern2 := `<h2>(.*?)</h2>`
 	rp2 := regexp.MustCompile(pattern2)
 	find_txt2 := rp2.FindAllStringSubmatch(html, -1)
@@ -45,7 +44,8 @@ func LightGGChecker(url string) bool {
 func UrlShotCutHandler(url, filename string) {
 	// Start Chrome
 	// Remove the 2nd param if you don't need debug information logged
-	ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
+	// ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
+	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	// Run Tasks
