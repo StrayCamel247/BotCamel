@@ -11,23 +11,20 @@ coffee : |
 menu : |
   github.com/StrayCamel247/BotCamel
   快来领bug修修我吧~
-  ===== command =====
-  ├─  base
-  │  ├─ 00 Asskisser 夸一下
-  │  ├─ 01 Motherfucker 碧池一下
-  ├─	Destiny 2
-  │  ├─ 02 week 周报信息查询
-  │  ├─ 03 day 日报信息查询
-  │  ├─ 04 xiu 老九
-  │  ├─ 05 trial 试炼信息查询
-  │  ├─ 06 dust 光尘信息查询
-  │  ├─ 07 random 掷骰子功能
-  │  ├─ 08 perk 词条信息查询
-  │  ├─ 09 item 物品信息查询
-  │  ├─ 10 npc 查询npc信息
-  │  ├─ 0a skill 查询技能等信息
-  │  ├─ 0c pvp 查询pvp信息
-  └─ more-devploping
+  Asskisser 夸一下
+  Motherfucker 碧池一下
+  week 周报信息查询
+  day 日报信息查询
+  xiu 老九
+  trial 试炼信息查询
+  dust 光尘信息查询
+  random 掷骰子功能
+  perk 词条信息查询
+  item 物品信息查询
+  npc 查询npc信息
+  skill 查询技能等信息
+  pvp 查询pvp信息
+ 
 test : |
   一个测试工程师走进一家酒吧，要了一杯啤酒
   一个测试工程师走进一家酒吧，要了一杯咖啡
