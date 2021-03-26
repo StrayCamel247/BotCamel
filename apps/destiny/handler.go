@@ -1,4 +1,4 @@
-package baseapis
+package destiny
 
 /*
    __author__ : stray_camel
@@ -37,50 +37,6 @@ import (
 func init() {
 	config = con.GetConfig(false)
 
-}
-
-// AssKisserHandler 彩虹屁生成
-func AssKisserHandler(from string) string {
-	if from == "" {
-		from = "xxx"
-	}
-	level := ""
-	_levelParam := fmt.Sprintf("&level=%s", level)
-	resp, err := http.Get(fmt.Sprintf(lickAPI, from) + _levelParam)
-
-	if err != nil {
-		// handle error
-	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		// handle error
-	}
-
-	return fmt.Sprintf(string(body))
-}
-
-// MotherFuckerHandler 抠图芬芳
-func MotherFuckerHandler(from string) string {
-	if from == "" {
-		from = "xxx"
-	}
-	level := ""
-	_levelParam := fmt.Sprintf("&level=%s", level)
-	resp, err := http.Get(fmt.Sprintf(nmslAPI, from) + _levelParam)
-
-	if err != nil {
-		// handle error
-	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		// handle error
-	}
-
-	return fmt.Sprintf(string(body))
 }
 
 // ManifestFetchResponse 获取menifest接口返回

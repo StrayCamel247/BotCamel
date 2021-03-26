@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
-	"github.com/StrayCamel247/BotCamel/apps/baseapis"
+	"github.com/StrayCamel247/BotCamel/apps/destiny"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 )
 
@@ -21,16 +21,16 @@ func BaseRefreshHandler() {
 		case _weekNum == 3:
 			// 周三触发
 			if t.Hour() == 1 {
-				go RefreshDayHandler("0x02", baseapis.DataInfo("0x02"))
+				go RefreshDayHandler("0x02", destiny.DataInfo("0x02"))
 			}
 		// 每天触发
 		default:
 			// 更新日报信息-每天一点开始轮询更新
 			if t.Hour() == 1 {
 				go RefreshDayHandler("0x03", DayGenUrl)
-				go RefreshDayHandler("0x04", baseapis.DataInfo("0x04"))
-				go RefreshDayHandler("0x05", baseapis.DataInfo("0x05"))
-				go RefreshDayHandler("0x06", baseapis.DataInfo("0x06"))
+				go RefreshDayHandler("0x04", destiny.DataInfo("0x04"))
+				go RefreshDayHandler("0x05", destiny.DataInfo("0x05"))
+				go RefreshDayHandler("0x06", destiny.DataInfo("0x06"))
 			}
 
 		}
@@ -106,7 +106,6 @@ func GroJoinHandler(c *client.QQClient, group *client.GroupInfo) {
 	out := BaseAutoreply("f48dcc50457d") + "\n"
 	out += BaseAutoreply("0x00") + "\n"
 	out += BaseAutoreply("menu")
-	out += GroupMenu
 	m := message.NewSendingMessage().Append(message.NewText(out))
 	c.SendGroupMessage(group.Code, m)
 }

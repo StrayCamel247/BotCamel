@@ -17,7 +17,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/Mrs4s/MiraiGo/utils"
-	"github.com/StrayCamel247/BotCamel/apps/baseapis"
+	"github.com/StrayCamel247/BotCamel/apps/destiny"
 	"github.com/StrayCamel247/BotCamel/apps/camel"
 	"github.com/StrayCamel247/BotCamel/global"
 	jsoniter "github.com/json-iterator/go"
@@ -67,7 +67,7 @@ func NewQQBot(cli *client.QQClient, conf *global.JSONConfig) *CQBot {
 
 		bot.dbGorm = dbGorm
 		// 异步 初始化时检查命运2数据库是否存在
-		go baseapis.InfoMenifestBaseDBCheck(dbGorm)
+		go destiny.InfoMenifestBaseDBCheck(dbGorm)
 		log.Info("信息数据库初始化完成.")
 	} else {
 		log.Warn("警告: 信息数据库已关闭，将无法使用 [回复/撤回] 等功能。")

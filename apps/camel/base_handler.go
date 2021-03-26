@@ -9,13 +9,14 @@ package camel
 import (
 	// "fmt"
 	"github.com/Logiase/MiraiGo-Template/utils"
-	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 	"github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 
 	con "github.com/StrayCamel247/BotCamel/apps/config"
 	"gopkg.in/yaml.v2"
+
+	"github.com/StrayCamel247/BotCamel/apps/xxapi"
 	"strings"
 	// "time"
 )
@@ -42,17 +43,14 @@ func init() {
 }
 
 // SendGroupMessage
-func shadiaoApiHandler(com string) string {
+func xxApiHandler(com string) string {
 	switch {
 	case handler.EqualFolds(com, command.Asskisser.Keys):
 		_From := strings.TrimLeft(com, "Asskisser")
-		return baseapis.AssKisserHandler(_From)
+		return xxapi.AssKisserHandler(_From)
 	case handler.EqualFolds(com, command.Motherfucker.Keys):
 		_From := strings.TrimLeft(com, "Motherfucker")
-		return baseapis.MotherFuckerHandler(_From)
-		// case handler.EqualFolds(com, command.Menu.Keys):
-
-		// 	return GenerateMenu(command)
+		return xxapi.MotherFuckerHandler(_From)
 	}
 	return ""
 }
@@ -70,7 +68,7 @@ func BaseAutoreply(in string) string {
 		// 查询沙雕api
 		_arrayIn := strings.Split(in, " ")
 		for _, _ele := range _arrayIn {
-			return shadiaoApiHandler(_ele)
+			return xxApiHandler(_ele)
 		}
 		out = ""
 	}

@@ -1,4 +1,4 @@
-package camel
+package lightGG
 
 import (
 	"context"
@@ -8,9 +8,33 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"math"
+	"net/http"
 	"regexp"
 	"strings"
 )
+
+type Spider struct {
+	url    string
+	header map[string]string
+}
+
+func (keyword Spider) get_html_header() string {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", keyword.url, nil)
+	if err != nil {
+	}
+	for key, value := range keyword.header {
+		req.Header.Add(key, value)
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+	}
+	return string(body)
+}
 
 /*
 https://www.light.gg/ 网站处理

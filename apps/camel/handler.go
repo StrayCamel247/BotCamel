@@ -16,9 +16,10 @@ import (
 	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
-	"github.com/StrayCamel247/BotCamel/apps/baseapis"
 	con "github.com/StrayCamel247/BotCamel/apps/config"
+	"github.com/StrayCamel247/BotCamel/apps/destiny"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
+	"github.com/StrayCamel247/BotCamel/apps/lightGG"
 	"github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -34,8 +35,6 @@ import (
 	"time"
 )
 
-// var bot *gomirai.Bot
-var GroupMenu = "├─	Destiny 2\n│  ├─ 0x02 week 周报信息查询\n│  ├─ 0x03 day 日报信息查询\n│  ├─ 0x04 xiu 老九\n│  ├─ 0x05 trial 试炼信息查询\n│  ├─ 0x06 dust 光尘信息查询\n│  ├─ 0x07 random 掷骰子功能\n│  ├─ 0x08 perk 词条信息查询\n│  ├─ 0x09 item 物品信息查询\n│  ├─ 0x10 npc 查询npc信息\n│  ├─ 0x0a skill 查询技能等信息\n│  ├─ 0x0c pvp 查询pvp信息\n└─ more-devploping"
 var config *global.JSONConfig
 
 // var config
@@ -48,28 +47,7 @@ func init() {
 const DayGenUrl string = "http://www.tianque.top/d2api/today/"
 
 // AnalysisMsg 解析消息体的数据，对at类型、文本类型、链接、图片等不同格式的消息进行不同的处理
-type Spider struct {
-	url    string
-	header map[string]string
-}
 
-func (keyword Spider) get_html_header() string {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", keyword.url, nil)
-	if err != nil {
-	}
-	for key, value := range keyword.header {
-		req.Header.Add(key, value)
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-	}
-	return string(body)
-}
 func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, com, content string) {
 	// 解析消息体
 	for _, elem := range ele {
@@ -204,7 +182,7 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 
 // 根据-老九-试炼-光尘-等关键词获取并上传最新数据
 func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessage) error {
-	out := baseapis.DataInfo(flag)
+	out := destiny.DataInfo(flag)
 	m, err := d2uploadImgByUrl(flag, out, c, msg)
 	if err != nil {
 		log.WithError(err)
@@ -283,7 +261,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		log.Infof("item检查网页...")
 		ch := make(chan string)
 		_chechHandler := func(url string) {
-			if LightGGChecker(url) {
+			if lightGG.LightGGChecker(url) {
 				ch <- url
 			}
 		}
@@ -298,7 +276,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		log.Infof("item网页检查完毕...")
 		if url != "" {
 			log.Infof(fmt.Sprintf("%s网页截图ing", url))
-			UrlShotCutHandler(url, _fileName)
+			lightGG.UrlShotCutHandler(url, _fileName)
 			log.Infof(fmt.Sprintf("%s网页截图完毕", url))
 		} else {
 			log.Warnf(fmt.Sprintf("light 查无网页 %s", content+flag))
@@ -380,12 +358,7 @@ func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
 }
 func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 	out := BaseAutoreply("menu")
-	v := []string{out, GroupMenu}
-	var mes string
-	for i := 0; i < len(v); i++ {
-		mes = strings.Join(v, "")
-	}
-	m := message.NewSendingMessage().Append(message.NewText(mes))
+	m := message.NewSendingMessage().Append(message.NewText(out))
 	c.SendGroupMessage(msg.GroupCode, m)
 }
 
@@ -393,16 +366,16 @@ func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 func PvPInfoHandler(content string, c *client.QQClient, msg *message.GroupMessage) {
 	res := "===== PVP =====\n"
 	// 基本信息
-	BaseInfo := baseapis.PlayerBaseInfo(content)
+	BaseInfo := destiny.PlayerBaseInfo(content)
 	res += "Name: " + BaseInfo.Response.Profile.Data.UserInfo.DisplayName + "\n"
 	// pvp记录信息
-	AllData := baseapis.AccountStatsFetchInfo(content)
+	AllData := destiny.AccountStatsFetchInfo(content)
 
 	PVPData := AllData.Response.MergedAllCharacters.Results.AllPvP.AllTime
 	// ==================kda信息解析==================
 	// 总体pvp信息
 	// 解析pvp数据
-	_dataHandler := func(e baseapis.AccountStatsInfo, time bool) (val string) {
+	_dataHandler := func(e destiny.AccountStatsInfo, time bool) (val string) {
 		val += e.Basic.DisplayValue
 		if !time {
 			return val
@@ -414,7 +387,7 @@ func PvPInfoHandler(content string, c *client.QQClient, msg *message.GroupMessag
 	res += fmt.Sprintf("Kda %s/%s/%s-%s Suicides:%s Hours:%s ", _dataHandler(PVPData.Kills, false), _dataHandler(PVPData.Deaths, false), _dataHandler(PVPData.Assists, false), _dataHandler(PVPData.KillsDeathsAssists, false), _dataHandler(PVPData.Suicides, false), _dataHandler(PVPData.SecondsPlayed, true))
 	// 场均pvp信息
 	// 解析pvp数据
-	_dataPagHandler := func(e baseapis.AccountStatsInfo, time bool) (val string) {
+	_dataPagHandler := func(e destiny.AccountStatsInfo, time bool) (val string) {
 		val += e.Pga.DisplayValue
 		if !time {
 			return val
