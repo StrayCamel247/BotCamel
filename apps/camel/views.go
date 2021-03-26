@@ -47,7 +47,7 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	switch {
 	// case
 	// case handler.EqualFolds(com, command.Menu.Keys):
-	// 	go menuHandler(c, msg)
+	// 	menuHandler(c, msg)
 
 	case handler.EqualFolds(com, command.D2pvp.Keys):
 		PvPInfoHandler(content, c, msg)

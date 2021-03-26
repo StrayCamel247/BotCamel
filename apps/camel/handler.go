@@ -352,25 +352,7 @@ func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
 }
 func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 	out := `
-		github.com/StrayCamel247/BotCamel
-		快来领bug修修我吧~
-		===== command =====
-		├─  base
-		│  ├─ 0x00 Asskisser 夸一下
-		│  ├─ 0x01 Motherfucker 碧池一下
-		├─	Destiny 2
-		│  ├─ 0x02 week 周报信息查询
-		│  ├─ 0x03 day 日报信息查询
-		│  ├─ 0x04 xiu 老九
-		│  ├─ 0x05 trial 试炼信息查询
-		│  ├─ 0x06 dust 光尘信息查询
-		│  ├─ 0x07 random 掷骰子功能
-		│  ├─ 0x08 perk 词条信息查询
-		│  ├─ 0x09 item 物品信息查询
-		│  ├─ 0x10 npc 查询npc信息
-		│  ├─ 0x0a skill 查询技能等信息
-		│  ├─ 0x0c pvp 查询pvp信息
-		└─ more-devploping
+		
 	`
 	m := message.NewSendingMessage().Append(message.NewText(string(out)))
 	c.SendGroupMessage(msg.GroupCode, m)
@@ -395,7 +377,6 @@ func PvPInfoHandler(content string, c *client.QQClient, msg *message.GroupMessag
 			return val
 		}
 		return fmt.Sprintf("%.2f", e.Basic.Value/360)
-
 	}
 	res += "Total: "
 	res += fmt.Sprintf("Kda %s/%s/%s-%s Suicides:%s Hours:%s ", _dataHandler(PVPData.Kills, false), _dataHandler(PVPData.Deaths, false), _dataHandler(PVPData.Assists, false), _dataHandler(PVPData.KillsDeathsAssists, false), _dataHandler(PVPData.Suicides, false), _dataHandler(PVPData.SecondsPlayed, true))
