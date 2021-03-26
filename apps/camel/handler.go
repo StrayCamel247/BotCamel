@@ -139,7 +139,7 @@ func FileNameGenerator(flag string) string {
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
-	return fmt.Sprintf("./tmp/%s/%s.jpg", flag, _imgFileDate)
+	return fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 }
 func D2DownloadHandler(flag string, url string) (fileName string, updated bool) {
 	var _imgFileDate string
@@ -150,7 +150,7 @@ func D2DownloadHandler(flag string, url string) (fileName string, updated bool) 
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
-	fileName = fmt.Sprintf("./tmp/%s/%s.jpg", flag, _imgFileDate)
+	fileName = fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
 		// 文件不存在-下载文件
 		log.Info(fmt.Sprintf("正在下载文件 url: %s", url))
