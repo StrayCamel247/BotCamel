@@ -271,14 +271,12 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		}
 		log.Infof("item网页检查完毕...")
 		if checkedUrl != "" {
-			log.Infof(fmt.Sprintf("%s网页截图ing", checkedUrl))
+			log.Infof(fmt.Sprintf("[%s]网页截图ing", checkedUrl))
 			lightGG.UrlShotCutHandler(checkedUrl, _fileName)
 			log.Infof(fmt.Sprintf("%s网页截图完毕", checkedUrl))
 		} else {
 			log.Warnf(fmt.Sprintf("light 查无网页 %s", content+flag))
-
 		}
-
 	}
 	// 文件存在则上传
 	if PathExists(_fileName) {

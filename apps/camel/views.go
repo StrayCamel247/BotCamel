@@ -3,6 +3,7 @@ package camel
 import (
 	"time"
 	// "github.com/Logiase/gomirai"
+	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
@@ -45,8 +46,8 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	out = BaseAutoreply(com)
 	switch {
 	// case
-	case handler.EqualFolds(com, command.Menu.Keys):
-		go menuHandler(c, msg)
+	// case handler.EqualFolds(com, command.Menu.Keys):
+	// 	go menuHandler(c, msg)
 
 	case handler.EqualFolds(com, command.D2pvp.Keys):
 		go PvPInfoHandler(content, c, msg)
@@ -83,13 +84,14 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 
 	case handler.EqualFolds(com, command.D2random.Keys):
 		go randomHandler(c, msg)
+
 	case out == "":
 		out = BaseAutoreply("0x00")
-		m := message.NewSendingMessage().Append(message.NewText(out))
+		m := message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out)))
 		c.SendGroupMessage(msg.GroupCode, m)
 
 	default:
-		m := message.NewSendingMessage().Append(message.NewText(out))
+		m := message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out)))
 		c.SendGroupMessage(msg.GroupCode, m)
 	}
 }
