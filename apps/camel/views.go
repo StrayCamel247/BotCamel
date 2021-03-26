@@ -46,53 +46,49 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	out = BaseAutoreply(com)
 	switch {
 	// case
-	case handler.EqualFolds(com, command.Menu.Keys):
-		go menuHandler(c, msg)
+	// case handler.EqualFolds(com, command.Menu.Keys):
+	// 	go menuHandler(c, msg)
 
 	case handler.EqualFolds(com, command.D2pvp.Keys):
-		go PvPInfoHandler(content, c, msg)
+		PvPInfoHandler(content, c, msg)
 
 	case handler.EqualFolds(com, command.D2pve.Keys):
-		go PvEInfoHandler(content, c, msg)
+		PvEInfoHandler(content, c, msg)
 
 	case handler.EqualFolds(com, command.D2skill.Keys):
-		go GenerateDes(content, "skil", c, msg, orm)
+		GenerateDes(content, "skil", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2npc.Keys):
-		go GenerateDes(content, "npc", c, msg, orm)
+		GenerateDes(content, "npc", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2perk.Keys):
-		go GenerateDes(content, "perk", c, msg, orm)
+		GenerateDes(content, "perk", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2item.Keys):
-		go ItemGenerateImg(content, "item", c, msg, orm)
+		ItemGenerateImg(content, "item", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2day.Keys):
-		go dayGenerateImg("0x03", c, msg)
+		dayGenerateImg("0x03", c, msg)
 
 	case handler.EqualFolds(com, command.D2week.Keys):
-		go d2uploadImgByFlag("0x02", c, msg)
+		d2uploadImgByFlag("0x02", c, msg)
 
 	case handler.EqualFolds(com, command.D2xiu.Keys):
-		go d2uploadImgByFlag("0x04", c, msg)
+		d2uploadImgByFlag("0x04", c, msg)
 
 	case handler.EqualFolds(com, command.D2trial.Keys):
-		go d2uploadImgByFlag("0x05", c, msg)
+		d2uploadImgByFlag("0x05", c, msg)
 
 	case handler.EqualFolds(com, command.D2dust.Keys):
-		go d2uploadImgByFlag("0x06", c, msg)
+		d2uploadImgByFlag("0x06", c, msg)
 
 	case handler.EqualFolds(com, command.D2random.Keys):
-		go randomHandler(c, msg)
+		randomHandler(c, msg)
 
 	case out == "":
-		out = BaseAutoreply("0x00")
-		m := message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out)))
-		c.SendGroupMessage(msg.GroupCode, m)
-
+		c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", BaseAutoreply("0x00")))))
 	default:
-		m := message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out)))
-		c.SendGroupMessage(msg.GroupCode, m)
+		c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out))))
 	}
 }
 
