@@ -25,12 +25,12 @@ import (
 	"path"
 	"regexp"
 	"strconv"
-	"sync"
 
 	"bytes"
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -124,20 +124,17 @@ func ManifestFetchResponse() (Response ManifestWorldComponentContent, err error)
 // InfoMenifestBaseDBCheck 检查命运2 menifest表是否存在-若不存在则抽取
 func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	// 检查是否存在表
-	var wg sync.WaitGroup
 	_Num := len(D2Table)
 	log.Infof(fmt.Sprintf("正在检查%d张表...", _Num))
-	wg.Add(_Num)
 	var _InItSqls []string
 	for tableName, tableSql := range D2Table {
-		go DBCheckHandler(orm, tableName, tableSql, &_InItSqls, &wg)
+		DBCheckHandler(orm, tableName, tableSql, &_InItSqls)
 	}
 
 	// 检查表里数据是否是最新-若不是或者数据为空-则重新抽数到数据库
 	manifestRes, _ := ManifestFetchResponse()
 	params := map[string]interface{}{"version": manifestRes.NewVersion}
 	needUpdate := D2VersionHandler(orm, params)
-	wg.Wait()
 	if len(_InItSqls) > 0 {
 		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
 		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
@@ -158,8 +155,7 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 			//遍历结构体的所有字段
 			for i := 0; i < num; i++ {
 				tagVal := typ.Field(i).Tag.Get("json")
-				// fmt.Printf(fmt.Sprintf("%v", val.Field(i)))
-				go ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, LangType)
+				ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, LangType)
 
 			}
 
@@ -175,15 +171,17 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 		}
 		//获取到该结构体有几个字段
 		num := val.NumField()
-
+		var wg = sync.WaitGroup{}
+		wg.Add(num)
 		//遍历结构体的所有字段
 		for i := 0; i < num; i++ {
 			LangType := typ.Field(i).Tag.Get("json")
 			// fmt.Printf("%+v", val.Field(i))
 			go _handler(val.Field(i).Interface(), LangType)
-
 		}
-
+		wg.Wait()
+		go D2VersionHandler(orm, params)
+		wg.Done()
 	}
 
 }

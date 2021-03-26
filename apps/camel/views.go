@@ -64,7 +64,7 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 		go GenerateDes(content, "perk", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2item.Keys):
-		go itemGenerateImg(content, "item", c, msg, orm)
+		go ItemGenerateImg(content, "item", c, msg, orm)
 
 	case handler.EqualFolds(com, command.D2day.Keys):
 		go dayGenerateImg("0x03", c, msg)

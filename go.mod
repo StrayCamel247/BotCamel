@@ -7,6 +7,8 @@ require (
 	github.com/Mrs4s/MiraiGo v0.0.0-20210316010642-701321c7139c
 	github.com/Mrs4s/go-cqhttp v0.9.40
 	github.com/bitly/go-simplejson v0.5.0
+	github.com/chromedp/cdproto v0.0.0-20210323015217-0942afbea50e
+	github.com/chromedp/chromedp v0.6.10
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.6.3

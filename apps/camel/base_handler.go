@@ -99,10 +99,13 @@ func BaseAutoreply(in string) string {
 	// switch {
 
 	// }
+	print("查询")
+	print(in)
 	out, ok := tem[in]
 	if !ok {
 		// 查询对话配置表 apps\base_default.yaml
 		for k, v := range tem {
+			println(k)
 			if strings.EqualFold(in, string(k)) {
 				return v
 			}

@@ -134,8 +134,6 @@ var DefaultConfigWithComments = `
     }
     // 对话信息基本数据存储
     dialogue_file_path: ./apps/base_default.yaml
-	// 截屏大师token
-	screenshotmaster:["604b14ca8030b"]
 	// Bungie-Api
 	x_api_key:"aff47ade61f643a19915148cfcfc6d7d"
 }
@@ -177,7 +175,6 @@ type JSONConfig struct {
 	LogLevel            string                        `json:"log_level"`
 	WebUI               *GoCQWebUI                    `json:"web_ui"`
 	DialogueFilePath    string                        `json:"dialogue_file_path"`
-	MasterShotTokens    []string                      `json:"screenshotmaster"`
 	BungieXApiKey       string                        `json:"x_api_key"`
 }
 

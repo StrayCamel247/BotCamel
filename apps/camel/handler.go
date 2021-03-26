@@ -28,6 +28,8 @@ import (
 	url2 "net/url"
 	"os"
 	// "reflect"
+	// "regexp"
+	// "strconv"
 	"strings"
 	"time"
 )
@@ -46,7 +48,28 @@ func init() {
 const DayGenUrl string = "http://www.tianque.top/d2api/today/"
 
 // AnalysisMsg 解析消息体的数据，对at类型、文本类型、链接、图片等不同格式的消息进行不同的处理
+type Spider struct {
+	url    string
+	header map[string]string
+}
 
+func (keyword Spider) get_html_header() string {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", keyword.url, nil)
+	if err != nil {
+	}
+	for key, value := range keyword.header {
+		req.Header.Add(key, value)
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+	}
+	return string(body)
+}
 func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, com, content string) {
 	// 解析消息体
 	for _, elem := range ele {
@@ -127,6 +150,19 @@ func PathExists(path string) bool {
 	fmt.Println("File reading error", err)
 	return false
 }
+
+// FileNameGenerator 文件名生成器
+func FileNameGenerator(flag string) string {
+	var _imgFileDate string
+	if handler.EqualFolds(flag, command.D2xiu.Keys) || handler.EqualFolds(flag, command.D2day.Keys) {
+		// 日更新
+		_imgFileDate = GetD2daykDateOfdayk()
+	} else if handler.EqualFolds(flag, command.D2week.Keys) || handler.EqualFolds(flag, command.D2trial.Keys) || handler.EqualFolds(flag, command.D2dust.Keys) {
+		// 周更新 D2xiu D2week D2trial D2dust
+		_imgFileDate = GetD2WeekDateOfWeek()
+	}
+	return fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
+}
 func D2DownloadHandler(flag string, url string) (fileName string, updated bool) {
 	var _imgFileDate string
 	if handler.EqualFolds(flag, command.D2xiu.Keys) || handler.EqualFolds(flag, command.D2day.Keys) {
@@ -159,9 +195,7 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 			log.WithError(err)
 			return m, err
 		}
-		// m := message.NewSendingMessage().Append(_img)
 		return _img, nil
-		// c.SendGroupMessage(msg.GroupCode, m)
 	} else {
 		fmt.Println("图片获取失败")
 	}
@@ -182,7 +216,7 @@ func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessag
 
 // 文件下载
 func downloadImg(filename, url string) error {
-	// 记录时间
+	// 记录下载时间
 	_nowTime := time.Now()
 	_timeCostLogger := func(start time.Time) {
 		tc := time.Since(start)
@@ -191,13 +225,13 @@ func downloadImg(filename, url string) error {
 	defer _timeCostLogger(_nowTime)
 	// 构造请求头
 	spaceClient := http.Client{
-		Timeout: time.Second * 999, // Maximum of 10 secs
+		// 请求时间
+		Timeout: time.Minute * 10,
 	}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.Warn(err)
 	}
-
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
 		log.Warn(getErr)
@@ -227,85 +261,87 @@ func downloadImg(filename, url string) error {
 	return nil
 }
 
+// getItemId 通过名字获取对应的itemid
 func getItemId(content string, orm *gorm.DB) (itemids [][2]string) {
-	// 若表不存在-则创建表-并查询menifest接口解析json并写入数据
-	// db.Create(&models.User{Profile: profile, Name: "silence"})
-	// baseapis.InfoMenifestBaseDBCheck(orm)
-
-	// 获取item id
-	// var results = []baseapis.ItemIdDB{}
-	// _ = orm.Model(&baseapis.InfoMenifestBaseDB{}).Find(&results, baseapis.InfoMenifestBaseDB{Name: content})
-	// for _, v := range results {
-	// 	// 只返回固定tag的标签
-	// 	if v.Tag == "DestinyInventoryItemLiteDefinition" {
-	// 		itemids = append(itemids, v.ItemId)
-	// 	}
-	// 	// 将标签数据进行返回
-	// 	if !handler.EqualFolds(v.Description, command.DesChecker.Keys) {
-	// 		_des := strings.ReplaceAll(v.Description, "\n\n", "\n")
-	// 		if !strings.Contains(des, _des) {
-	// 			if des != "" {
-	// 				des += "\n" + _des
-	// 			} else {
-	// 				des += _des
-	// 			}
-
-	// 		}
-	// 	}
-
-	// }
-	// 获取itmid
 	itemids = IdQuery(orm, map[string]interface{}{"name": content})
 	return itemids
 }
 
-// item 图片生成
-func itemGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
+// ItemGenerateImg
+/*
+	item 物品查询并上传
+*/
+func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.GroupMessage, orm *gorm.DB) {
 
 	itemId := getItemId(content, orm)
-	// if err != nil {
-	// 	panic(err)
-	// }
 
-	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
-	rMsg := message.NewSendingMessage()
-	for _, v := range config.MasterShotTokens {
-
-		// 上传文件是否报错
-		_errFlag := false
-		for _, info := range itemId {
-			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
-			url := url2.QueryEscape(baseUrl)
-			url = baseUrl
-			width := 1280
-			height := 800
-			full_page := 1
-			query := "https://www.screenshotmaster.com/api/v1/screenshot"
-			query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
-				v, url, width, height, full_page)
-			m, err := d2uploadImgByUrl(flag+info[0], query, c, msg)
-			if err != nil {
-				log.WithError(err)
-			}
-			rMsg = rMsg.Append(m)
-			_errFlag = _errFlag || err != nil
-		}
-		if _errFlag {
-			// 图片获取失败-重新构造消息链
-			rMsg = message.NewSendingMessage()
-		} else {
-			// 图片调用成功
-			if len(rMsg.Elements) > 0 {
-				c.SendGroupMessage(msg.GroupCode, rMsg)
-				// } else if des != "" {
-				// 	c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText(des)))
-			} else {
-				c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
-			}
-			return
-
+	// 检查item-id是否为正确的item
+	ch := make(chan string)
+	_chechHandler := func(url string) {
+		if LightGGChecker(url) {
+			ch <- url
 		}
 	}
+	for _, info := range itemId {
+		baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
+		url := url2.QueryEscape(baseUrl)
+		url = baseUrl
+		go _chechHandler(url)
+
+	}
+	url := <-ch
+	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
+	rMsg := message.NewSendingMessage()
+	// 生成文件名
+	_fileName := FileNameGenerator(flag + content)
+	// 文件不存在则生成-若存在则直接上传
+	if !handler.PathExists(_fileName) {
+		UrlShotCutHandler(url, _fileName)
+	}
+
+	if PathExists(_fileName) {
+		_ImgMsg, err := c.UploadGroupImageByFile(msg.GroupCode, _fileName)
+		if err != nil {
+			log.WithError(err)
+		}
+		c.SendGroupMessage(msg.GroupCode, rMsg.Append(_ImgMsg))
+	} else {
+		log.Warn(fmt.Sprintf("%s图片获取失败", url))
+		c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
+	}
+	// for _, v := range config.MasterShotTokens {
+	// 	// 检查上传文件是否报错-对light.gg网页进行分析-如果为404则跳过此url
+	// 	_errFlag := false
+	// 	for _, info := range itemId {
+	// 		baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
+	// 		url := url2.QueryEscape(baseUrl)
+	// 		url = baseUrl
+	// 		width := 1280
+	// 		height := 800
+	// 		full_page := 1
+	// 		query += fmt.Sprintf("?token=%s&url=%s&width=%d&height=%d&full_page=%d",
+	// 			v, url, width, height, full_page)
+	// 		aaa := LightGGChecker(baseUrl)
+	// 		print(aaa)
+	// 		if aaa {
+
+	// 			break
+	// 		}
+	// 	}
+	// 	if _errFlag {
+	// 		// 图片获取失败-重新构造消息链
+	// 		rMsg = message.NewSendingMessage()
+	// 	} else {
+	// 		// 图片调用成功
+	// 		if len(rMsg.Elements) > 0 {
+	// 			c.SendGroupMessage(msg.GroupCode, rMsg)
+	// 		} else {
+	// 			c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
+	// 		}
+	// 		return
+
+	// 	}
+	// }
 }
 
 // 介绍生成
@@ -368,8 +404,12 @@ func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
 }
 func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 	out := BaseAutoreply("menu")
-	out += GroupMenu
-	m := message.NewSendingMessage().Append(message.NewText(out))
+	v := []string{out, GroupMenu}
+	var mes string
+	for i := 0; i < len(v); i++ {
+		mes = strings.Join(v, "")
+	}
+	m := message.NewSendingMessage().Append(message.NewText(mes))
 	c.SendGroupMessage(msg.GroupCode, m)
 }
 

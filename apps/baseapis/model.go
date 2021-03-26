@@ -16,7 +16,6 @@ import (
 	// "net/http"
 	// "regexp"
 	// "strconv"
-	"sync"
 	// "reflect"
 	// "time"
 )
@@ -41,8 +40,7 @@ func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 		VALUES
 		(@version)
 		`
-
-		utils.Execute(orm, _insertBase, params)
+		go utils.Execute(orm, _insertBase, params)
 		return true
 	}
 	log.Infof(fmt.Sprintf("Destiny2 数据已是最新 version: %s", resStruct.Version))
@@ -69,7 +67,7 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	if _batch >= 1 {
 		for i := 0; i < _batch; i++ {
 			// 异步
-			go utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
+			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
 	} else {
 		// 异步
@@ -80,13 +78,12 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 }
 
 // DBCheckHandler-检查表是否存在-若不存在-组装待初始化的sql
-func DBCheckHandler(orm *gorm.DB, tableName, tableSql string, Sqls *[]string, wg *sync.WaitGroup) {
+func DBCheckHandler(orm *gorm.DB, tableName, tableSql string, Sqls *[]string) {
 	// 定义查询传参和返回结果对象
 
 	type countResult struct {
 		Count int64 `json:"count"`
 	}
-	defer wg.Done()
 	_sql := `
 			SELECT 
 				count(1) count
