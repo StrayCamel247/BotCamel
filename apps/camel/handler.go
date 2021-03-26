@@ -264,8 +264,8 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
 			// url := url2.QueryEscape(baseUrl)
 			// url = baseUrl
-			if lightGG.LightGGChecker(url) {
-				checkedUrl = url
+			if lightGG.LightGGChecker(baseUrl) {
+				checkedUrl = baseUrl
 			}
 
 		}
