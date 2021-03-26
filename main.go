@@ -233,8 +233,8 @@ func main() {
 		global.PasswordHash = md5.Sum([]byte(conf.Password))
 	}
 	if !isFastStart {
-		log.Info("Bot将在5秒后登录并开始信息处理, 按 Ctrl+C 取消.")
-		time.Sleep(time.Second * 5)
+		// log.Info("Bot将在5秒后登录并开始信息处理, 按 Ctrl+C 取消.")
+		// time.Sleep(time.Second * 5)
 	}
 	log.Info("开始尝试登录并同步消息...")
 	log.Infof("使用协议: %v", func() string {
