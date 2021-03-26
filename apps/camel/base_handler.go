@@ -10,10 +10,10 @@ import (
 	// "fmt"
 	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
-	"github.com/StrayCamel247/BotCamel/global"
+	// "github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 
-	con "github.com/StrayCamel247/BotCamel/apps/config"
+	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	"gopkg.in/yaml.v2"
 
 	"github.com/StrayCamel247/BotCamel/apps/xxapi"
@@ -24,16 +24,16 @@ import (
 var tem map[string]string
 
 // JSONConfig
-var JSONConfig *global.JSONConfig
+// var JSONConfig *global.JSONConfig
 var command CommandsStruct
 
 func init() {
-	config := con.GetConfig(false)
-	path := config.DialogueFilePath
+	// config := con.GetConfig(false)
+	// path := config.DialogueFilePath
 
-	if path == "" {
-		path = "./apps/base_default.yaml"
-	}
+	// if path == "" {
+	// }
+	path := "./apps/base_default.yaml"
 	bytes := utils.ReadFile(path)
 	err := yaml.Unmarshal(bytes, &tem)
 	if err != nil {

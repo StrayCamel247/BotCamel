@@ -3,7 +3,7 @@ package destiny
 import (
 	"fmt"
 	// "github.com/Logiase/MiraiGo-Template/utils"
-	"github.com/StrayCamel247/BotCamel/global"
+	// "github.com/StrayCamel247/BotCamel/global"
 )
 
 // key表名-value建表语句
@@ -94,4 +94,5 @@ var profileAPI = func(fireId string) string {
 var baseprofileAPI = func(fireId string) string {
 	return fmt.Sprintf("https://www.bungie.net/Platform/Destiny2/3/Profile/%s/?components=100", fireId)
 }
-var config *global.JSONConfig
+
+// var config *global.JSONConfig

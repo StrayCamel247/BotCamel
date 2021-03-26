@@ -1,9 +1,10 @@
 
 ## 聊天机器人-BotCamel_V1.0
-> 基于/重构[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现-觉得有意思的话就star一下吧~
-
+> 基于[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现-觉得有意思的话就star一下吧~
 > [BotCamel_V0](https://github.com/StrayCamel247/BotCamel/tree/dev-mirai)版本为基于mirai实现
-使用技术
+
+go-cqhttp 源码在本地`./go-cqhttp`中，引用的本地源码，若go-cqhttp更新，直接进入文件夹`git clone`下载最新的源码即可，此文件夹可被删除覆盖
+
 ### [go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)
 https://github.com/Mrs4s/go-cqhttp/
 

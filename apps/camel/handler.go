@@ -16,11 +16,11 @@ import (
 	"gorm.io/gorm"
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
-	con "github.com/StrayCamel247/BotCamel/apps/config"
+	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	"github.com/StrayCamel247/BotCamel/apps/destiny"
 	"github.com/StrayCamel247/BotCamel/apps/handler"
 	"github.com/StrayCamel247/BotCamel/apps/lightGG"
-	"github.com/StrayCamel247/BotCamel/global"
+	// "github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
@@ -35,12 +35,12 @@ import (
 	"time"
 )
 
-var config *global.JSONConfig
+// var config *global.JSONConfig
 
 // var config
 func init() {
 	command = CommandFilter()
-	config = con.GetConfig(false)
+	// config = con.GetConfig(false)
 }
 
 // 常量声明

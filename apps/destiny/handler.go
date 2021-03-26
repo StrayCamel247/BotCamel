@@ -15,7 +15,7 @@ package destiny
 import (
 	"encoding/json"
 	"fmt"
-	con "github.com/StrayCamel247/BotCamel/apps/config"
+	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	"github.com/bitly/go-simplejson"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -35,7 +35,7 @@ import (
 )
 
 func init() {
-	config = con.GetConfig(false)
+	// config = con.GetConfig(false)
 
 }
 
@@ -51,7 +51,7 @@ func ManifestFetchResponse() (Response ManifestWorldComponentContent, err error)
 
 	}
 
-	req.Header.Add("X-API-Key", config.BungieXApiKey)
+	req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
@@ -154,7 +154,7 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 		log.Warn(err)
 	}
 
-	req.Header.Add("X-API-Key", config.BungieXApiKey)
+	req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
@@ -237,7 +237,7 @@ func PlayerBaseInfo(steamId string) BaseprofileResult {
 		log.Warn(err)
 	}
 
-	req.Header.Add("X-API-Key", config.BungieXApiKey)
+	req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
@@ -274,7 +274,7 @@ func AccountStatsFetchInfo(steamId string) AccountStatsResult {
 		log.Warn(err)
 	}
 
-	req.Header.Add("X-API-Key", config.BungieXApiKey)
+	req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
