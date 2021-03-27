@@ -45,6 +45,7 @@ https://www.light.gg/ 网站处理
 */
 // LightGGChecker 检查lightgg 网站链接是否正确
 func LightGGChecker(url string) bool {
+	log.Infof(fmt.Sprintf("正在检查light gg网页[%s]", url))
 	header := map[string]string{
 		"Connection":                "keep-alive",
 		"Cache-Control":             "max-age=0",
@@ -60,9 +61,11 @@ func LightGGChecker(url string) bool {
 	find_txt2 := rp2.FindAllStringSubmatch(html, -1)
 	for i := 0; i < len(find_txt2); i++ {
 		if strings.Contains(find_txt2[i][1], "404") {
+			log.Infof(fmt.Sprintf("[%s] 错误", url))
 			return false
 		}
 	}
+	log.Infof(fmt.Sprintf("[%s] 正确", url))
 	return true
 }
 

@@ -273,9 +273,9 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		if checkedUrl != "" {
 			log.Infof(fmt.Sprintf("[%s]网页截图ing", checkedUrl))
 			lightGG.UrlShotCutHandler(checkedUrl, _fileName)
-			log.Infof(fmt.Sprintf("%s网页截图完毕", checkedUrl))
+			log.Infof(fmt.Sprintf("[%s]网页截图完毕", checkedUrl))
 		} else {
-			log.Warnf(fmt.Sprintf("light 查无网页 %s", content+flag))
+			log.Warnf(fmt.Sprintf("light 查无网页[%s]", flag+content))
 		}
 	}
 	// 文件存在则上传
@@ -286,7 +286,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		}
 		c.SendGroupMessage(msg.GroupCode, rMsg.Append(_ImgMsg))
 	} else {
-		log.Warn(fmt.Sprintf("%s图片获取失败", _fileName))
+		log.Warn(fmt.Sprintf("[%s]图片获取失败", flag+content))
 		c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
 	}
 
