@@ -38,9 +38,9 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 		log.Infof(fmt.Sprintf("execute successed lines: %d", res.RowsAffected))
 		return int(res.RowsAffected)
 	} else {
-		// 如果数据量大于20 不打印日志
+		// 如果数据量大于一定数量 不打印日志
 		var res *gorm.DB
-		if len(_sqlArrys) > 20 {
+		if len(_sqlArrys) > 5 {
 			res = orm.Exec(baseSql + strings.Join(_sqlArrys, ","))
 		} else {
 			res = orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))

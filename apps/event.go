@@ -29,8 +29,10 @@ func init() {
 	dbGorm, _ = gorm.Open(sqlite.Open("./data/sqlite3.db"), &gorm.Config{
 		// PrepareStmt: true,
 	})
-	// 异步 初始化时检查命运2数据库是否存在
-	go destiny.InfoMenifestBaseDBCheck(dbGorm)
+	// 初始化时检查命运2数据库是否存在-更新完数据库后才能正常使用
+	log.Infof("检查sqlite数据库...")
+	destiny.InfoMenifestBaseDBCheck(dbGorm)
+	log.Infof("检查sqlite数据库完成！正常使用")
 }
 
 // SetMessageFormat 设置消息上报格式，默认为string

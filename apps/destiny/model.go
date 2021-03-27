@@ -18,6 +18,7 @@ import (
 	// "strconv"
 	// "reflect"
 	// "time"
+	"sync"
 )
 
 // D2VersionHandler 返回true需要更新数据-false则不需要更新
@@ -40,7 +41,7 @@ func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 		VALUES
 		(@version)
 		`
-		go utils.Execute(orm, _insertBase, params)
+		utils.Execute(orm, _insertBase, params)
 		return true
 	}
 	log.Infof(fmt.Sprintf("Destiny2 数据已是最新 version: %s", resStruct.Version))
@@ -65,12 +66,18 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	`
 	_batch := len(dataArray) / 800
 	if _batch >= 1 {
-		for i := 0; i < _batch; i++ {
-			// 异步
+		var wg = sync.WaitGroup{}
+		wg.Add(_batch)
+		_wgHandler := func(i int, wg *sync.WaitGroup) {
+			defer wg.Done()
 			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
+		for i := 0; i < _batch; i++ {
+			// utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
+			_wgHandler(i, &wg)
+		}
+		wg.Wait()
 	} else {
-		// 异步
 		utils.Execute_batch(orm, _insertBase, _insertSub, dataArray)
 	}
 

@@ -84,6 +84,9 @@ func IdQuery(orm *gorm.DB, params interface{}) (res [][2]string) {
 		from base
 		left join zhChtData t
 			on base.itemid = t.itemid
+		group by 
+			base.itemid
+			,t.name
 		
 	`
 	utils.Fetch_data_sql(orm, _sql, &resStruct, params)
