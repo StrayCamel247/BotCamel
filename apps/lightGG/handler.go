@@ -2,6 +2,7 @@ package lightGG
 
 import (
 	"context"
+	"fmt"
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
@@ -22,16 +23,19 @@ func (keyword Spider) get_html_header() string {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", keyword.url, nil)
 	if err != nil {
+		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
 	for key, value := range keyword.header {
 		req.Header.Add(key, value)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
 	return string(body)
 }
