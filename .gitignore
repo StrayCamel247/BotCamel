@@ -343,5 +343,6 @@ data/
 logs/
 tmp/*
 !tmp/*.md
+!tmp/menu.jpg
 __debug_bin
 *.db

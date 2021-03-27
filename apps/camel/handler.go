@@ -26,7 +26,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	// url2 "net/url"
+	url2 "net/url"
 	"os"
 	// "reflect"
 	// "regexp"
@@ -262,7 +262,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		var checkedUrl string
 		for _, info := range itemId {
 			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
-			// url := url2.QueryEscape(baseUrl)
+			baseUrl = url2.QueryEscape(baseUrl)
 			// url = baseUrl
 			if lightGG.LightGGChecker(baseUrl) {
 				checkedUrl = baseUrl
@@ -350,6 +350,7 @@ func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
 	m := message.NewSendingMessage().Append(message.NewText(out))
 	c.SendGroupMessage(msg.GroupCode, m)
 }
+
 // 生成菜单消息
 func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 	_ImgMsg, err := c.UploadGroupImageByFile(msg.GroupCode, FileNameGenerator("menu"))

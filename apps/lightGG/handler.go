@@ -42,13 +42,11 @@ https://www.light.gg/ 网站处理
 // LightGGChecker 检查lightgg 网站链接是否正确
 func LightGGChecker(url string) bool {
 	header := map[string]string{
-		"Host":                      "movie.douban.com",
 		"Connection":                "keep-alive",
 		"Cache-Control":             "max-age=0",
 		"Upgrade-Insecure-Requests": "1",
 		"User-Agent":                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36",
 		"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-		"Referer":                   "https://movie.douban.com/top250",
 	}
 	spider := &Spider{url, header}
 	html := spider.get_html_header()
