@@ -32,7 +32,7 @@ func (keyword Spider) get_html_header() string {
 	if err != nil {
 		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
