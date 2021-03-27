@@ -39,6 +39,9 @@ func SetMessageFormat(f string) {
 }
 
 func GroupMessageEvent(c *client.QQClient, m *message.GroupMessage) {
-	_, com, content := camel.AnalysisMsg(c, m.Elements)
-	camel.GroMsgHandler(dbGorm, c, m, com, content)
+	isAt, com, content := camel.AnalysisMsg(c, m.Elements)
+	if isAt {
+		camel.GroMsgHandler(dbGorm, c, m, com, content)
+	}
+
 }
