@@ -45,9 +45,8 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	// 若@机器人则触发
 	out = BaseAutoreply(com)
 	switch {
-	// case
-	// case handler.EqualFolds(com, command.Menu.Keys):
-	// 	menuHandler(c, msg)
+	case handler.EqualFolds(com, command.Menu.Keys):
+		menuHandler(c, msg)
 
 	case handler.EqualFolds(com, command.D2pvp.Keys):
 		PvPInfoHandler(content, c, msg)

@@ -350,12 +350,13 @@ func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
 	m := message.NewSendingMessage().Append(message.NewText(out))
 	c.SendGroupMessage(msg.GroupCode, m)
 }
+// 生成菜单消息
 func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
-	out := `
-		
-	`
-	m := message.NewSendingMessage().Append(message.NewText(string(out)))
-	c.SendGroupMessage(msg.GroupCode, m)
+	_ImgMsg, err := c.UploadGroupImageByFile(msg.GroupCode, FileNameGenerator("menu"))
+	if err != nil {
+		log.WithError(err)
+	}
+	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(_ImgMsg))
 }
 
 // 玩家pvp数据信息的概览获取
