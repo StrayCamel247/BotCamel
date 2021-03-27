@@ -18,7 +18,7 @@ import (
 	// "strconv"
 	// "reflect"
 	// "time"
-	"sync"
+	// "sync"
 )
 
 // D2VersionHandler 返回true需要更新数据-false则不需要更新
@@ -66,17 +66,9 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	`
 	_batch := len(dataArray) / 800
 	if _batch >= 1 {
-		var wg = sync.WaitGroup{}
-		wg.Add(_batch)
-		_wgHandler := func(i int, wg *sync.WaitGroup) {
-			defer wg.Done()
+		for i := 0; i < _batch; i++ {
 			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
-		for i := 0; i < _batch; i++ {
-			// utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
-			_wgHandler(i, &wg)
-		}
-		wg.Wait()
 	} else {
 		utils.Execute_batch(orm, _insertBase, _insertSub, dataArray)
 	}

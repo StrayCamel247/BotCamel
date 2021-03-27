@@ -94,7 +94,7 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	manifestRes, _ := ManifestFetchResponse()
 	params := map[string]interface{}{"version": manifestRes.NewVersion}
 	needUpdate := D2VersionHandler(orm, params)
-	// 待开发
+
 	if needUpdate || len(_InItSqls) == _Num {
 		_handler := func(_Data interface{}, LangType string) {
 			typ := reflect.TypeOf(_Data)
@@ -189,47 +189,40 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 		return true
 	}
 
-	var wg = sync.WaitGroup{}
-	wg.Add(len(ResJson))
 	for itemid := range ResJson {
 
-		f := func(_id string, wg *sync.WaitGroup) {
-			defer wg.Done()
-			// 格式化数据-为字符串
-			// "_id", "description", "name", "icon", "tag", "seasonid" 遵循默认排序
-			var _SeasonId string
-			_Description := ResJson[_id].Properties.Description
-			_Icon := ResJson[_id].Properties.Icon
-			_Name := ResJson[_id].Properties.Name
-			if ResJson[_id].SeasonHash > 0 {
-				_SeasonId = fmt.Sprintf("%d", ResJson[_id].SeasonHash)
-			}
-
-			if (_Description != "" || _Icon != "") && _handler(_Name) {
-				// 单一字符串进行替换
-				// var comDict map[string]string
-				comDict := map[string]string{"'": "\"", "-": "="}
-				for k, v := range comDict {
-					_id = strings.ReplaceAll(_id, k, v)
-					_Description = strings.ReplaceAll(_Description, k, v)
-					_Name = strings.ReplaceAll(_Name, k, v)
-					_Icon = strings.ReplaceAll(_Icon, k, v)
-					tag = strings.ReplaceAll(tag, k, v)
-					_SeasonId = strings.ReplaceAll(_SeasonId, k, v)
-				}
-				_params := []interface{}{_id, _Description, _Name, _Icon, tag, _SeasonId, LangType}
-				paramList = append(paramList, _params)
-
-			}
-			// 写入数据库
-			InsertMenifestHandler(orm, paramList)
-			log.Infof(tag + " down!")
+		// defer wg.Done()
+		// 格式化数据-为字符串
+		// "itemid", "description", "name", "icon", "tag", "seasonid" 遵循默认排序
+		var _SeasonId string
+		_Description := ResJson[itemid].Properties.Description
+		_Icon := ResJson[itemid].Properties.Icon
+		_Name := ResJson[itemid].Properties.Name
+		if ResJson[itemid].SeasonHash > 0 {
+			_SeasonId = fmt.Sprintf("%d", ResJson[itemid].SeasonHash)
 		}
-		// 并发写入会触发RESERVED_BYTE-某一时刻只能存在一个锁
-		f(itemid, &wg)
+
+		if (_Description != "" || _Icon != "") && _handler(_Name) {
+			// 单一字符串进行替换
+			// var comDict map[string]string
+			comDict := map[string]string{"'": "\"", "-": "="}
+			for k, v := range comDict {
+				itemid = strings.ReplaceAll(itemid, k, v)
+				_Description = strings.ReplaceAll(_Description, k, v)
+				_Name = strings.ReplaceAll(_Name, k, v)
+				_Icon = strings.ReplaceAll(_Icon, k, v)
+				tag = strings.ReplaceAll(tag, k, v)
+				_SeasonId = strings.ReplaceAll(_SeasonId, k, v)
+			}
+			_params := []interface{}{itemid, _Description, _Name, _Icon, tag, _SeasonId, LangType}
+			paramList = append(paramList, _params)
+
+		}
+		// 写入数据库
+		InsertMenifestHandler(orm, paramList)
+		log.Infof(tag + " down!")
 
 	}
-	wg.Wait()
 }
 
 // PlayerBaseInfo 基础信息查询
