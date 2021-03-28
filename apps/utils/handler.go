@@ -40,7 +40,7 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 	} else {
 		// 如果数据量大于一定数量 不打印日志
 		var res *gorm.DB
-		if len(_sqlArrys) > 5 {
+		if len(_sqlArrys) > 1 {
 			res = orm.Exec(baseSql + strings.Join(_sqlArrys, ","))
 		} else {
 			res = orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))

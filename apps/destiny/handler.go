@@ -30,7 +30,7 @@ import (
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
-	"sync"
+	// "sync"
 	"time"
 )
 
@@ -126,17 +126,13 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 		}
 		//获取到该结构体有几个字段
 		num := val.NumField()
-		var wg = sync.WaitGroup{}
-		wg.Add(num)
 		//遍历结构体的所有字段
 		for i := 0; i < num; i++ {
 			LangType := typ.Field(i).Tag.Get("json")
 			// fmt.Printf("%+v", val.Field(i))
-			go _handler(val.Field(i).Interface(), LangType)
+			_handler(val.Field(i).Interface(), LangType)
 		}
-		wg.Wait()
 		D2VersionHandler(orm, params)
-		wg.Done()
 	}
 
 }
@@ -218,11 +214,11 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 			paramList = append(paramList, _params)
 
 		}
-		// 写入数据库
-		InsertMenifestHandler(orm, paramList)
-		log.Infof(tag + " down!")
 
 	}
+	// 写入数据库
+	InsertMenifestHandler(orm, paramList)
+	log.Infof(tag + " down!")
 }
 
 // PlayerBaseInfo 基础信息查询

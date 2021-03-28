@@ -65,11 +65,11 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 			'%s', '%s', '%s', '%s', '%s', '%s', '%s')
 	`
 	_batch := len(dataArray) / 800
-	if _batch >= 1 {
+	if _batch > 1 {
 		for i := 0; i < _batch; i++ {
 			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
-	} else {
+	} else if _batch == 1 {
 		utils.Execute_batch(orm, _insertBase, _insertSub, dataArray)
 	}
 
