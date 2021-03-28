@@ -261,7 +261,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		log.Infof("item检查网页...")
 		var checkedUrl string
 		for _, info := range itemId {
-			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/", info[0])
+			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s", info[0], info[1])
 			_ = url2.QueryEscape(info[1])
 			// url = baseUrl
 			if lightGG.LightGGChecker(baseUrl) {
@@ -271,9 +271,9 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		}
 		log.Infof("item网页检查完毕...")
 		if checkedUrl != "" {
-			log.Infof(fmt.Sprintf("[%s]网页截图ing", checkedUrl))
+			log.Infof(fmt.Sprintf("[%s] 网页截图ing", checkedUrl))
 			lightGG.UrlShotCutHandler(checkedUrl, _fileName)
-			log.Infof(fmt.Sprintf("[%s]网页截图完毕", checkedUrl))
+			log.Infof(fmt.Sprintf("[%s] 网页截图完毕", checkedUrl))
 		} else {
 			log.Warnf(fmt.Sprintf("light 查无网页[%s]", flag+content))
 		}
