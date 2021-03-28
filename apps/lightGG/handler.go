@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Spider struct {
@@ -100,8 +101,10 @@ func elementScreenshot(urlstr, sel string, res *[]byte) chromedp.Tasks {
 
 // 全屏截图
 func fullScreenshot(urlstr string, quality int64, res *[]byte) chromedp.Tasks {
+	// log.Infof("截图等待2秒，防止先")
 	return chromedp.Tasks{
 		chromedp.Navigate(urlstr),
+		chromedp.Sleep(2 * time.Second),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			// get layout metrics
 			_, _, cssContentSize, err := page.GetLayoutMetrics().Do(ctx)
