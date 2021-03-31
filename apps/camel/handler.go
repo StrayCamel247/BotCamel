@@ -35,8 +35,6 @@ import (
 	"time"
 )
 
-// var config *global.JSONConfig
-
 // var config
 func init() {
 	command = CommandFilter()

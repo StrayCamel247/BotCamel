@@ -74,6 +74,9 @@ func init() {
 	`
 }
 
+// 常量声明
+const DayGenUrl string = "http://www.tianque.top/d2api/today/"
+
 // Bungie-api
 var BungiePlatformRoot = "https://www.bungie.net/Platform"
 var BungieBase = "https://www.bungie.net/"

@@ -3,8 +3,10 @@
 > 基于[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现-觉得有意思的话就star一下吧~
 > [BotCamel_V0](https://github.com/StrayCamel247/BotCamel/tree/dev-mirai)版本为基于mirai实现
 
+```
+git clone --recursive
 go-cqhttp 源码在本地`./go-cqhttp`中，引用的本地源码，若go-cqhttp更新，直接进入文件夹`git clone`下载最新的源码即可，此文件夹可被删除覆盖
-
+```
 ### [go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)
 https://github.com/Mrs4s/go-cqhttp/
 

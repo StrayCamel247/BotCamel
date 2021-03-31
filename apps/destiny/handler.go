@@ -7,11 +7,7 @@ package destiny
   __date__: 2021-03-12
 */
 /*
-	sync.WaitGroup
-	WaitGroup 用于等待一组 goroutine 结束,主 goroutine 调用 Add() 设置要等待的 goroutine 的数目。 每个 goroutine 结束时调用 Done()。同时主 goroutine 调用 Wait() ，阻塞主 goroutine 知道 所有的 goroutine 结束。 第一次使用 WatiGroup 实例后, 该 WaitGroup 一定不能被拷贝。更多的信息可以从不能被拷贝的结构 中获得。
-
-	WaitGroup 是结构体，不是引用类型，所以传递给 goroutine 时不能直接传值，而要传递 WaitGroup 实例的指针.
-*/
+ */
 import (
 	"encoding/json"
 	"fmt"
@@ -37,6 +33,10 @@ import (
 func init() {
 	// config = con.GetConfig(false)
 
+}
+
+type Destiny struct {
+	db *gorm.DB
 }
 
 // ManifestFetchResponse 获取menifest接口返回
