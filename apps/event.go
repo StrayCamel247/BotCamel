@@ -28,6 +28,8 @@ func init() {
 	// 启用sqlite数据库
 	dbGorm, _ = gorm.Open(sqlite.Open("./data/sqlite3.db"), &gorm.Config{
 		// PrepareStmt: true,
+		// 对于写操作（创建、更新、删除），为了确保数据的完整性，GORM 会将它们封装在事务内运行。但这会降低性能，你可以在初始化时禁用这种方式
+		SkipDefaultTransaction: true,
 	})
 	// 初始化时检查命运2数据库是否存在
 	destiny.InfoMenifestBaseDBCheck(dbGorm)
