@@ -18,8 +18,8 @@ import (
 	"github.com/Mrs4s/MiraiGo/message"
 	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	"github.com/StrayCamel247/BotCamel/apps/destiny"
-	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"github.com/StrayCamel247/BotCamel/apps/lightGG"
+	"github.com/StrayCamel247/BotCamel/apps/utils"
 	// "github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -182,8 +182,8 @@ func d2uploadImgByUrl(flag string, url string, c *client.QQClient, msg *message.
 
 // 根据-老九-试炼-光尘-等关键词获取并上传最新数据
 func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessage) error {
-	out := destiny.DataInfo(flag)
-	m, err := d2uploadImgByUrl(flag, out, c, msg)
+	url := destiny.DataInfo(flag)
+	m, err := d2uploadImgByUrl(flag, url, c, msg)
 	if err != nil {
 		log.WithError(err)
 		return err

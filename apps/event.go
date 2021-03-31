@@ -44,5 +44,4 @@ func GroupMessageEvent(c *client.QQClient, m *message.GroupMessage) {
 	if isAt {
 		camel.GroMsgHandler(dbGorm, c, m, com, content)
 	}
-
 }
