@@ -508,8 +508,10 @@ func main() {
 	global.Check(cli.ReloadGroupList())
 	log.Infof("共加载 %v 个群.", len(cli.GroupList))
 	bot := coolq.NewQQBot(cli, conf)
-	// 载入自定义模块
-	bot.Client.OnGroupMessage(apps.GroupMessageEvent)
+	// =======(ง •_•)ง=========
+	// 载入自定义插件
+	go apps.Start(bot)
+	// =======(ง •_•)ง=========
 	if conf.PostMessageFormat != "string" && conf.PostMessageFormat != "array" {
 		log.Warnf("post_message_format 配置错误, 将自动使用 string")
 		coolq.SetMessageFormat("string")

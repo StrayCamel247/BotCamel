@@ -18,7 +18,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/message"
 	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	"github.com/StrayCamel247/BotCamel/apps/destiny"
-	"github.com/StrayCamel247/BotCamel/apps/handler"
+	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"github.com/StrayCamel247/BotCamel/apps/lightGG"
 	// "github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
@@ -132,10 +132,10 @@ func PathExists(path string) bool {
 // FileNameGenerator 文件名生成器
 func FileNameGenerator(flag string) string {
 	var _imgFileDate string
-	if handler.EqualFolds(flag, command.D2xiu.Keys) || handler.EqualFolds(flag, command.D2day.Keys) {
+	if utils.EqualFolds(flag, command.D2xiu.Keys) || utils.EqualFolds(flag, command.D2day.Keys) {
 		// 日更新
 		_imgFileDate = GetD2daykDateOfdayk()
-	} else if handler.EqualFolds(flag, command.D2week.Keys) || handler.EqualFolds(flag, command.D2trial.Keys) || handler.EqualFolds(flag, command.D2dust.Keys) {
+	} else if utils.EqualFolds(flag, command.D2week.Keys) || utils.EqualFolds(flag, command.D2trial.Keys) || utils.EqualFolds(flag, command.D2dust.Keys) {
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
@@ -143,10 +143,10 @@ func FileNameGenerator(flag string) string {
 }
 func D2DownloadHandler(flag string, url string) (fileName string, updated bool) {
 	var _imgFileDate string
-	if handler.EqualFolds(flag, command.D2xiu.Keys) || handler.EqualFolds(flag, command.D2day.Keys) {
+	if utils.EqualFolds(flag, command.D2xiu.Keys) || utils.EqualFolds(flag, command.D2day.Keys) {
 		// 日更新
 		_imgFileDate = GetD2daykDateOfdayk()
-	} else if handler.EqualFolds(flag, command.D2week.Keys) || handler.EqualFolds(flag, command.D2trial.Keys) || handler.EqualFolds(flag, command.D2dust.Keys) {
+	} else if utils.EqualFolds(flag, command.D2week.Keys) || utils.EqualFolds(flag, command.D2trial.Keys) || utils.EqualFolds(flag, command.D2dust.Keys) {
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = GetD2WeekDateOfWeek()
 	}
@@ -256,7 +256,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 	// 生成文件名
 	_fileName := FileNameGenerator(flag + content)
 	// 文件不存在则生成-若存在则直接上传
-	if !handler.PathExists(_fileName) {
+	if !utils.PathExists(_fileName) {
 		// 检查item-id是否为正确的item
 		log.Infof("item检查网页...")
 		var checkedUrl string

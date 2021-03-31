@@ -9,7 +9,7 @@ import (
 	// "github.com/Mrs4s/MiraiGo/client/pb/structmsg"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/StrayCamel247/BotCamel/apps/destiny"
-	"github.com/StrayCamel247/BotCamel/apps/handler"
+	"github.com/StrayCamel247/BotCamel/apps/utils"
 )
 
 func BaseRefreshHandler() {
@@ -46,43 +46,43 @@ func GroMsgHandler(orm *gorm.DB, c *client.QQClient, msg *message.GroupMessage, 
 	out = BaseAutoreply(com)
 	switch {
 	// case
-	// case handler.EqualFolds(com, command.Menu.Keys):
+	// case utils.EqualFolds(com, command.Menu.Keys):
 	// 	menuHandler(c, msg)
 
-	case handler.EqualFolds(com, command.D2pvp.Keys):
+	case utils.EqualFolds(com, command.D2pvp.Keys):
 		PvPInfoHandler(content, c, msg)
 
-	case handler.EqualFolds(com, command.D2pve.Keys):
+	case utils.EqualFolds(com, command.D2pve.Keys):
 		PvEInfoHandler(content, c, msg)
 
-	case handler.EqualFolds(com, command.D2skill.Keys):
+	case utils.EqualFolds(com, command.D2skill.Keys):
 		GenerateDes(content, "skil", c, msg, orm)
 
-	case handler.EqualFolds(com, command.D2npc.Keys):
+	case utils.EqualFolds(com, command.D2npc.Keys):
 		GenerateDes(content, "npc", c, msg, orm)
 
-	case handler.EqualFolds(com, command.D2perk.Keys):
+	case utils.EqualFolds(com, command.D2perk.Keys):
 		GenerateDes(content, "perk", c, msg, orm)
 
-	case handler.EqualFolds(com, command.D2item.Keys):
+	case utils.EqualFolds(com, command.D2item.Keys):
 		ItemGenerateImg(content, "item", c, msg, orm)
 
-	case handler.EqualFolds(com, command.D2day.Keys):
+	case utils.EqualFolds(com, command.D2day.Keys):
 		dayGenerateImg("0x03", c, msg)
 
-	case handler.EqualFolds(com, command.D2week.Keys):
+	case utils.EqualFolds(com, command.D2week.Keys):
 		d2uploadImgByFlag("0x02", c, msg)
 
-	case handler.EqualFolds(com, command.D2xiu.Keys):
+	case utils.EqualFolds(com, command.D2xiu.Keys):
 		d2uploadImgByFlag("0x04", c, msg)
 
-	case handler.EqualFolds(com, command.D2trial.Keys):
+	case utils.EqualFolds(com, command.D2trial.Keys):
 		d2uploadImgByFlag("0x05", c, msg)
 
-	case handler.EqualFolds(com, command.D2dust.Keys):
+	case utils.EqualFolds(com, command.D2dust.Keys):
 		d2uploadImgByFlag("0x06", c, msg)
 
-	case handler.EqualFolds(com, command.D2random.Keys):
+	case utils.EqualFolds(com, command.D2random.Keys):
 		randomHandler(c, msg)
 
 	case out == "":

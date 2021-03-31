@@ -1,4 +1,4 @@
-package handler
+package utils
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func int() {
+func init() {
 
 }
 

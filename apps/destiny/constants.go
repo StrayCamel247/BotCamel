@@ -2,8 +2,6 @@ package destiny
 
 import (
 	"fmt"
-	// "github.com/Logiase/MiraiGo-Template/utils"
-	// "github.com/StrayCamel247/BotCamel/global"
 )
 
 // key表名-value建表语句
@@ -75,8 +73,6 @@ func init() {
 		);
 	`
 }
-
-// var logger = utils.GetModuleLogger("NmslApi_handler")
 
 // Bungie-api
 var BungiePlatformRoot = "https://www.bungie.net/Platform"

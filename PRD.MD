@@ -17,7 +17,7 @@
 | 按照文本一一对应回复 | 查询配置文件实现 | 完成 | 配置文件可进行扩充 |[StrayCamel247](https://github.com/StrayCamel247) |
 | 机器人初始化-自动检查数据更新 | 使用gorm提供数据库事务sesson操作-使用原生sql建表-执行等 | 完成 | [StrayCamel247](https://github.com/StrayCamel247) |
 | 中文--简体繁体--英文语言支持
- |  | 完成 | [StrayCamel247](https://github.com/StrayCamel247) |
+|  | 待kaifa |  |
 
 
 ### QQ群聊功能
