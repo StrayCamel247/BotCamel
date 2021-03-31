@@ -105,7 +105,7 @@ type ManifestLanguages struct {
 	// 繁体中文
 	ZhCht ManifestJsonFilePath `json:"zh-cht"`
 	// 英文
-	En ManifestJsonFilePath `json:"en"`
+	// En ManifestJsonFilePath `json:"en"`
 }
 type ManifestWorldComponentContent struct {
 	JsonWorldComponentContentPaths ManifestLanguages `json:"jsonWorldComponentContentPaths"`

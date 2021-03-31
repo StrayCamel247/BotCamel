@@ -19,7 +19,6 @@ import (
 var format = "string"
 
 func init() {
-
 }
 
 // SetMessageFormat 设置消息上报格式，默认为string

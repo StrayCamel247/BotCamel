@@ -26,7 +26,7 @@ import (
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
-	"sync"
+	// "sync"
 	"time"
 )
 
@@ -94,7 +94,7 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 	manifestRes, _ := ManifestFetchResponse()
 	params := map[string]interface{}{"version": manifestRes.NewVersion}
 	needUpdate := D2VersionHandler(orm, params)
-	// 待开发
+
 	if needUpdate || len(_InItSqls) == _Num {
 		_handler := func(_Data interface{}, LangType string) {
 			typ := reflect.TypeOf(_Data)
@@ -126,17 +126,13 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 		}
 		//获取到该结构体有几个字段
 		num := val.NumField()
-		var wg = sync.WaitGroup{}
-		wg.Add(num)
 		//遍历结构体的所有字段
 		for i := 0; i < num; i++ {
 			LangType := typ.Field(i).Tag.Get("json")
 			// fmt.Printf("%+v", val.Field(i))
-			go _handler(val.Field(i).Interface(), LangType)
+			_handler(val.Field(i).Interface(), LangType)
 		}
-		wg.Wait()
-		go D2VersionHandler(orm, params)
-		wg.Done()
+		D2VersionHandler(orm, params)
 	}
 
 }
@@ -188,8 +184,10 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 		_nameTmp = append(_nameTmp, name)
 		return true
 	}
+
 	for itemid := range ResJson {
 
+		// defer wg.Done()
 		// 格式化数据-为字符串
 		// "itemid", "description", "name", "icon", "tag", "seasonid" 遵循默认排序
 		var _SeasonId string
@@ -216,8 +214,8 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 			paramList = append(paramList, _params)
 
 		}
-	}
 
+	}
 	// 写入数据库
 	InsertMenifestHandler(orm, paramList)
 	log.Infof(tag + " down!")

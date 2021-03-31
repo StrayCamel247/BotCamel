@@ -26,7 +26,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	// url2 "net/url"
+	url2 "net/url"
 	"os"
 	// "reflect"
 	// "regexp"
@@ -259,8 +259,8 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		log.Infof("item检查网页...")
 		var checkedUrl string
 		for _, info := range itemId {
-			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s/", info[0], info[1])
-			// url := url2.QueryEscape(baseUrl)
+			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s", info[0], info[1])
+			_ = url2.QueryEscape(info[1])
 			// url = baseUrl
 			if lightGG.LightGGChecker(baseUrl) {
 				checkedUrl = baseUrl
@@ -269,11 +269,11 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		}
 		log.Infof("item网页检查完毕...")
 		if checkedUrl != "" {
-			log.Infof(fmt.Sprintf("[%s]网页截图ing", checkedUrl))
+			log.Infof(fmt.Sprintf("[%s] 网页截图ing", checkedUrl))
 			lightGG.UrlShotCutHandler(checkedUrl, _fileName)
-			log.Infof(fmt.Sprintf("%s网页截图完毕", checkedUrl))
+			log.Infof(fmt.Sprintf("[%s] 网页截图完毕", checkedUrl))
 		} else {
-			log.Warnf(fmt.Sprintf("light 查无网页 %s", content+flag))
+			log.Warnf(fmt.Sprintf("light 查无网页[%s]", flag+content))
 		}
 	}
 	// 文件存在则上传
@@ -284,7 +284,7 @@ func ItemGenerateImg(content, flag string, c *client.QQClient, msg *message.Grou
 		}
 		c.SendGroupMessage(msg.GroupCode, rMsg.Append(_ImgMsg))
 	} else {
-		log.Warn(fmt.Sprintf("%s图片获取失败", _fileName))
+		log.Warn(fmt.Sprintf("[%s]图片获取失败", flag+content))
 		c.SendGroupMessage(msg.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
 	}
 
@@ -348,12 +348,14 @@ func randomHandler(c *client.QQClient, msg *message.GroupMessage) {
 	m := message.NewSendingMessage().Append(message.NewText(out))
 	c.SendGroupMessage(msg.GroupCode, m)
 }
+
+// 生成菜单消息
 func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
-	out := `
-		
-	`
-	m := message.NewSendingMessage().Append(message.NewText(string(out)))
-	c.SendGroupMessage(msg.GroupCode, m)
+	_ImgMsg, err := c.UploadGroupImageByFile(msg.GroupCode, FileNameGenerator("menu"))
+	if err != nil {
+		log.WithError(err)
+	}
+	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(_ImgMsg))
 }
 
 // 玩家pvp数据信息的概览获取

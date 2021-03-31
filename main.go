@@ -45,6 +45,7 @@ import (
 	"github.com/tuotoo/qrcode"
 )
 
+var _ = func() int { return 1 }
 var console = bufio.NewReader(os.Stdin)
 
 var readLine = func() (str string) {

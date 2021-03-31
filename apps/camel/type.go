@@ -4,9 +4,12 @@ type dayRes struct {
 	IMG_URL      string `json:"img_url"`
 	IMG_HASH_MD5 string `json:"img_hash_md5"`
 }
+
+// 指令信息
 type Info struct {
-	Keys   []string
-	Remark string
+	Keys    []string
+	Remark  string
+	Command string
 }
 
 // pvp查询返回
@@ -48,70 +51,87 @@ func init() {
 func CommandFilter() CommandsStruct {
 	return CommandsStruct{
 		Menu: Info{
-			Keys:   []string{"menu", "菜单"},
-			Remark: "查看所有指令"},
+			Command: "menu",
+			Keys:    []string{"menu", "菜单"},
+			Remark:  "查看所有指令"},
 		Asskisser: Info{
-			Keys:   []string{"0x00", "asskisser", "乖乖", "宝贝", "爱你"},
-			Remark: "0x00 Asskisser 夸一下"},
+			Command: "0x00",
+			Keys:    []string{"0x00", "asskisser", "乖乖", "宝贝", "爱你"},
+			Remark:  "0x00 Asskisser 夸一下"},
 
 		Motherfucker: Info{
-			Keys:   []string{"0x01", "motherfucker", "傻逼", "cnm", "草泥马", "操你妈"},
-			Remark: "0x01 Motherfucker 碧池一下"},
+			Command: "0x01",
+			Keys:    []string{"0x01", "motherfucker", "傻逼", "cnm", "草泥马", "操你妈"},
+			Remark:  "0x01 Motherfucker 碧池一下"},
 
 		D2week: Info{
-			Keys:   []string{"0x02", "week", "周报"},
-			Remark: "0x02 week 周报信息查询"},
+			Command: "0x02",
+			Keys:    []string{"0x02", "week", "周报"},
+			Remark:  "0x02 week 周报信息查询"},
 
 		D2day: Info{
-			Keys:   []string{"0x03", "day", "日报"},
-			Remark: "0x03 日报信息查看"},
+			Command: "0x03",
+			Keys:    []string{"0x03", "day", "日报"},
+			Remark:  "0x03 日报信息查看"},
 
 		D2xiu: Info{
-			Keys:   []string{"0x04", "xiu", "nine", "老九"},
-			Remark: "0x04 xiu 老九信息查询"},
+			Command: "0x04",
+			Keys:    []string{"0x04", "xiu", "nine", "老九"},
+			Remark:  "0x04 xiu 老九信息查询"},
 
 		D2trial: Info{
-			Keys:   []string{"0x05", "trail", "trial", "试炼", "train"},
-			Remark: "0x05 trial 试炼最新动态"},
+			Command: "0x05",
+			Keys:    []string{"0x05", "trail", "trial", "试炼", "train"},
+			Remark:  "0x05 trial 试炼最新动态"},
 
 		D2dust: Info{
-			Keys:   []string{"0x06", "dust", "dustdetail", "光尘", "光尘商店"},
-			Remark: "0x06 赛季光尘商店"},
+			Command: "0x06",
+			Keys:    []string{"0x06", "dust", "dustdetail", "光尘", "光尘商店"},
+			Remark:  "0x06 赛季光尘商店"},
 
 		D2random: Info{
-			Keys:   []string{"0x07", "random", "random10", "骰子", "掷色子"},
-			Remark: "0x07 骰子功能"},
+			Command: "0x07",
+			Keys:    []string{"0x07", "random", "random10", "骰子", "掷色子"},
+			Remark:  "0x07 骰子功能"},
 
 		D2perk: Info{
-			Keys:   []string{"0x08", "perk", "词条"},
-			Remark: "0x08 perk 查询词条/模组信息"},
+			Command: "0x08",
+			Keys:    []string{"0x08", "perk", "词条"},
+			Remark:  "0x08 perk 查询词条/模组信息"},
 
 		D2item: Info{
-			Keys:   []string{"0x09", "item", "物品"},
-			Remark: "0x09 查询物品信息-提供light.gg信息"},
+			Command: "0x09",
+			Keys:    []string{"0x09", "item", "物品"},
+			Remark:  "0x09 查询物品信息-提供light.gg信息"},
 
 		D2npc: Info{
-			Keys:   []string{"0x10", "npc"},
-			Remark: "0x10 查询npc信息"},
+			Command: "0x10",
+			Keys:    []string{"0x10", "npc"},
+			Remark:  "0x10 查询npc信息"},
 
 		D2skill: Info{
-			Keys:   []string{"0x0a", "skill"},
-			Remark: "0x0a 查询技能等信息"},
+			Command: "0x0a",
+			Keys:    []string{"0x0a", "skill"},
+			Remark:  "0x0a 查询技能等信息"},
 
 		D2pve: Info{
-			Keys:   []string{"0x0b", "pve"},
-			Remark: "0x0b 查询pve信息"},
+			Command: "0x0b",
+			Keys:    []string{"0x0b", "pve"},
+			Remark:  "0x0b 查询pve信息"},
 
 		D2pvp: Info{
-			Keys:   []string{"0x0c", "pvp"},
-			Remark: "0x0c 查询pvp信息"},
+			Command: "0x0c",
+			Keys:    []string{"0x0c", "pvp"},
+			Remark:  "0x0c 查询pvp信息"},
 
 		Developers: Info{
-			Keys:   []string{"0xFF", "developers", "developer", "开发人员"},
-			Remark: "🙊 娃哈哈店长-StrayCamel247\n👋 期待你的加入"},
+			Command: "0xFF",
+			Keys:    []string{"0xFF", "developers", "developer", "开发人员"},
+			Remark:  "🙊 娃哈哈店长-StrayCamel247\n👋 期待你的加入"},
 
 		DesChecker: Info{
-			Keys:   []string{"", " ", "\n", "\n\n"},
-			Remark: ""},
+			Command: "",
+			Keys:    []string{"", " ", "\n", "\n\n"},
+			Remark:  ""},
 	}
 }

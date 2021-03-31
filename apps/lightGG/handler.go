@@ -2,6 +2,7 @@ package lightGG
 
 import (
 	"context"
+	"fmt"
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
@@ -11,6 +12,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Spider struct {
@@ -22,16 +24,19 @@ func (keyword Spider) get_html_header() string {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", keyword.url, nil)
 	if err != nil {
+		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
 	for key, value := range keyword.header {
 		req.Header.Add(key, value)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
 	return string(body)
 }
@@ -41,14 +46,13 @@ https://www.light.gg/ 网站处理
 */
 // LightGGChecker 检查lightgg 网站链接是否正确
 func LightGGChecker(url string) bool {
+	log.Infof(fmt.Sprintf("正在检查light gg网页[%s]", url))
 	header := map[string]string{
-		"Host":                      "movie.douban.com",
 		"Connection":                "keep-alive",
 		"Cache-Control":             "max-age=0",
 		"Upgrade-Insecure-Requests": "1",
 		"User-Agent":                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36",
 		"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-		"Referer":                   "https://movie.douban.com/top250",
 	}
 	spider := &Spider{url, header}
 	html := spider.get_html_header()
@@ -58,9 +62,11 @@ func LightGGChecker(url string) bool {
 	find_txt2 := rp2.FindAllStringSubmatch(html, -1)
 	for i := 0; i < len(find_txt2); i++ {
 		if strings.Contains(find_txt2[i][1], "404") {
+			log.Infof(fmt.Sprintf("[%s] 错误", url))
 			return false
 		}
 	}
+	log.Infof(fmt.Sprintf("[%s] 正确", url))
 	return true
 }
 
@@ -95,8 +101,10 @@ func elementScreenshot(urlstr, sel string, res *[]byte) chromedp.Tasks {
 
 // 全屏截图
 func fullScreenshot(urlstr string, quality int64, res *[]byte) chromedp.Tasks {
+	// log.Infof("截图等待2秒，防止先")
 	return chromedp.Tasks{
 		chromedp.Navigate(urlstr),
+		chromedp.Sleep(2 * time.Second),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			// get layout metrics
 			_, _, cssContentSize, err := page.GetLayoutMetrics().Do(ctx)
