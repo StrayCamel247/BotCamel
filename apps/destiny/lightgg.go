@@ -1,4 +1,4 @@
-package lightGG
+package destiny
 
 import (
 	"context"

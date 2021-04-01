@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
-	"github.com/StrayCamel247/BotCamel/apps/lightGG"
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -34,10 +33,10 @@ func Start() {
 // 命运2-下载
 func D2DownloadHandler(flag string, url string) (fileName string, updated bool) {
 	var _imgFileDate string
-	if utils.EqualFolds(flag, command.D2xiu.Keys) || utils.EqualFolds(flag, command.D2day.Keys) {
+	if utils.EqualFolds(flag, Commands.D2xiu.Keys) || utils.EqualFolds(flag, Commands.D2day.Keys) {
 		// 日更新
 		_imgFileDate = utils.GetDateViaWeekNum(0)
-	} else if utils.EqualFolds(flag, command.D2week.Keys) || utils.EqualFolds(flag, command.D2trial.Keys) || utils.EqualFolds(flag, command.D2dust.Keys) {
+	} else if utils.EqualFolds(flag, Commands.D2week.Keys) || utils.EqualFolds(flag, Commands.D2trial.Keys) || utils.EqualFolds(flag, Commands.D2dust.Keys) {
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = utils.GetDateViaWeekNum(3)
 	}
@@ -60,10 +59,10 @@ func D2DownloadHandler(flag string, url string) (fileName string, updated bool) 
 // fileNameGenerator 文件名生成器
 func (r *Destiny) fileNameGenerator(flag string) string {
 	var _imgFileDate string
-	if utils.EqualFolds(flag, command.D2xiu.Keys) || utils.EqualFolds(flag, command.D2day.Keys) {
+	if utils.EqualFolds(flag, Commands.D2xiu.Keys) || utils.EqualFolds(flag, Commands.D2day.Keys) {
 		// 日更新
 		_imgFileDate = utils.GetDateViaWeekNum(0)
-	} else if utils.EqualFolds(flag, command.D2week.Keys) || utils.EqualFolds(flag, command.D2trial.Keys) || utils.EqualFolds(flag, command.D2dust.Keys) {
+	} else if utils.EqualFolds(flag, Commands.D2week.Keys) || utils.EqualFolds(flag, Commands.D2trial.Keys) || utils.EqualFolds(flag, Commands.D2dust.Keys) {
 		// 周更新 D2xiu D2week D2trial D2dust
 		_imgFileDate = utils.GetDateViaWeekNum(3)
 	}
@@ -104,7 +103,7 @@ func (r *Destiny) ItemGenerateImg(content, flag string) {
 			baseUrl := fmt.Sprintf("https://www.light.gg/db/zh-cht/items/%s/%s", info[0], info[1])
 			_ = url2.QueryEscape(info[1])
 			// url = baseUrl
-			if lightGG.LightGGChecker(baseUrl) {
+			if LightGGChecker(baseUrl) {
 				checkedUrl = baseUrl
 			}
 
@@ -112,7 +111,7 @@ func (r *Destiny) ItemGenerateImg(content, flag string) {
 		log.Infof("item网页检查完毕...")
 		if checkedUrl != "" {
 			log.Infof(fmt.Sprintf("[%s] 网页截图ing", checkedUrl))
-			lightGG.UrlShotCutHandler(checkedUrl, _fileName)
+			UrlShotCutHandler(checkedUrl, _fileName)
 			log.Infof(fmt.Sprintf("[%s] 网页截图完毕", checkedUrl))
 		} else {
 			log.Warnf(fmt.Sprintf("light 查无网页[%s]", flag+content))

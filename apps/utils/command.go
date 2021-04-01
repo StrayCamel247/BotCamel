@@ -21,8 +21,12 @@ func FetchCommandNum() string {
 // 指令信息
 type Info struct {
 	Keys    []string
-	Remark  string
-	Command string
+	Remark  string `json:"remark"`
+	Command string `json:"com"`
+}
+
+func RemakrFormat(s string) string {
+	return fmt.Sprintf("	%s	", s)
 }
 
 // 获取指令匹配项
