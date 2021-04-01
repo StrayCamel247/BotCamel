@@ -26,6 +26,6 @@ type Info struct {
 }
 
 // 获取指令匹配项
-func (r *Info) key() []string {
+func (r *Info) Key() []string {
 	return append(r.Keys, r.Command)
 }

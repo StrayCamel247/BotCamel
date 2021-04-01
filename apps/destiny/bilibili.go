@@ -1,4 +1,6 @@
-// 周报-试炼等数据爬取b站数据
+/*
+	周报-试炼等数据爬取b站数据
+*/
 package destiny
 
 import (
@@ -11,6 +13,11 @@ import (
 	"strconv"
 	"time"
 )
+
+type dayRes struct {
+	IMG_URL      string `json:"img_url"`
+	IMG_HASH_MD5 string `json:"img_hash_md5"`
+}
 
 type ImgUrls struct {
 	Zhoubao string `json:"zb"`

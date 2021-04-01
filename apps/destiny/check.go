@@ -1,3 +1,6 @@
+/*
+	命运2数据库检查中心
+*/
 package destiny
 
 import (
@@ -6,7 +9,6 @@ import (
 	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	// "github.com/bitly/go-simplejson"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -15,7 +17,6 @@ import (
 	// "strconv"
 
 	"bytes"
-	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"reflect"
 	"strings"
 	// "sync"
@@ -102,8 +103,24 @@ func init() {
 	`
 }
 
+// 日报信息更新
+func (r *Destiny) RefreshDayHandler(flag, url string) {
+	ch := make(chan bool)
+	// 每秒轮询日报信息-是否更新-若更新跳出
+	go func() {
+		for {
+			_, updated := D2DownloadHandler(flag, url)
+			if updated {
+				log.Infof("定时器-日报数据已更新！")
+				ch <- updated
+			}
+		}
+	}()
+	_ = <-ch
+}
+
 // ManifestFetchResponse 获取menifest接口返回
-func ManifestFetchResponse() (Response ManifestWorldComponentContent, err error) {
+func (r *Destiny) ManifestFetchResponse() (Response ManifestWorldComponentContent, err error) {
 	spaceClient := http.Client{
 		Timeout: time.Second * 999, // Maximum of 100 secs
 	}
@@ -141,22 +158,22 @@ func ManifestFetchResponse() (Response ManifestWorldComponentContent, err error)
 }
 
 // InfoMenifestBaseDBCheck 检查命运2 menifest表是否存在-若不存在则抽取
-func InfoMenifestBaseDBCheck(orm *gorm.DB) {
+func (r *Destiny) InfoMenifestBaseDBCheck() {
 	// 检查是否存在表
 	_Num := len(D2Table)
 	log.Infof(fmt.Sprintf("正在检查%d张表...", _Num))
 	var _InItSqls []string
 	for tableName, tableSql := range D2Table {
-		DBCheckHandler(orm, tableName, tableSql, &_InItSqls)
+		r.DBCheckHandler(tableName, tableSql, &_InItSqls)
 	}
 	if len(_InItSqls) > 0 {
 		// 直接调用执行-需等待率先你表后再进行后序的插入操作-阻塞
-		utils.Execute(orm, strings.Join(_InItSqls, ";"), nil)
+		r.Orm.Execute(strings.Join(_InItSqls, ";"), nil)
 	}
 	// 检查表里数据是否是最新-若不是或者数据为空-则重新抽数到数据库
-	manifestRes, _ := ManifestFetchResponse()
+	manifestRes, _ := r.ManifestFetchResponse()
 	params := map[string]interface{}{"version": manifestRes.NewVersion}
-	needUpdate := D2VersionHandler(orm, params)
+	needUpdate := r.D2VersionHandler(params)
 
 	if needUpdate || len(_InItSqls) == _Num {
 		_handler := func(_Data interface{}, LangType string) {
@@ -173,7 +190,7 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 			//遍历结构体的所有字段
 			for i := 0; i < num; i++ {
 				tagVal := typ.Field(i).Tag.Get("json")
-				ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), orm, LangType)
+				r.ManifestFetchInfo(fmt.Sprintf("%v", val.Field(i)), fmt.Sprintf("%v", tagVal), LangType)
 			}
 		}
 		// 分批次写入-无需锁表
@@ -193,12 +210,12 @@ func InfoMenifestBaseDBCheck(orm *gorm.DB) {
 			// fmt.Printf("%+v", val.Field(i))
 			_handler(val.Field(i).Interface(), LangType)
 		}
-		D2VersionHandler(orm, params)
+		r.D2VersionHandler(params)
 	}
 }
 
 // ManifestFetchInfo 查询解析url数据并写入 InfoMenifestBaseDB 表
-func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
+func (r *Destiny) ManifestFetchInfo(josnFile, tag string, LangType string) {
 	u, err := url.Parse(BungieBase)
 	u.Path = path.Join(u.Path, josnFile)
 	url := u.String()
@@ -277,6 +294,6 @@ func ManifestFetchInfo(josnFile, tag string, orm *gorm.DB, LangType string) {
 
 	}
 	// 写入数据库
-	InsertMenifestHandler(orm, paramList)
+	r.InsertMenifestHandler(paramList)
 	log.Infof(tag + " down!")
 }

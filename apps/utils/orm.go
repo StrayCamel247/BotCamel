@@ -10,17 +10,36 @@ import (
 	// "database/sql"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"strings"
 	// "gorm.io/gorm/logger"
 )
 
-func init() {
+var Orm *CamelOrm
 
+func init() {
+	Orm = GetOrm()
+}
+
+// 触发
+func GetOrm() *CamelOrm {
+	log.Infof("载入sqlite数据库...")
+	// 启用sqlite数据库
+	orm, _ := gorm.Open(sqlite.Open("./data/sqlite3.db"), &gorm.Config{
+		// PrepareStmt: true,
+		// 对于写操作（创建、更新、删除），为了确保数据的完整性，GORM 会将它们封装在事务内运行。但这会降低性能，你可以在初始化时禁用这种方式
+		SkipDefaultTransaction: true,
+	})
+	return &CamelOrm{orm}
+}
+
+type CamelOrm struct {
+	Orm *gorm.DB
 }
 
 // Execute_batch 批量处理数据
-func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interface{}) (lines int) {
+func (r *CamelOrm) Execute_batch(baseSql, sql string, orderParamsList [][]interface{}) (lines int) {
 	_paramsLen := len(orderParamsList)
 	if _paramsLen == 0 {
 		return _paramsLen
@@ -31,7 +50,7 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 		_sqlArrys[i] += fmt.Sprintf(string(sql), orderParamsList[i]...)
 	}
 	if baseSql == "" {
-		res := orm.Debug().Exec(strings.Join(_sqlArrys, ";"))
+		res := r.Orm.Debug().Exec(strings.Join(_sqlArrys, ";"))
 		if res.Error != nil {
 			log.WithError(res.Error)
 		}
@@ -41,9 +60,9 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 		// 如果数据量大于5 不打印日志
 		var res *gorm.DB
 		if len(_sqlArrys) > 5 {
-			res = orm.Exec(baseSql + strings.Join(_sqlArrys, ","))
+			res = r.Orm.Exec(baseSql + strings.Join(_sqlArrys, ","))
 		} else {
-			res = orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))
+			res = r.Orm.Debug().Exec(baseSql + strings.Join(_sqlArrys, ","))
 		}
 		if res.Error != nil {
 			log.WithError(res.Error)
@@ -55,12 +74,12 @@ func Execute_batch(orm *gorm.DB, baseSql, sql string, orderParamsList [][]interf
 }
 
 // Execute 处理数据
-func Execute(orm *gorm.DB, sql string, params interface{}) int64 {
+func (r *CamelOrm) Execute(sql string, params interface{}) int64 {
 	var res *gorm.DB
 	if params == nil {
-		res = orm.Debug().Exec(string(sql))
+		res = r.Orm.Debug().Exec(string(sql))
 	} else {
-		res = orm.Debug().Exec(string(sql), params)
+		res = r.Orm.Debug().Exec(string(sql), params)
 	}
 
 	if res.Error != nil {
@@ -73,8 +92,8 @@ func Execute(orm *gorm.DB, sql string, params interface{}) int64 {
 
 // 获取数据
 
-func Fetch_data_sql(orm *gorm.DB, sql string, resStruct interface{}, params interface{}) (res *gorm.DB) {
-	res = orm.Debug().Raw(string(sql), params).Scan(resStruct)
+func (r *CamelOrm) Fetch_data_sql(sql string, resStruct interface{}, params interface{}) (res *gorm.DB) {
+	res = r.Orm.Debug().Raw(string(sql), params).Scan(resStruct)
 	if res.Error != nil {
 		log.WithError(res.Error)
 	}

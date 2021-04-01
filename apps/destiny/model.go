@@ -7,22 +7,83 @@ package destiny
   __DATE__: 2021-03-18
 */
 import (
-	// "encoding/json"
 	"fmt"
-	"github.com/StrayCamel247/BotCamel/apps/utils"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/gorm"
-	// "io/ioutil"
-	// "net/http"
-	// "regexp"
-	// "strconv"
-	// "reflect"
-	// "time"
-	// "sync"
 )
 
+// des 介绍信息查询
+func (r *Destiny) DesQuery(params interface{}) string {
+	type ReStruct struct {
+		Des string `gorm:"column:description"`
+	}
+	var resStruct ReStruct
+	_sql := `
+		with tmpBase as (
+			select
+				description||'\n' description
+			from
+				destiny2_menifest_base
+			where
+				name = @name
+				and description is not null
+				and description != ' '
+				and description != ''
+			group by description
+		)
+		select GROUP_CONCAT(description) description from tmpBase
+	`
+	r.Orm.Fetch_data_sql(_sql, &resStruct, params)
+	return resStruct.Des
+}
+
+// id itemid查询
+func (r *Destiny) IdQuery(params interface{}) (res [][2]string) {
+	type ReStruct struct {
+		ItemId  string `gorm:"column:itemid"`
+		ChtName string `gorm:"column:name"`
+	}
+	var resStruct []ReStruct
+	_sql := `
+		with zhChtData as (
+			select itemid, name
+			from
+				destiny2_menifest_base
+			where
+				language = 'zh-cht'
+		)
+		, base as (
+			select
+				itemid
+			from
+				destiny2_menifest_base
+			where
+				name = @name
+				and itemid is not null
+				and itemid != ' '
+				and itemid != ''
+				and tag = 'DestinyInventoryItemLiteDefinition'
+			group by itemid
+		)
+		select 
+			base.itemid
+			,t.name
+		from base
+		left join zhChtData t
+			on base.itemid = t.itemid
+		group by 
+			base.itemid
+			,t.name
+		
+	`
+	r.Orm.Fetch_data_sql(_sql, &resStruct, params)
+	for _, v := range resStruct {
+		res = append(res, [2]string{v.ItemId, v.ChtName})
+	}
+	return res
+}
+
 // D2VersionHandler 返回true需要更新数据-false则不需要更新
-func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
+func (r *Destiny) D2VersionHandler(params interface{}) bool {
 	type versionRestruct struct {
 		Version string `json:"version"`
 	}
@@ -33,7 +94,7 @@ func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 		from destiny2_version
 		where version = @version
 	`
-	utils.Fetch_data_sql(orm, _sql, &resStruct, params)
+	r.Orm.Fetch_data_sql(_sql, &resStruct, params)
 	if resStruct.Version == "" {
 		log.Errorf(fmt.Sprintf("Destiny2 数据不是最新-等待更新ing"))
 		_insertBase := `
@@ -41,7 +102,7 @@ func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 		VALUES
 		(@version)
 		`
-		utils.Execute(orm, _insertBase, params)
+		r.Orm.Execute(_insertBase, params)
 		return true
 	}
 	log.Infof(fmt.Sprintf("Destiny2 数据已是最新 version: %s", resStruct.Version))
@@ -49,7 +110,7 @@ func D2VersionHandler(orm *gorm.DB, params interface{}) bool {
 }
 
 // InsertMenifestHandler 清空表后更新
-func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
+func (r *Destiny) InsertMenifestHandler(dataArray [][]interface{}) {
 	if len(dataArray) == 0 {
 		return
 	}
@@ -67,17 +128,17 @@ func InsertMenifestHandler(orm *gorm.DB, dataArray [][]interface{}) {
 	_batch := len(dataArray) / 800
 	if _batch > 1 {
 		for i := 0; i < _batch; i++ {
-			utils.Execute_batch(orm, _insertBase, _insertSub, dataArray[i*800:(i+1)*800])
+			r.Orm.Execute_batch(_insertBase, _insertSub, dataArray[i*800:(i+1)*800])
 		}
 	} else if _batch == 1 {
-		utils.Execute_batch(orm, _insertBase, _insertSub, dataArray)
+		r.Orm.Execute_batch(_insertBase, _insertSub, dataArray)
 	}
 
 	log.Infof(fmt.Sprintf("Destiny2 数据正在更新 Table: %s", "destiny2_menifest_base"))
 }
 
 // DBCheckHandler-检查表是否存在-若不存在-组装待初始化的sql
-func DBCheckHandler(orm *gorm.DB, tableName, tableSql string, Sqls *[]string) {
+func (r *Destiny) DBCheckHandler(tableName, tableSql string, Sqls *[]string) {
 	// 定义查询传参和返回结果对象
 
 	type countResult struct {
@@ -94,7 +155,7 @@ func DBCheckHandler(orm *gorm.DB, tableName, tableSql string, Sqls *[]string) {
 		`
 	var resStruct countResult
 	params := map[string]interface{}{"table_name": tableName}
-	utils.Fetch_data_sql(orm, _sql, &resStruct, params)
+	r.Orm.Fetch_data_sql(_sql, &resStruct, params)
 
 	if resStruct.Count == 0 {
 		*Sqls = append(*Sqls, tableSql)

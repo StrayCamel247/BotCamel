@@ -14,7 +14,6 @@ import (
 	// con "github.com/StrayCamel247/BotCamel/apps/config"
 	// "github.com/bitly/go-simplejson"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
 	// "net/url"
@@ -31,10 +30,6 @@ import (
 )
 
 func init() {
-}
-
-type Destiny struct {
-	db *gorm.DB
 }
 
 const bungieApiKey = "aff47ade61f643a19915148cfcfc6d7d"

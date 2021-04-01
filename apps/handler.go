@@ -1,16 +1,16 @@
 package apps
 
 import (
+	"github.com/Mrs4s/MiraiGo/client"
+	// "github.com/Mrs4s/MiraiGo/message"
 	"github.com/Mrs4s/go-cqhttp/coolq"
-	"github.com/StrayCamel247/BotCamel/apps/camel"
+	// "github.com/StrayCamel247/BotCamel/apps/camel"
 	"github.com/StrayCamel247/BotCamel/apps/destiny"
-	"github.com/robfig/cron"
-	log "github.com/sirupsen/logrus"
-	"gorm.io/driver/sqlite"
+	"github.com/StrayCamel247/BotCamel/apps/utils"
 	"gorm.io/gorm"
 )
 
-var dbGorm *gorm.DB
+var dbOrm *gorm.DB
 
 func init() {
 
@@ -18,7 +18,7 @@ func init() {
 
 // CamelBot=结构体实例
 type CamelBot struct {
-	db  *gorm.DB
+	db  *utils.CamelOrm
 	bot *coolq.CQBot
 }
 
@@ -28,41 +28,17 @@ type mod interface {
 
 // 触发
 func Start(bot *coolq.CQBot) {
-	log.Infof("载入sqlite数据库...")
-	// 启用sqlite数据库
-	dbGorm, _ = gorm.Open(sqlite.Open("./data/sqlite3.db"), &gorm.Config{
-		// PrepareStmt: true,
-		// 对于写操作（创建、更新、删除），为了确保数据的完整性，GORM 会将它们封装在事务内运行。但这会降低性能，你可以在初始化时禁用这种方式
-		SkipDefaultTransaction: true,
-	})
-	Camel := CamelBot{db: dbGorm}
+
+	// 初始化机器基本功能
+	Camel := CamelBot{db: utils.Orm, bot: bot}
+	// 初始化命运2基础功能
 	// 初始化时检查命运2数据库是否存在
-	destiny.InfoMenifestBaseDBCheck(Camel.db)
-	Camel.handlerMessage()
-	Camel.clickHandler()
+	destiny.Start()
+	// 命运2群聊天功能启动
+	Camel.bot.Client.OnGroupMessage(destiny.GroupMessageEvent)
 }
 
-// handlerMessage 处理消息
-func (self *CamelBot) handlerMessage() {
-	// 载入自定义模块
-	self.bot.Client.OnGroupMessage(GroupMessageEvent)
-}
-
-// clickHandler 定时任务
-func (self *CamelBot) clickHandler() {
-	c := cron.New()
-	// 定每周三-1点-20分
-	c.AddFunc("*0 20 1 * * 3", func() {
-		go camel.RefreshDayHandler("0x02", destiny.DataInfo("0x02"))
-		// 检查数据库更新
-		destiny.InfoMenifestBaseDBCheck(dbGorm)
-	})
-	// 每天-1点-20分触发
-	c.AddFunc("*0 20 1 * * *", func() {
-		go camel.RefreshDayHandler("0x03", camel.DayGenUrl)
-		go camel.RefreshDayHandler("0x04", destiny.DataInfo("0x04"))
-		go camel.RefreshDayHandler("0x05", destiny.DataInfo("0x05"))
-		go camel.RefreshDayHandler("0x06", destiny.DataInfo("0x06"))
-	})
-	c.Start()
+// 收到加群邀请
+func GroReciveInviteEvent(c *client.QQClient, e *client.GroupInvitedRequest) {
+	c.SolveGroupJoinRequest(e, true, false, "")
 }

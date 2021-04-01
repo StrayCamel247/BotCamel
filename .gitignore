@@ -340,6 +340,7 @@ config.hjson
 device.json
 codec/
 data/
+!data/*.md
 logs/
 tmp/*
 !tmp/*.md
