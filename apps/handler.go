@@ -54,9 +54,9 @@ func MenuSendEvent(c *client.QQClient, m *message.GroupMessage) {
 		var menu bytes.Buffer
 
 		menu.WriteString("https://github.com/StrayCamel247/BotCamel 领bug修修我吧(๑•̀ㅂ•́)و✧\n")
-		menu.WriteString("├─────BotCamel基础功能─────\n")
+		menu.WriteString("======BotCamel基础功能=====\n")
 		menu.WriteString(strings.Join(comStrings(camel.Commands), "\n") + "\n")
-		menu.WriteString("├─────命运2基础功能────────\n")
+		menu.WriteString("======命运2基础功能========\n")
 		menu.WriteString(strings.Join(comStrings(destiny.Commands), "\n") + "\n")
 		res := strings.ReplaceAll(menu.String(), "{", "")
 		res = strings.ReplaceAll(res, "}", "")
@@ -83,7 +83,7 @@ func comStrings(a interface{}) (res []string) {
 	//遍历结构体的所有字段
 	for i := num - 1; i > -1; i-- {
 		// buf.WriteString(fmt.Sprintf("├─%v\n", val.Field(i)))
-		res = append([]string{fmt.Sprintf("├─ %v", val.Field(i))}, res...)
+		res = append([]string{fmt.Sprintf("++ %v", val.Field(i))}, res...)
 	}
 	return
 	// return buf.String()
