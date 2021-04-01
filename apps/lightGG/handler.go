@@ -20,13 +20,13 @@ type Spider struct {
 	header map[string]string
 }
 
-func (keyword Spider) get_html_header() string {
+func (r *Spider) get_html_header() string {
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", keyword.url, nil)
+	req, err := http.NewRequest("GET", r.url, nil)
 	if err != nil {
 		log.Infof(fmt.Sprintf("检查网页错误%+v", err.Error()))
 	}
-	for key, value := range keyword.header {
+	for key, value := range r.header {
 		req.Header.Add(key, value)
 	}
 	resp, err := client.Do(req)
@@ -54,7 +54,7 @@ func LightGGChecker(url string) bool {
 		"User-Agent":                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36",
 		"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
 	}
-	spider := &Spider{url, header}
+	spider := Spider{url, header}
 	html := spider.get_html_header()
 	// 404标题
 	pattern2 := `<h2>(.*?)</h2>`

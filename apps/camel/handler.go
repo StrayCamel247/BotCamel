@@ -8,7 +8,7 @@ package camel
 */
 import (
 	// "fmt"
-	"bufio"
+	// "bufio"
 	"fmt"
 	// "github.com/Logiase/gomirai"
 	"encoding/json"
@@ -22,7 +22,6 @@ import (
 	"github.com/StrayCamel247/BotCamel/apps/utils"
 	// "github.com/StrayCamel247/BotCamel/global"
 	log "github.com/sirupsen/logrus"
-	"io"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -98,23 +97,6 @@ func AnalysisMsg(c *client.QQClient, ele []message.IMessageElement) (isAt bool, 
 	return isAt, com, content
 }
 
-func GetD2WeekDateOfWeek() string {
-	now := time.Now()
-
-	offset := int(time.Monday - now.Weekday())
-	if offset > 0 {
-		offset = -4
-	}
-
-	weekStartDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local).AddDate(0, 0, offset)
-	weekMonday := weekStartDate.Format("2006-01-02")
-	return weekMonday
-}
-func GetD2daykDateOfdayk() string {
-	now := time.Now()
-	currentDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local).Format("2006-01-02")
-	return currentDay
-}
 func PathExists(path string) bool {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -132,10 +114,10 @@ func FileNameGenerator(flag string) string {
 	var _imgFileDate string
 	if utils.EqualFolds(flag, command.D2xiu.Keys) || utils.EqualFolds(flag, command.D2day.Keys) {
 		// 日更新
-		_imgFileDate = GetD2daykDateOfdayk()
+		_imgFileDate = utils.GetDateViaWeekNum(0)
 	} else if utils.EqualFolds(flag, command.D2week.Keys) || utils.EqualFolds(flag, command.D2trial.Keys) || utils.EqualFolds(flag, command.D2dust.Keys) {
 		// 周更新 D2xiu D2week D2trial D2dust
-		_imgFileDate = GetD2WeekDateOfWeek()
+		_imgFileDate = utils.GetDateViaWeekNum(3)
 	}
 	return fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 }
@@ -143,16 +125,16 @@ func D2DownloadHandler(flag string, url string) (fileName string, updated bool) 
 	var _imgFileDate string
 	if utils.EqualFolds(flag, command.D2xiu.Keys) || utils.EqualFolds(flag, command.D2day.Keys) {
 		// 日更新
-		_imgFileDate = GetD2daykDateOfdayk()
+		_imgFileDate = utils.GetDateViaWeekNum(0)
 	} else if utils.EqualFolds(flag, command.D2week.Keys) || utils.EqualFolds(flag, command.D2trial.Keys) || utils.EqualFolds(flag, command.D2dust.Keys) {
 		// 周更新 D2xiu D2week D2trial D2dust
-		_imgFileDate = GetD2WeekDateOfWeek()
+		_imgFileDate = utils.GetDateViaWeekNum(3)
 	}
 	fileName = fmt.Sprintf("./tmp/%s%s.jpg", flag, _imgFileDate)
 	if !PathExists(fileName) {
 		// 文件不存在-下载文件
 		log.Info(fmt.Sprintf("正在下载文件 url: %s", url))
-		err := downloadImg(fileName, url)
+		err := utils.DownloadImg(fileName, url)
 		if err != nil {
 			log.WithError(err)
 		}
@@ -187,53 +169,6 @@ func d2uploadImgByFlag(flag string, c *client.QQClient, msg *message.GroupMessag
 		return err
 	}
 	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(m))
-	return nil
-}
-
-// 文件下载
-func downloadImg(filename, url string) error {
-	// 记录下载时间
-	_nowTime := time.Now()
-	_timeCostLogger := func(start time.Time) {
-		tc := time.Since(start)
-		log.Info(fmt.Sprintf("time cost = %v\n", tc))
-	}
-	defer _timeCostLogger(_nowTime)
-	// 构造请求头
-	spaceClient := http.Client{
-		// 请求时间
-		Timeout: time.Minute * 10,
-	}
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		log.Warn(err)
-	}
-	res, getErr := spaceClient.Do(req)
-	if getErr != nil {
-		log.Warn(getErr)
-	}
-
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
-	if err != nil {
-		fmt.Println("图片下载失败；url")
-		log.WithError(err)
-		return err
-	}
-	defer res.Body.Close()
-	// 获得get请求响应的reader对象
-	reader := bufio.NewReaderSize(res.Body, 32*1024)
-
-	file, err := os.Create(filename)
-	if err != nil {
-		log.WithError(err)
-	}
-	// 获得文件的writer对象
-	writer := bufio.NewWriter(file)
-
-	written, _ := io.Copy(writer, reader)
-	fmt.Printf("Total length: %d", written)
 	return nil
 }
 
