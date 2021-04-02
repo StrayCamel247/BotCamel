@@ -21,9 +21,9 @@ func (r *BaseMsg) GroMsgHandler(com, content string) {
 	switch {
 
 	case out == "":
-		r.Client.SendGroupMessage(r.Message.GroupCode, message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", BaseAutoreply("0x00")))))
+		r.Client.SendGroupMessage(r.Message.GroupCode, message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", BaseAutoreply("0x00")))), true)
 	default:
-		r.Client.SendGroupMessage(r.Message.GroupCode, message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out))))
+		r.Client.SendGroupMessage(r.Message.GroupCode, message.NewSendingMessage().Append(message.NewText(fmt.Sprintf("%s", out))), true)
 	}
 }
 
@@ -33,5 +33,5 @@ func GroJoinHandler(c *client.QQClient, group *client.GroupInfo) {
 	out += BaseAutoreply("0x00") + "\n"
 	out += BaseAutoreply("menu")
 	m := message.NewSendingMessage().Append(message.NewText(out))
-	c.SendGroupMessage(group.Code, m)
+	c.SendGroupMessage(group.Code, m, true)
 }

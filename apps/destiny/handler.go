@@ -123,10 +123,10 @@ func (r *Destiny) ItemGenerateImg(content, flag string) {
 		if err != nil {
 			log.WithError(err)
 		}
-		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(_ImgMsg))
+		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(_ImgMsg), true)
 	} else {
 		log.Warn(fmt.Sprintf("[%s]图片获取失败", flag+content))
-		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
+		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")), true)
 	}
 
 }
@@ -164,7 +164,7 @@ func (r *Destiny) dayGenerateImg(flag string) {
 
 	m, err := r.d2uploadImgByUrl(flag, ResJson.IMG_URL)
 
-	r.Cli.SendGroupMessage(r.Mes.GroupCode, message.NewSendingMessage().Append(m))
+	r.Cli.SendGroupMessage(r.Mes.GroupCode, message.NewSendingMessage().Append(m), true)
 	if err == nil {
 		return
 	}
@@ -174,7 +174,7 @@ func (r *Destiny) dayGenerateImg(flag string) {
 func (r *Destiny) randomHandler() {
 	out := fmt.Sprintf("%d", rand.Intn(10))
 	m := message.NewSendingMessage().Append(message.NewText(out))
-	r.Cli.SendGroupMessage(r.Mes.GroupCode, m)
+	r.Cli.SendGroupMessage(r.Mes.GroupCode, m, true)
 }
 
 // 通过名称获取介绍信息
@@ -185,9 +185,9 @@ func (r *Destiny) GenerateDes(content, flag string) {
 	// 构造消息链-遍历返回的itemid在lightgg上进行批量截图-将图片传入消息链并返沪
 	rMsg := message.NewSendingMessage()
 	if des != "" {
-		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(message.NewText(des)))
+		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(message.NewText(des)), true)
 	} else {
-		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")))
+		r.Cli.SendGroupMessage(r.Mes.GroupCode, rMsg.Append(message.NewText("哎呀~出错了🤣，报告问题：https://github.com/StrayCamel247/BotCamel/issues")), true)
 	}
 	return
 }
@@ -200,7 +200,7 @@ func (r *Destiny) d2uploadImgByFlag(flag string) error {
 		log.WithError(err)
 		return err
 	}
-	r.Cli.SendGroupMessage(r.Mes.GroupCode, message.NewSendingMessage().Append(m))
+	r.Cli.SendGroupMessage(r.Mes.GroupCode, message.NewSendingMessage().Append(m), true)
 	return nil
 }
 
@@ -239,7 +239,7 @@ func (r *Destiny) pvpInfoHandler(content string) {
 	res += fmt.Sprintf("Kda %s/%s/%s-%s Suicides:%s Hours:%s ", _dataPagHandler(PVPData.Kills, false), _dataPagHandler(PVPData.Deaths, false), _dataPagHandler(PVPData.Assists, false), _dataPagHandler(PVPData.KillsDeathsAssists, false), _dataPagHandler(PVPData.Suicides, false), _dataPagHandler(PVPData.SecondsPlayed, true))
 	// 发送消息
 	m := message.NewSendingMessage().Append(message.NewText(res))
-	r.Cli.SendGroupMessage(r.Mes.GroupCode, m)
+	r.Cli.SendGroupMessage(r.Mes.GroupCode, m, true)
 
 }
 

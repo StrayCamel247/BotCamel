@@ -80,5 +80,5 @@ func menuHandler(c *client.QQClient, msg *message.GroupMessage) {
 	if err != nil {
 		log.WithError(err)
 	}
-	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(_ImgMsg))
+	c.SendGroupMessage(msg.GroupCode, message.NewSendingMessage().Append(_ImgMsg), true)
 }
