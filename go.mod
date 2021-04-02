@@ -10,6 +10,7 @@ require (
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/chromedp/cdproto v0.0.0-20210323015217-0942afbea50e
 	github.com/chromedp/chromedp v0.6.10
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/guonaihong/gout v0.1.6
 	github.com/json-iterator/go v1.1.10
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
@@ -20,6 +21,7 @@ require (
 	github.com/tidwall/gjson v1.7.3
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
+	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
 	golang.org/x/term v0.0.0-20210317153231-de623e64d2a6
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/sqlite v1.1.4

@@ -85,7 +85,7 @@ func AccountStatsFetchInfo(steamId string) AccountStatsResult {
 		log.Warn(err)
 	}
 
-	req.Header.Add("X-API-Key", "aff47ade61f643a19915148cfcfc6d7d")
+	req.Header.Add("X-API-Key", bungieApiKey)
 
 	res, getErr := spaceClient.Do(req)
 	if getErr != nil {
