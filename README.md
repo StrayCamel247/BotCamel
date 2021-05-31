@@ -1,3 +1,7 @@
+# 项目归档：后续开发在[OHSY247/BotCamel](https://github.com/OHSY247/BotCamel)
+> 调整开发方向
+- 后续开发将会吧所有业务代码集合在：https://github.com/OHSY247/BotApi/
+- 前端的展示将会用的react，可能会开发管理系统，部分后端除了用到spring也会用到ndoe的midway：https://github.com/OHSY247/camelApp
 
 ## 聊天机器人-BotCamel_V1.0
 > 基于[go-cqhttp](https://github.com/Mrs4s/go-cqhttp/)实现-觉得有意思的话就star一下吧~
